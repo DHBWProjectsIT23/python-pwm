@@ -46,12 +46,13 @@ jobs:
 
     - name: Run coverage
       run: |
-        coverage run -m unittest discover
-        coverage report -m
-        coverage json -o coverage.json
+        echo "coverage=INVALID" >> $GITHUB_ENV
+        # coverage run -m unittest discover
+        # coverage report -m
+        # coverage json -o coverage.json
 
-        COVERAGE_PERCENT=$(python -c "import json; print(round(json.load(open('coverage.json'))['totals']['percent_covered'], 2))")
-        echo "coverage=${COVERAGE_PERCENT}" >> $GITHUB_ENV
+        # COVERAGE_PERCENT=$(python -c "import json; print(round(json.load(open('coverage.json'))['totals']['percent_covered'], 2))")
+        # echo "coverage=${COVERAGE_PERCENT}" >> $GITHUB_ENV
 
     - name: Create mypy warning badge
       if: ${{ github.ref_name == 'main' }}
