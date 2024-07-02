@@ -5,9 +5,16 @@
   - Implementierung in Curses
 
 - Cryption
-  - Master Password, Historie, etc etc
+  - Submodules
+    - Passwortspeichern
+    - Passowrtgenerieren - Gekapselt
+    - Passwortabruf 
+    - Passwortbearbeitung 
+    - Master Passowrt
+    - Passwortüberprüfung - Gekapselt
+    - Nutzermanagement
 
-- HaveIBeenPwned API
+- HaveIBeenPwned API - Gekapselt
   - Async
  
 # Nebenaufgaben
