@@ -31,7 +31,6 @@ jobs:
         mypy | tee mypy_output.txt
         MYPY_WARNINGS=$(grep -oP '\b\d+(?= errors?)|\bno issues found\b' mypy_output.txt | tail -n1 | sed 's/\bno issues found\b/0/')
         echo "mypy_warnings=${MYPY_WARNINGS}" >> $GITHUB_ENV
-        cat mypy_output.txt
       continue-on-error: true
 
     - name: Run static code analysis
@@ -50,47 +49,45 @@ jobs:
          coverage run -m unittest discover
          coverage report -m
          coverage json -o coverage.json
-         cat coverage.json
+        COVERAGE_PERCENT=$(python -c "import json; print(round(json.load(open('coverage.json'))['totals']['percent_covered'], 2))")
+        echo "coverage=${COVERAGE_PERCENT}" >> $GITHUB_ENV
 
-        # COVERAGE_PERCENT=$(python -c "import json; print(round(json.load(open('coverage.json'))['totals']['percent_covered'], 2))")
-        # echo "coverage=${COVERAGE_PERCENT}" >> $GITHUB_ENV
+    - name: Create mypy warning badge
+      if: ${{ github.ref_name == 'main' }}
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 328c50761ab662216df5dfb1debb334a
+        filename: mypy_warnings.json
+        label: MyPy Warnings
+        message: ${{ env.mypy_warnings }}
+        valColorRange: ${{ env.mypy_warnings }}
+        minColorRange: 1
+        maxColorRange: 6
+        invertColorRange: true
 
-    # - name: Create mypy warning badge
-    #   if: ${{ github.ref_name == 'main' }}
-    #   uses: schneegans/dynamic-badges-action@v1.7.0
-    #   with:
-    #     auth: ${{ secrets.GIST_SECRET }}
-    #     gistID: d506acc54dead9ca1d070488e813d253
-    #     filename: mypy_warnings.json
-    #     label: MyPy Warnings
-    #     message: ${{ env.mypy_warnings }}
-    #     valColorRange: ${{ env.mypy_warnings }}
-    #     minColorRange: 1
-    #     maxColorRange: 6
-    #     invertColorRange: true
-    #
-    # - name: Create pylint badge
-    #   if: ${{ github.ref_name == 'main' }}
-    #   uses: schneegans/dynamic-badges-action@v1.7.0
-    #   with:
-    #     auth: ${{ secrets.GIST_SECRET }}
-    #     gistID: d506acc54dead9ca1d070488e813d253
-    #     filename: pylint-score.json
-    #     label: Pylint Score
-    #     message: ${{ env.pylint_score }}
-    #     valColorRange: ${{ env.pylint_score }}
-    #     minColorRange: 5
-    #     maxColorRange: 9
-    #
-    # - name: Create coverage badge
-    #   if: ${{ github.ref_name == 'main' }}
-    #   uses: schneegans/dynamic-badges-action@v1.7.0
-    #   with:
-    #     auth: ${{ secrets.GIST_SECRET }}
-    #     gistID: d506acc54dead9ca1d070488e813d253
-    #     filename: coverage.json
-    #     label: Coverage
-    #     message: ${{ env.coverage }}%
-    #     valColorRange: ${{ env.coverage }}%
-    #     minColorRange: 50
-    #     maxColorRange: 90
+    - name: Create pylint badge
+      if: ${{ github.ref_name == 'main' }}
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 328c50761ab662216df5dfb1debb334a
+        filename: pylint-score.json
+        label: Pylint Score
+        message: ${{ env.pylint_score }}
+        valColorRange: ${{ env.pylint_score }}
+        minColorRange: 5
+        maxColorRange: 9
+
+    - name: Create coverage badge
+      if: ${{ github.ref_name == 'main' }}
+      uses: schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 328c50761ab662216df5dfb1debb334a
+        filename: coverage.json
+        label: Coverage
+        message: ${{ env.coverage }}%
+        valColorRange: ${{ env.coverage }}%
+        minColorRange: 50
+        maxColorRange: 90
