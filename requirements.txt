@@ -1,5 +1,5 @@
 pylint==3.2.5
-coverage==7.5.3
+coverage==7.6.0
 mypy==1.10.1
 cryptography==42.0.8
 typing_extensions==4.12.2
