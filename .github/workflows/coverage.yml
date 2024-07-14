@@ -46,7 +46,7 @@ jobs:
         gistID: 328c50761ab662216df5dfb1debb334a
         filename: coverage.json
         label: Coverage
-        label_color: "1e1e2e"
+        labelColor: "#1e1e2e"
         namedLogo: pytest
         style: social
         message: ${{ env.coverage }}%
