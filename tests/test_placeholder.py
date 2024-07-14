@@ -1,7 +1,6 @@
 import unittest
-import main
 
-from src.placeholder import Placeholder
+from src.test_module.placeholder import Placeholder
 
 
 class TestPlaceholder(unittest.TestCase):
