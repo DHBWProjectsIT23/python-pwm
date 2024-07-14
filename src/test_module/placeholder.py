@@ -2,5 +2,6 @@ class Placeholder:
     def __init__(self):
         pass
 
-    def main():
+    def main(test: str = "test"):
         print("Hello, World!")
+        print(test)
