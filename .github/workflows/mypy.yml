@@ -40,6 +40,9 @@ jobs:
         gistID: 328c50761ab662216df5dfb1debb334a
         filename: mypy_warnings.json
         label: MyPy Warnings
+        label_color: "1e1e2e"
+        namedLogo: typescript
+        style: flat
         message: ${{ env.mypy_warnings }}
         valColorRange: ${{ env.mypy_warnings }}
         minColorRange: 1

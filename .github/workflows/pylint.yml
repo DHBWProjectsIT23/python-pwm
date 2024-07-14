@@ -40,6 +40,8 @@ jobs:
         gistID: 328c50761ab662216df5dfb1debb334a
         filename: pylint-score.json
         label: Pylint Score
+        label_color: "1e1e2e"
+        namedLogo: python
         message: ${{ env.pylint_score }}
         valColorRange: ${{ env.pylint_score }}
         minColorRange: 5
