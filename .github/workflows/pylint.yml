@@ -3,17 +3,18 @@ name: Python CI Example
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  run_pylint:
     runs-on: ubuntu-latest
     steps:
 
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python V3.11
+    - name: Set up Python V3.11 and Cache
       uses: actions/setup-python@v5
       with:
         python-version: 3.11
+        cache: 'pip'
 
     - name: Install dependencies
       run: |
