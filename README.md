@@ -1,4 +1,5 @@
-![Main Status](https://img.shields.io/badge/Main%20Brach-Status-blue)
+![Main Status](https://img.shields.io/badge/Main%20Branch-Status-blue?style=flat&logo=githubactions&labelColor=%231e1e2e)
+
 ![MyPy Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/DefinitelyNotSimon13/328c50761ab662216df5dfb1debb334a/raw/mypy_warnings.json)
 ![Pylint Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/DefinitelyNotSimon13/328c50761ab662216df5dfb1debb334a/raw/pylint-score.json)
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/DefinitelyNotSimon13/328c50761ab662216df5dfb1debb334a/raw/coverage.json)
