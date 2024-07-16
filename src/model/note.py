@@ -1,3 +1,3 @@
-class Note:
-    def __init__(self):
-        x = 1
+from typing import NewType
+
+Note = NewType("Note", str)

@@ -1,57 +1,66 @@
 import asyncio
-import getpass
-import hashlib
-import pickle
 import sqlite3
 import sys
 from curses import wrapper
 
-import requests
-from api.placeholder import check_password
-from crypto.placeholder import decrypt_password_aes256
-from crypto.placeholder_2 import hash_sha256
+from crypto.hashing import hash_sha256
 from db.connection import connect_to_db
-from model.metadata import Metadata
-from model.password import Password
+from db.retrieve import retrieve_user_by_name
+from model.password import Password, adapt_password, convert_password
+from model.user import User
 from tui.tui import tui_main
 
-from src.model.password_information import PasswordInformation
-from src.model.user import User
+import curses
+import time
+from curses.textpad import Textbox, rectangle
+from typing import TYPE_CHECKING, Callable
+
+
+if TYPE_CHECKING:
+    from _curses import _CursesWindow
+
+    Window = _CursesWindow
+else:
+    from typing import Any
+
+    Window = Any
+
+
+CursesMain = Callable[[Window], None]
 
 
 def main() -> None:
+    sqlite3.register_converter("password", convert_password)
+    sqlite3.register_adapter(Password, adapt_password)
     if len(sys.argv) > 1:
         asyncio.run(cli_main())
     else:
-        wrapper(tui_main)
+        curses_main: CursesMain = tui_main
+        wrapper(curses_main)
 
 
 async def cli_main() -> None:
-    print("Connecting to DB")
-    connection, cursor = connect_to_db("test.db")
-    print("Connected to DB")
+    print("Connecting to DB...")
+    db_path: str = "test.db"
+    connection_tuple: tuple[sqlite3.Connection, sqlite3.Cursor] = connect_to_db(db_path)
+    connection: sqlite3.Connection = connection_tuple[0]
+    cursor: sqlite3.Cursor = connection_tuple[1]
+    print("")
 
-    username = sys.argv[1]
-    print(f"Given username: {username}")
+    username: str = sys.argv[1]
 
-    result = cursor.execute(
-        "SELECT * FROM users WHERE username=?", (hash_sha256(username.encode()),)
-    )
+    user: User = retrieve_user_by_name(cursor, username)
+    print(user.username.hex())
 
-    user = result.fetchone()
-    if user is None:
-        print("User not found")
-        sys.exit(1)
-
-    for i in range(3):
-        password = getpass.getpass(f"Password for {username}: ")
-        if hash_sha256(password.encode()) == user[1]:
-            print("Password correct")
-            break
-        print("Wrong password")
-        if i == 2:
-            print("To many failed password attempts")
-            sys.exit(1)
+    # for i in range(3):
+    #     password = getpass.getpass(f"Password for {username}: ")
+    #     if hash_sha256(password.encode()) == user.password:
+    #         print("Password correct")
+    #         break
+    #     print("Wrong password")
+    #     if i == 2:
+    #         print("To many failed password attempts")
+    #         sys.exit(1)
 
     # password = Password("admin", Metadata())
     # user = User("admin", password)

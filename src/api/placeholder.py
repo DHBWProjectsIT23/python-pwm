@@ -2,11 +2,9 @@ import hashlib
 import requests
 
 
-async def check_password(password: str):
-    print(f"Password: {password}")
+async def check_password(password: bytes) -> None:
     password_hash = hashlib.sha1(password)
     first_five = password_hash.hexdigest()[:5]
-    print(f"SHA-1 Hash: {password_hash.hexdigest()}")
 
     x = requests.get(f"https://api.pwnedpasswords.com/range/{first_five}")
     print("Api response:")
@@ -20,4 +18,3 @@ async def check_password(password: str):
 
     if not is_pwned:
         print("Your password has not been seen before!")
-        return

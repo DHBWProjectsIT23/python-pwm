@@ -1,16 +1,11 @@
+import sqlite3
 import pickle
 from typing import Optional
 
-from cryptography.hazmat.primitives.ciphers import CipherContext
 
-from src.crypto.placeholder import encrypt_password_aes256
-from src.crypto.placeholder_2 import (
-    hash_sha256,
-    encrypt_fernet,
-    decrypt_fernet,
-)
+from src.crypto.hashing import hash_sha256
 
-from .metadata import Metadata
+from .metadata import EncryptedMetadata, Metadata
 
 
 class Password:
@@ -18,26 +13,69 @@ class Password:
         self.is_encrypted: bool = False
         self.password: bytes = str.encode(password)
         self.metadata: Optional[Metadata] = metadata
+        self.encrypted_metadata: Optional[EncryptedMetadata] = None
         self.is_master = False
 
-    def encrypt_password(self) -> CipherContext:
+    def encrypt(self, key: bytes) -> None:
         self.is_encrypted = True
-        self.password, decryptor = encrypt_password_aes256(self.password)
-        return decryptor
+        self._encrypt_password()
+        self._encrypt_metadata(key)
 
-    def encrypt_metadata(self, key: bytes) -> bytes:
-        raise NotImplementedError
-        # self.metadata.accessed()
-        # pickled_metadata = pickle.dumps(self.metadata)
-        # return encrypt_fernet(pickled_metadata, key)
+    def decrypt(self, key: bytes) -> None:
+        self.is_encrypted = False
+        self._decrypt_password()
+        self._decrypt_metadata(key)
 
-    def decrypt_metadata(self, key: bytes, encrypted_metadata: bytes) -> None:
+    def _encrypt_password(self) -> None:
         raise NotImplementedError
-        # decrypted_metadata = decrypt_fernet(encrypted_metadata, key)
-        # if not isinstance(decrypted_metadata, bytes):
-        #     raise TypeError("Bytes object expected")
-        # self.metadata = pickle.loads(decrypted_metadata)
+
+    def _decrypt_password(self) -> None:
+        raise NotImplementedError
+
+    def _encrypt_metadata(self, key: bytes) -> None:
+        if self.encrypted_metadata is not None:
+            raise ValueError("Metadata already encrypted")
+        if self.metadata is None:
+            raise ValueError("Metadata not set")
+
+        self.metadata.access()
+        self.encrypted_metadata = self.metadata.encrypt(key)
+        self.metadata = None
+
+    def _decrypt_metadata(self, key: bytes) -> None:
+        if self.encrypted_metadata is None:
+            raise ValueError("Metadata not encrypted")
+        if self.metadata is not None:
+            raise ValueError("Metadata already decrypted")
+
+        self.metadata = self.encrypted_metadata.decrypt(key)
+        self.encrypted_metadata = None
 
     def make_master(self) -> None:
+        if self.is_master:
+            raise ValueError("Password is already master")
+        if self.is_encrypted:
+            raise ValueError("Password is encrypted")
+        if self.metadata is None:
+            raise ValueError("Metadata not set")
+
+        self.metadata.modify()
         self.password = hash_sha256(self.password)
         self.is_master = True
+
+    def __call__(self) -> bytes:
+        return self.password
+
+
+def adapt_password(password: Password) -> bytes:
+    if not password.is_encrypted and not password.is_master:
+        raise TypeError("Password is not encrypted")
+
+    return pickle.dumps(password)
+
+
+def convert_password(password: bytes) -> Password:
+    password = pickle.loads(password)
+    if not isinstance(password, Password):
+        raise TypeError("Password expected")
+    return password

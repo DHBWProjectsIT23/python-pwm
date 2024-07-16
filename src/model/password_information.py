@@ -15,9 +15,9 @@ class PasswordInformation:
     ):
         self.passwords: list[Password] = []
         self.notes: list[Note] = []
-        self.username: str = username
-        self.email: str = email
-        self.use_case: str = use_case
+        self.username: Optional[str] = username
+        self.email: Optional[str] = email
+        self.use_case: Optional[str] = use_case
         self.user: User = user
         self.categories: list[Category] = []
 
@@ -33,3 +33,13 @@ class PasswordInformation:
         if category in self.categories:
             raise ValueError("Category already exists")
         self.categories.append(category)
+
+    def encrypt(self, key: bytes) -> None:
+        for password in self.passwords:
+            password.encrypt(key)
+        # TODO: Encrypt username, email, use_case, categories, notes
+
+    def decrypt(self, key: bytes) -> None:
+        for password in self.passwords:
+            password.decrypt(key)
+        # TODO: Decrypt username, email, use_case, categories, notes
