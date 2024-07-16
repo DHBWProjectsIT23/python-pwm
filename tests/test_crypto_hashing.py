@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
-import src.crypto.placeholder_2 as crypto
+import src.crypto.hashing as crypto
 
 
 class TestCrypto(unittest.TestCase):
