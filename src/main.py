@@ -1,14 +1,18 @@
 import asyncio
 import sqlite3
 import sys
+import getpass
+
 from curses import wrapper
 
 from crypto.hashing import hash_sha256
+from model.metadata import Metadata
 from db.connection import connect_to_db
 from db.retrieve import retrieve_user_by_name
 from model.password import Password, adapt_password, convert_password
 from model.user import User
 from tui.tui import tui_main
+from api.placeholder import check_password
 
 import curses
 import time
@@ -52,32 +56,32 @@ async def cli_main() -> None:
     user: User = retrieve_user_by_name(cursor, username)
     print(user.username.hex())
 
-    # for i in range(3):
-    #     password = getpass.getpass(f"Password for {username}: ")
-    #     if hash_sha256(password.encode()) == user.password:
-    #         print("Password correct")
-    #         break
-    #     print("Wrong password")
-    #     if i == 2:
-    #         print("To many failed password attempts")
-    #         sys.exit(1)
+    for i in range(3):
+        password = getpass.getpass(f"Password for {username}: ")
+        if hash_sha256(password.encode()) == user.password():
+            print("Password correct")
+            break
+        print("Wrong password")
+        if i == 2:
+            print("To many failed password attempts")
+            sys.exit(1)
 
     # password = Password("admin", Metadata())
     # user = User("admin", password)
     # password_information = PasswordInformation(
     #     user, "test_username", "test_email", "test_use_case"
     # )
-    # # decryptor = password.encrypt_password()
-    # # pickled_password = pickle.dumps(password)
-    #
-    # print(user.password.password.hex())
-    #
-    # print("")
-    # print("")
-    # print("")
-    # task_api = asyncio.create_task(check_password(password.password))
-    # print("I am written after the async call")
-    # await task_api
+    # decryptor = password.encrypt_password()
+    # pickled_password = pickle.dumps(password)
+
+    print(user.password.password.hex())
+
+    print("")
+    print("")
+    print("")
+    task_api = asyncio.create_task(check_password(b"admin"))
+    print("I am written after the async call")
+    await task_api
 
     # cursor.execute("INSERT INTO passwords(data) VALUES(?)", (pickled_password,))
     # connection.commit()
