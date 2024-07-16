@@ -24,6 +24,13 @@ def tui_main(stdscr: Window) -> None:
     stdscr.getch()
 
 
+def first_screen(stdscr: Window) -> None:
+    popup = create_centered_popup(stdscr, 7, 35)
+    popup.box()
+    popup.addstr(0, 0, "Login")
+    popup.addstr(2, 2, "New User")
+
+
 def login_screen(stdscr: Window) -> None:
     popup = create_centered_popup(stdscr, 7, 35)
     popup.box()
