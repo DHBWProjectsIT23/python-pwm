@@ -15,18 +15,22 @@ def init_tui(stdscr: Window) -> None:
     stdscr.clear()
     curses.noecho()
     curses.curs_set(False)
-    _init_colors()
+    _init_colors(stdscr)
 
 
-def _init_colors() -> None:
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+def _init_colors(stdscr: Window) -> None:
+    curses.start_color()
+    curses.use_default_colors()
+    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_WHITE)
-    curses.init_pair(5, curses.COLOR_BLUE, curses.COLOR_WHITE)
+    curses.init_pair(5, curses.COLOR_BLUE, curses.COLOR_BLACK)
     curses.init_pair(6, curses.COLOR_MAGENTA, curses.COLOR_WHITE)
     curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_WHITE)
     curses.init_pair(8, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    stdscr.bkgd(" ", curses.color_pair(1))
+    stdscr.clear()
 
 
 def get_screen_size(window: Window) -> tuple[int, int]:

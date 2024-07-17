@@ -18,6 +18,8 @@ import curses
 import time
 from curses.textpad import Textbox, rectangle
 from typing import TYPE_CHECKING, Callable
+from src.db.placeholder import validate_login
+from src.db.insert import insert_user
 
 
 if TYPE_CHECKING:
@@ -58,7 +60,7 @@ async def cli_main() -> None:
 
     for i in range(3):
         password = getpass.getpass(f"Password for {username}: ")
-        if hash_sha256(password.encode()) == user.password():
+        if validate_login(cursor, username, password):
             print("Password correct")
             break
         print("Wrong password")

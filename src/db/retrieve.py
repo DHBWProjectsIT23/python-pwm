@@ -8,9 +8,9 @@ from src.crypto.hashing import hash_sha256
 def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
     cursor.execute("SELECT * FROM users WHERE username=?", (username_hash,))
     user: list[tuple[bytes, Password]] = cursor.fetchall()
-    if user is None:
+    if len(user) == 0:
         raise ValueError("User not found")
-    if len(user) != 1:
+    if len(user) > 1:
         raise ValueError("Multiple users found")
 
     return User(user[0][0], user[0][1])
