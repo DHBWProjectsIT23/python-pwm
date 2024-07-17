@@ -1,24 +1,26 @@
 import curses
 from typing import TYPE_CHECKING
+from .window import Window
 
 if TYPE_CHECKING:
     from _curses import _CursesWindow
 
-    Window = _CursesWindow
+    CursesWindow = _CursesWindow
 else:
     from typing import Any
 
-    Window = Any
+    CursesWindow = Any
 
 
-def init_tui(stdscr: Window) -> None:
+def init_tui(stdscr: CursesWindow) -> Window:
     stdscr.clear()
     curses.noecho()
     curses.curs_set(False)
     _init_colors(stdscr)
+    return Window(stdscr)
 
 
-def _init_colors(stdscr: Window) -> None:
+def _init_colors(stdscr: CursesWindow) -> None:
     curses.start_color()
     curses.use_default_colors()
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
@@ -31,12 +33,3 @@ def _init_colors(stdscr: Window) -> None:
     curses.init_pair(8, curses.COLOR_WHITE, curses.COLOR_BLACK)
     stdscr.bkgd(" ", curses.color_pair(1))
     stdscr.clear()
-
-
-def get_screen_size(window: Window) -> tuple[int, int]:
-    return window.getmaxyx()
-
-
-def print_line_in_middle(window: Window, text: str) -> None:
-    height, width = get_screen_size(window)
-    window.addstr(height // 2 - 1, width // 2 - len(text) // 2, text)
