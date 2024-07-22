@@ -18,7 +18,7 @@ pycparser==2.22
 pylint==3.2.3
 pyproject-hooks==1.1.0
 requests==2.32.3
-setuptools==70.3.0
+setuptools==71.1.0
 tomlkit==0.13.0
 typing-extensions==4.12.2
 urllib3==2.2.2
