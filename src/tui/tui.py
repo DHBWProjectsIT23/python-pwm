@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 from .popup import create_centered_popup
 from .util import init_tui
 from .window import Window
-from src.db.connection import connect_to_db
-from src.db.placeholder import validate_login
+from src.controller.connection import connect_to_db
+from src.controller.user import validate_login
 
 if TYPE_CHECKING:
     from _curses import _CursesWindow

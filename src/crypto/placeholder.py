@@ -1,5 +1,6 @@
 import os
 
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import (
@@ -8,6 +9,18 @@ from cryptography.hazmat.primitives.ciphers import (
     algorithms,
     modes,
 )
+
+key = b"NsnezLc_TNwg9XFD3roUsS-Wd9jbGKRln7-kGtCw2nM="
+
+
+def dummy_encrypt_fernet(data: bytes) -> bytes:
+    f = Fernet(key)
+    return f.encrypt(data)
+
+
+def dummy_decrypt_fernet(data: bytes) -> bytes:
+    f = Fernet(key)
+    return f.decrypt(data)
 
 
 def encrypt_password_aes256(password: bytes) -> tuple[bytes, CipherContext]:

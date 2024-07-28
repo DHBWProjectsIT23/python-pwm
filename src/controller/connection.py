@@ -1,8 +1,5 @@
 import sqlite3
 
-from src.model.password import Password, convert_password, adapt_password
-from src.model.metadata import Metadata
-
 
 def connect_to_db(db_path: str) -> tuple[sqlite3.Connection, sqlite3.Cursor]:
     connection = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
@@ -15,10 +12,9 @@ def connect_to_db(db_path: str) -> tuple[sqlite3.Connection, sqlite3.Cursor]:
 def initialize_tables(cursor: sqlite3.Cursor) -> None:
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS passwords (
-        id INTEGER PRIMARY KEY,
-        data BLOB NOT NULL,
+        password_information password_information NOT NULL,
         user BLOB NOT NULL,
-        FOREIGN KEY(user) REFERENCES users(user)
+        FOREIGN KEY(user) REFERENCES users(username)
     );
         """)
     cursor.execute("""

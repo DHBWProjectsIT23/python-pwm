@@ -2,8 +2,9 @@ import sqlite3
 import pickle
 from typing import Optional
 
-
 from src.crypto.hashing import hash_sha256
+from src.crypto.placeholder import dummy_encrypt_fernet, dummy_decrypt_fernet
+from typing import Iterable
 
 from .metadata import EncryptedMetadata, Metadata
 
@@ -27,10 +28,12 @@ class Password:
         self._decrypt_metadata(key)
 
     def _encrypt_password(self) -> None:
-        raise NotImplementedError
+        self.password = dummy_encrypt_fernet(self.password)
+        # raise NotImplementedError
 
     def _decrypt_password(self) -> None:
-        raise NotImplementedError
+        self.password = dummy_decrypt_fernet(self.password)
+        # raise NotImplementedError
 
     def _encrypt_metadata(self, key: bytes) -> None:
         if self.encrypted_metadata is not None:
@@ -75,7 +78,11 @@ def adapt_password(password: Password) -> bytes:
 
 
 def convert_password(password: bytes) -> Password:
-    password = pickle.loads(password)
-    if not isinstance(password, Password):
+    retrieved_password = pickle.loads(password)
+    if not isinstance(retrieved_password, Password):
         raise TypeError("Password expected")
-    return password
+    return retrieved_password
+
+
+class PasswordList(list[Password]):
+    pass
