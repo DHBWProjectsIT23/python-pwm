@@ -1,18 +1,24 @@
 import asyncio
+import os
+import curses
 import sqlite3
 import sys
 from curses import wrapper
 from typing import TYPE_CHECKING, Callable
 
 import controller.connection
+from controller.user import insert_user
 from model.password import (
     Password,
     adapt_password,
     convert_password,
 )
+from model.metadata import Metadata
+from model.user import User
 from tui.tui import tui_main
+from crypto.hashing import hash_sha256
 
-from src.model.password_information import (
+from model.password_information import (
     PasswordInformation,
     adapt_password_information,
     convert_password_information,
@@ -111,6 +117,18 @@ async def cli_main() -> None:
     #     print(f"Decrypted Password after db: {decrypted_password}")
 
     connection.close()
+
+
+def add_test_users(cursor: sqlite3.Cursor):
+    admin_password = Password("admin", Metadata())
+    admin_user = User(hash_sha256(b"admin"), admin_password)
+
+    insert_user(cursor, admin_user)
+
+    test_password = Password("test", Metadata())
+    test_user = User(hash_sha256(b"test"), test_password)
+
+    insert_user(cursor, test_user)
 
 
 if __name__ == "__main__":

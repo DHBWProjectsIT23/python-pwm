@@ -19,7 +19,7 @@ class Window:
 
     def getCenter(self) -> tuple[int, int]:
         height, width = self.getSize()
-        return (height // 2) - 1, (width // 2) - 1
+        return (height // 2), (width // 2)
 
     def writeCenteredText(
         self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
