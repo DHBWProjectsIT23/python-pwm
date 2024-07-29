@@ -3,8 +3,8 @@ from .window import Window
 
 def create_centered_popup(window: Window, height: int, width: int) -> Window:
     screen_height, screen_width = window.getSize()
-    y = int((screen_height / 2) - (height / 2))
-    x = int((screen_width / 2) - (width / 2))
+    y = (screen_height // 2) - (height // 2)
+    x = (screen_width // 2) - (width // 2)
     return create_popup(window, y, x, height, width)
 
 
