@@ -21,10 +21,10 @@ else:
 
 
 def tui_main(stdscr: CursesWindow) -> None:
-    asyncio.run(start_tui(stdscr))
+    start_tui(stdscr)
 
 
-async def start_tui(stdscr: CursesWindow) -> None:
+def start_tui(stdscr: CursesWindow) -> None:
     window: Window = init_tui(stdscr)
     connection, cursor = connect_to_db("test.db")
 

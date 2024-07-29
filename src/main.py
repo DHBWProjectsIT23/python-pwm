@@ -17,6 +17,7 @@ from model.metadata import Metadata
 from model.user import User
 from tui.tui import tui_main
 from crypto.hashing import hash_sha256
+from controller.user import validate_login
 
 from model.password_information import (
     PasswordInformation,
@@ -57,6 +58,13 @@ async def cli_main() -> None:
     )
     connection: sqlite3.Connection = connection_tuple[0]
     cursor: sqlite3.Cursor = connection_tuple[1]
+
+    username = "admin"
+    password = "admin"
+    print(f"Username: {username}")
+    print(f"Password: {password}")
+
+    print(f"{validate_login(cursor, username, password)}")
 
     # test_user_password = Password("test_pw", Metadata())
     # test_user: User = User(hash_sha256(b"test_user"), test_user_password)

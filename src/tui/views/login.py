@@ -31,16 +31,15 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> None:
         curses.curs_set(True)
         username_textbox.edit(no_space_validator)
         username: str = username_textbox.gather()
+        username = username.strip()
 
         username_window.refresh()
         password_window.refresh()
 
         password_textbox.edit(password_validator)
-        password_str = password_validator.get_password_string()
+        password_str = password_validator.get_password_string().strip()
 
         input_window().box()
-        input_window().addstr(0, 0, "Login", curses.A_BOLD)
-        curses.curs_set(False)
 
         if validate_login(cursor, username, password_str):
             show_successful_login(input_window)
