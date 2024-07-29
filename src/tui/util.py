@@ -21,7 +21,6 @@ def init_tui(stdscr: CursesWindow) -> Window:
 
 
 def _init_colors(stdscr: CursesWindow) -> None:
-    curses.start_color()
     curses.use_default_colors()
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)

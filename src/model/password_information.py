@@ -47,7 +47,7 @@ class PasswordInformation:
 
 
 def adapt_password_information(password_information: PasswordInformation) -> bytes:
-    for password in password_information.passwords():
+    for password in password_information.passwords:
         if not password.is_encrypted:
             password.encrypt(b"placeholder")
 
@@ -60,7 +60,9 @@ def adapt_password_information(password_information: PasswordInformation) -> byt
 
 def convert_password_information(password_information: bytes) -> PasswordInformation:
     password_information_bytes = dummy_decrypt_fernet(password_information)
-    retrieved_password_information: PasswordInformation = pickle.loads(password_information_bytes)
+    retrieved_password_information: PasswordInformation = pickle.loads(
+        password_information_bytes
+    )
 
     if not isinstance(retrieved_password_information, PasswordInformation):
         raise TypeError("PasswordInformation expected")

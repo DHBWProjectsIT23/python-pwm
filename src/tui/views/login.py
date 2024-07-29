@@ -2,15 +2,16 @@ import curses
 import sqlite3
 from curses.textpad import Textbox
 
-from src.controller.user import validate_login
+from src.controller.user import validate_login, retrieve_user_by_name
 
 from ..popup import create_centered_popup
 from ..password_input_validator import PasswordInputValidator
 from ..util import print_centered_logo
 from ..window import Window
+from src.crypto.hashing import hash_sha256
 
 
-def show_login(window: Window, cursor: sqlite3.Cursor) -> None:
+def show_login(window: Window, cursor: sqlite3.Cursor) -> bytes:
     print_centered_logo(window, (-9, 0))
 
     input_window = init_input_window(window)
@@ -23,8 +24,7 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> None:
 
     password_validator = PasswordInputValidator()
 
-    logged_in = False
-    while not logged_in:
+    while True:
         input_window().refresh()
         password_window.refresh()
 
@@ -43,7 +43,7 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> None:
 
         if validate_login(cursor, username, password_str):
             show_successful_login(input_window)
-            logged_in = True
+            return retrieve_user_by_name(cursor, username)
         else:
             show_failed_login(input_window)
             password_validator.reset_password()

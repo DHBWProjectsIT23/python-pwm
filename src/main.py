@@ -18,6 +18,7 @@ from model.user import User
 from tui.tui import tui_main
 from crypto.hashing import hash_sha256
 from controller.user import validate_login
+from controller.password import insert_password_information
 
 from model.password_information import (
     PasswordInformation,
@@ -137,6 +138,35 @@ def add_test_users(cursor: sqlite3.Cursor):
     test_user = User(hash_sha256(b"test"), test_password)
 
     insert_user(cursor, test_user)
+
+
+def add_test_passwords(cursor: sqlite3.Cursor, user: User):
+    test_password_1 = Password("test_password_1", Metadata())
+    test_password_information_1 = PasswordInformation(
+        user, test_password_1, "Test password", "test@test.com"
+    )
+    test_password_2 = Password("test_password_2", Metadata())
+    test_password_information_2 = PasswordInformation(
+        user, test_password_2, "Test password", "test@test.com"
+    )
+    test_password_3 = Password("test_password_3", Metadata())
+    test_password_information_3 = PasswordInformation(
+        user, test_password_3, "Test password", "test@test.com"
+    )
+    test_password_4 = Password("test_password_4", Metadata())
+    test_password_information_4 = PasswordInformation(
+        user, test_password_4, "Test password", "test@test.com"
+    )
+    test_password_5 = Password("test_password_5", Metadata())
+    test_password_information_5 = PasswordInformation(
+        user, test_password_5, "Test password", "test@test.com"
+    )
+
+    insert_password_information(cursor, test_password_information_1)
+    insert_password_information(cursor, test_password_information_2)
+    insert_password_information(cursor, test_password_information_3)
+    insert_password_information(cursor, test_password_information_4)
+    insert_password_information(cursor, test_password_information_5)
 
 
 if __name__ == "__main__":

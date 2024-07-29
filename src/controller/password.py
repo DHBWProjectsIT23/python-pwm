@@ -1,6 +1,5 @@
 import sqlite3
 from src.model.password_information import PasswordInformation
-from src.model.password import PasswordList, convert_password_list
 
 
 def retrieve_password_information(
