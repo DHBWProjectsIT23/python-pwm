@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import datetime
-import os
 
 
 class Metadata:
@@ -15,15 +16,21 @@ class Metadata:
         self.access()
         self.modified_at = datetime.datetime.now()
 
-    def encrypt(self, key: bytes) -> "EncryptedMetadata":
+    def encrypt(self, key: bytes) -> EncryptedMetadata:
         return EncryptedMetadata(self, key)
 
 
 class EncryptedMetadata:
-    def __init__(self, metadata: Metadata, key: bytes):
+    def __init__(self, metadata: Metadata, key: bytes) -> None:
         self.created_at = metadata.created_at
         self.modified_at = metadata.modified_at
         self.last_accessed_at = metadata.last_accessed_at
+
+    def access(self) -> None:
+        raise TypeError("Can't access encrypted Metadata")
+
+    def modify(self) -> None:
+        raise TypeError("Can't modify encrypted Metadata")
 
     def decrypt(self, key: bytes) -> Metadata:
         metadata = Metadata()

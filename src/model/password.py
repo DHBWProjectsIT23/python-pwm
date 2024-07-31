@@ -11,8 +11,7 @@ class Password:
     def __init__(self, password: str, metadata: Metadata = Metadata()):
         self.is_encrypted: bool = False
         self.password: bytes = str.encode(password)
-        self.metadata: Optional[Metadata] = metadata
-        self.encrypted_metadata: Optional[EncryptedMetadata] = None
+        self.metadata: Metadata | EncryptedMetadata = metadata
         self.is_master = False
 
     def encrypt(self, key: bytes) -> None:
@@ -34,23 +33,17 @@ class Password:
         # raise NotImplementedError
 
     def _encrypt_metadata(self, key: bytes) -> None:
-        if self.encrypted_metadata is not None:
-            raise ValueError("Metadata already encrypted")
-        if self.metadata is None:
-            raise ValueError("Metadata not set")
+        if not isinstance(self.metadata, Metadata):
+            raise TypeError("Metadata already encrypted")
 
         self.metadata.access()
-        self.encrypted_metadata = self.metadata.encrypt(key)
-        self.metadata = None
+        self.metadata = self.metadata.encrypt(key)
 
     def _decrypt_metadata(self, key: bytes) -> None:
-        if self.encrypted_metadata is None:
-            raise ValueError("Metadata not encrypted")
-        if self.metadata is not None:
-            raise ValueError("Metadata already decrypted")
+        if not isinstance(self.metadata, EncryptedMetadata):
+            raise TypeError("Metadata not encrypted")
 
-        self.metadata = self.encrypted_metadata.decrypt(key)
-        self.encrypted_metadata = None
+        self.metadata = self.metadata.decrypt(key)
 
     def make_master(self) -> None:
         if self.is_master:

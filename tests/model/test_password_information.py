@@ -19,12 +19,8 @@ class TestPasswordInformation(unittest.TestCase):
     def test_note(self):
         info, pw, user = create_test_info()
         note = "This password is a test"
-        info.add_note(note)
-        self.assertEqual(info.notes[0], note)
-        note2 = "This password is a test2"
-        info.add_note(note2)
-        self.assertEqual(info.notes[0], note)
-        self.assertEqual(info.notes[1], note2)
+        info.set_note(note)
+        self.assertEqual(info.note, note)
 
     def test_category_maximum(self):
         info, pw, user = create_test_info()
@@ -47,13 +43,11 @@ class TestPasswordInformation(unittest.TestCase):
         for password in info.passwords:
             self.assertFalse(password.is_encrypted)
             self.assertTrue(isinstance(password.metadata, Metadata))
-            self.assertTrue(password.encrypted_metadata is None)
 
         info.encrypt("FakeKey")
         for password in info.passwords:
             self.assertTrue(password.is_encrypted)
-            self.assertTrue(isinstance(password.encrypted_metadata, EncryptedMetadata))
-            self.assertTrue(password.metadata is None)
+            self.assertTrue(isinstance(password.metadata, EncryptedMetadata))
 
     def test_decrypt(self):
         info, pw, user = create_test_info()
@@ -62,14 +56,12 @@ class TestPasswordInformation(unittest.TestCase):
         info.encrypt("FakeKey")
         for password in info.passwords:
             self.assertTrue(password.is_encrypted)
-            self.assertTrue(isinstance(password.encrypted_metadata, EncryptedMetadata))
-            self.assertTrue(password.metadata is None)
+            self.assertTrue(isinstance(password.metadata, EncryptedMetadata))
 
         info.decrypt("FakeKey")
         for password in info.passwords:
             self.assertFalse(password.is_encrypted)
             self.assertTrue(isinstance(password.metadata, Metadata))
-            self.assertTrue(password.encrypted_metadata is None)
 
     def test_adapter(self):
         info, pw, user = create_test_info()

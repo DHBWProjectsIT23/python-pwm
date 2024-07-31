@@ -1,7 +1,5 @@
 from typing import Iterable, Optional, Type
 import pickle
-from src.model.category import Category, CategoryList
-from src.model.note import Note, NoteList
 from src.model.password import Password, PasswordList
 from src.model.user import User
 from src.crypto.placeholder import dummy_decrypt_fernet, dummy_encrypt_fernet
@@ -18,24 +16,24 @@ class PasswordInformation:
         self.passwords: PasswordList = PasswordList([password])
         self.description: Optional[str] = description
         self.username: Optional[str] = username
-        self.categories: CategoryList = CategoryList()
-        self.notes: NoteList = NoteList()
+        self.categories: list[str] = []
+        self.note: str = ""
         self.user: User = user
 
-    def add_note(self, note: Note) -> None:
-        self.notes.append(note)
+    def set_note(self, note: str) -> None:
+        self.note = note
 
     def add_password(self, password: Password) -> None:
         self.passwords.append(password)
 
-    def add_category(self, category: Category) -> None:
+    def add_category(self, category: str) -> None:
         if len(self.categories) == 5:
             raise ValueError("Maximum of 5 categories allowed")
         if category in self.categories:
             raise ValueError("Category already exists")
         self.categories.append(category)
 
-    def add_categories(self, categories: Iterable[Category]) -> None:
+    def add_categories(self, categories: Iterable[str]) -> None:
         if sum(1 for e in categories) + len(self.categories) > 5:
             raise ValueError("Maximum of 5 categories allowed")
         for category in categories:
