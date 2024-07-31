@@ -2,7 +2,7 @@ import curses
 
 
 class PasswordInputValidator:
-    def __init__(self):
+    def __init__(self) -> None:
         self.password: list[str] = []
 
     def __call__(self, ch: int) -> int:

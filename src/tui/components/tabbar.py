@@ -29,7 +29,7 @@ class Tabbar:
         panel.update_panels()
         curses.doupdate()
 
-    def next_tab(self):
+    def next_tab(self) -> None:
         self.tabs[self.selected].deselect()
         if self.selected + 1 == self.number_of_tabs:
             self.tabs[0].select()

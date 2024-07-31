@@ -8,7 +8,7 @@ def retrieve_password_information(
     cursor.execute(
         "SELECT (password_information) FROM passwords WHERE user=?", (user_hash,)
     )
-    rows: list[PasswordInformation] = cursor.fetchall()
+    rows: list[tuple[PasswordInformation]] = cursor.fetchall()
     return [row[0] for row in rows]
 
 

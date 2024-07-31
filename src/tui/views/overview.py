@@ -9,7 +9,7 @@ from src.model.user import User
 from src.controller.password import retrieve_password_information
 
 
-def show_overview(window: Window, cursor: sqlite3.Cursor, user: User):
+def show_overview(window: Window, cursor: sqlite3.Cursor, user: User) -> None:
     curses.curs_set(False)
     screen_height, screen_width = window.getSize()
     main_y_start = percentage(15, screen_height)

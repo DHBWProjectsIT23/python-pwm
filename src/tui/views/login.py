@@ -8,10 +8,11 @@ from ..popup import create_centered_popup
 from ..password_input_validator import PasswordInputValidator
 from ..util import print_centered_logo
 from ..window import Window
+from src.model.user import User
 from src.crypto.hashing import hash_sha256
 
 
-def show_login(window: Window, cursor: sqlite3.Cursor) -> bytes:
+def show_login(window: Window, cursor: sqlite3.Cursor) -> User:
     print_centered_logo(window, (-9, 0))
 
     input_window = init_input_window(window)

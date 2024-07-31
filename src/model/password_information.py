@@ -26,7 +26,7 @@ class PasswordInformation:
         self.notes.append(note)
 
     def add_password(self, password: Password) -> None:
-        self.passwords().append(password)
+        self.passwords.append(password)
 
     def add_category(self, category: Category) -> None:
         if len(self.categories) > 5:
@@ -36,12 +36,12 @@ class PasswordInformation:
         self.categories.append(category)
 
     def encrypt(self, key: bytes) -> None:
-        for password in self.passwords():
+        for password in self.passwords:
             password.encrypt(key)
         # TODO: Encrypt username, email, use_case, categories, notes
 
     def decrypt(self, key: bytes) -> None:
-        for password in self.passwords():
+        for password in self.passwor:
             password.decrypt(key)
         # TODO: Decrypt username, email, use_case, categories, notes
 

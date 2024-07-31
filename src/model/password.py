@@ -1,16 +1,14 @@
-import sqlite3
 import pickle
 from typing import Optional
 
 from src.crypto.hashing import hash_sha256
-from src.crypto.placeholder import dummy_encrypt_fernet, dummy_decrypt_fernet
-from typing import Iterable
+from src.crypto.placeholder import dummy_decrypt_fernet, dummy_encrypt_fernet
 
 from .metadata import EncryptedMetadata, Metadata
 
 
 class Password:
-    def __init__(self, password: str, metadata: Metadata):
+    def __init__(self, password: str, metadata: Metadata = Metadata()):
         self.is_encrypted: bool = False
         self.password: bytes = str.encode(password)
         self.metadata: Optional[Metadata] = metadata
@@ -78,7 +76,7 @@ def adapt_password(password: Password) -> bytes:
 
 
 def convert_password(password: bytes) -> Password:
-    retrieved_password = pickle.loads(password)
+    retrieved_password: Password = pickle.loads(password)
     if not isinstance(retrieved_password, Password):
         raise TypeError("Password expected")
     return retrieved_password

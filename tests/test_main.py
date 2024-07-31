@@ -1,12 +1,12 @@
+# pylint: disable=C
 import unittest
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
-
 import main
 
 
 class TestMain(unittest.TestCase):
-    def test_placeholder(self):
-        pass
+    def test_sanity_check(self):
+        sanity_var = True
+        true_var = True
+        false_var = False
+        self.assertEqual(true_var, sanity_var)
+        self.assertNotEqual(false_var, sanity_var)

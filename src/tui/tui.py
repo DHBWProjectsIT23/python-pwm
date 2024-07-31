@@ -1,15 +1,14 @@
 import asyncio
+import sqlite3
+import time
 from typing import TYPE_CHECKING
 
-from src.controller.connection import connect_to_db
+from src.controller.connection import DB_PATH, connect_to_db
 
 from .util import init_tui
 from .views.login import show_login
-from .views.start import show_start
 from .views.overview import show_overview
 from .window import Window
-import time
-import curses
 
 if TYPE_CHECKING:
     from _curses import _CursesWindow
@@ -21,13 +20,15 @@ else:
     CursesWindow = Any
 
 
-def tui_main(stdscr: CursesWindow) -> None:
-    start_tui(stdscr)
+def main(stdscr: CursesWindow) -> None:
+    with connect_to_db(DB_PATH) as connection:
+        asyncio.run(run_tui(stdscr, connection, connection.cursor))
 
 
-def start_tui(stdscr: CursesWindow) -> None:
+async def run_tui(
+    stdscr: CursesWindow, connection: sqlite3.Connection, cursor: sqlite3.Cursor
+) -> None:
     window: Window = init_tui(stdscr)
-    connection, cursor = connect_to_db("test.db")
 
     height, width = window.getSize()
     window().refresh()
