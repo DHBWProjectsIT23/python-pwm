@@ -19,6 +19,10 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
     print(f"Username: {username}")
     print(f"Password: {password}")
 
+    # add_test_users(cursor)
+    # add_test_passwords(cursor, User.new("test", "test"))
+    # connection.commit()
+
     print(f"{validate_login(cursor, username, password)}")
     retrieve_password_information(cursor, hash_sha256(b"test"))
 
@@ -44,24 +48,29 @@ def add_test_users(cursor: sqlite3.Cursor) -> None:
 def add_test_passwords(cursor: sqlite3.Cursor, user: User) -> None:
     test_password_1 = Password("test_password_1")
     test_password_information_1 = PasswordInformation(
-        user, test_password_1, "Test password", "test@test.com"
+        user, test_password_1, "www.github.com", "simon@test.com"
     )
+    test_password_1.encrypt("FakeKey")
     test_password_2 = Password("test_password_2")
     test_password_information_2 = PasswordInformation(
-        user, test_password_2, "Test password", "test@test.com"
+        user, test_password_2, "Linux PC", "simonTest"
     )
+    test_password_2.encrypt("FakeKey")
     test_password_3 = Password("test_password_3")
     test_password_information_3 = PasswordInformation(
-        user, test_password_3, "Test password", "test@test.com"
+        user, test_password_3, "Test Password", "test@test.com"
     )
+    test_password_3.encrypt("FakeKey")
     test_password_4 = Password("test_password_4")
     test_password_information_4 = PasswordInformation(
-        user, test_password_4, "Test password", "test@test.com"
+        user, test_password_4, "www.youtube.com", "tmp@test.de"
     )
+    test_password_4.encrypt("FakeKey")
     test_password_5 = Password("test_password_5")
     test_password_information_5 = PasswordInformation(
-        user, test_password_5, "Test password", "test@test.com"
+        user, test_password_5, "www.gmail.com", "test@gmail.com"
     )
+    test_password_5.encrypt("FakeKey")
 
     insert_password_information(cursor, test_password_information_1)
     insert_password_information(cursor, test_password_information_2)
