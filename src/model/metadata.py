@@ -30,7 +30,4 @@ class EncryptedMetadata:
         metadata.created_at = self.created_at
         metadata.modified_at = self.modified_at
         metadata.last_accessed_at = self.last_accessed_at
-        metadata.created_by = self.created_by
-        metadata.modified_by = self.modified_by
-        metadata.last_accessed_by = self.last_accessed_by
         return metadata

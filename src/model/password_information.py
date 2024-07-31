@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Iterable, Optional, Type
 import pickle
 from src.model.category import Category, CategoryList
 from src.model.note import Note, NoteList
@@ -29,11 +29,20 @@ class PasswordInformation:
         self.passwords.append(password)
 
     def add_category(self, category: Category) -> None:
-        if len(self.categories) > 5:
+        if len(self.categories) == 5:
             raise ValueError("Maximum of 5 categories allowed")
         if category in self.categories:
             raise ValueError("Category already exists")
         self.categories.append(category)
+
+    def add_categories(self, categories: Iterable[Category]):
+        if len(categories) + len(self.categories) > 5:
+            raise ValueError("Maximum of 5 categories allowed")
+        for category in categories:
+            if self.categories.__contains__(category):
+                raise ValueError("Category already exists")
+
+        self.categories.extend(categories)
 
     def encrypt(self, key: bytes) -> None:
         for password in self.passwords:
@@ -41,7 +50,7 @@ class PasswordInformation:
         # TODO: Encrypt username, email, use_case, categories, notes
 
     def decrypt(self, key: bytes) -> None:
-        for password in self.passwor:
+        for password in self.passwords:
             password.decrypt(key)
         # TODO: Decrypt username, email, use_case, categories, notes
 
@@ -49,7 +58,7 @@ class PasswordInformation:
 def adapt_password_information(password_information: PasswordInformation) -> bytes:
     for password in password_information.passwords:
         if not password.is_encrypted:
-            password.encrypt(b"placeholder")
+            raise ValueError("Password is not encrypted")
 
         if password.is_master:
             raise TypeError("Can not store master password in password information")
