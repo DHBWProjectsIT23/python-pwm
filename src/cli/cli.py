@@ -20,7 +20,10 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
     print(f"Password: {password}")
 
     # add_test_users(cursor)
-    # add_test_passwords(cursor, User.new("test", "test"))
+    # i = 0
+    # while i < 10:
+    #     add_test_passwords(cursor, User.new("test", "test"))
+    #     i += 1
     # connection.commit()
 
     print(f"{validate_login(cursor, username, password)}")

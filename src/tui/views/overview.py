@@ -1,4 +1,6 @@
 import curses
+import time
+import _curses
 from curses import panel
 import sqlite3
 import sys
@@ -39,12 +41,15 @@ def show_overview(window: Window, cursor: sqlite3.Cursor, user: User) -> None:
         1, 1, "Description\tUsername\tCategory\tPassword", curses.A_BOLD
     )
     passwords = retrieve_password_information(cursor, user.username)
-    i = 2
+    i = 0
+    password_pad = curses.newpad(len(passwords) + 2, list_width - 2)
     for password in passwords:
-        list_window().addstr(
-            i, 1, f"{password.description}\t{password.username}\t\t\t********"
+        password_pad.addstr(
+            i, 0, f"{password.description}\t{password.username}\t\t\t********"
         )
         i += 1
+    pad_y, pad_x = list_window().getbegyx()
+    pad_end_y, pad_end_x = list_height, list_width
     list_window().refresh()
 
     summary_width = main_window_width - list_width - 1
@@ -76,12 +81,28 @@ def show_overview(window: Window, cursor: sqlite3.Cursor, user: User) -> None:
     tabbar = Tabbar(top_window, tabs, (top_window_height - 2, 0))
     top_window().refresh()
 
+    pad_position = 0
+    password_pad.refresh(pad_position, 0, pad_y + 3, pad_x + 1, pad_end_y, pad_end_x)
+
     i = 2
     while True:
         input: int = window().getch()
         match input:
             case 9:
                 tabbar.next_tab()
+            case curses.KEY_DOWN:
+                pad_position += 1
+                password_pad.refresh(
+                    pad_position, 0, pad_y + 3, pad_x + 1, pad_end_y, pad_end_x
+                )
+
+            case curses.KEY_UP:
+                if pad_position >= 0:
+                    pad_position -= 1
+                password_pad.refresh(
+                    pad_position, 0, pad_y + 3, pad_x + 1, pad_end_y, pad_end_x
+                )
+
             case 81 | 113:
                 sys.exit(0)
 
