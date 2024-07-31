@@ -18,10 +18,12 @@ class Tabbar:
 
         self.tabs: list[Tab] = []
 
-        position: int = 0
+        text_position: int = 0
         for tab_title in tabs.keys():
-            self.tabs.append(Tab(self.window, tab_title, tabs[tab_title], position))
-            position += len(tab_title) + 2
+            self.tabs.append(
+                Tab(self.window, tab_title, tabs[tab_title], text_position)
+            )
+            text_position += len(tab_title) + 2
 
         self.tabs[0].select()
         self.number_of_tabs = len(self.tabs)
@@ -51,14 +53,14 @@ class Tab:
         self.window.writeCenteredText(self.title, attr=curses.A_UNDERLINE)
         self.window().refresh()
 
-    def select(self):
+    def select(self) -> None:
         self.window.writeCenteredText(
             self.title, attr=curses.A_REVERSE | curses.A_UNDERLINE
         )
         self.window().refresh()
         self.panel().show()
 
-    def deselect(self):
+    def deselect(self) -> None:
         self.window.writeCenteredText(self.title, attr=curses.A_UNDERLINE)
         self.window().refresh()
         self.panel().hide()

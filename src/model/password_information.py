@@ -35,8 +35,8 @@ class PasswordInformation:
             raise ValueError("Category already exists")
         self.categories.append(category)
 
-    def add_categories(self, categories: Iterable[Category]):
-        if len(categories) + len(self.categories) > 5:
+    def add_categories(self, categories: Iterable[Category]) -> None:
+        if sum(1 for e in categories) + len(self.categories) > 5:
             raise ValueError("Maximum of 5 categories allowed")
         for category in categories:
             if self.categories.__contains__(category):

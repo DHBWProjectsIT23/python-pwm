@@ -1,6 +1,6 @@
-def generate_secure_password():
+def generate_secure_password() -> None:
     pass
 
 
-def validate_password_safety():
+def validate_password_safety() -> None:
     pass

@@ -29,7 +29,7 @@ def main() -> None:
         asyncio.run(run_cli(connection, connection.cursor()))
 
 
-def add_test_users(cursor: sqlite3.Cursor):
+def add_test_users(cursor: sqlite3.Cursor) -> None:
     admin_password = Password("admin")
     admin_user = User(hash_sha256(b"admin"), admin_password)
 
@@ -41,7 +41,7 @@ def add_test_users(cursor: sqlite3.Cursor):
     insert_user(cursor, test_user)
 
 
-def add_test_passwords(cursor: sqlite3.Cursor, user: User):
+def add_test_passwords(cursor: sqlite3.Cursor, user: User) -> None:
     test_password_1 = Password("test_password_1")
     test_password_information_1 = PasswordInformation(
         user, test_password_1, "Test password", "test@test.com"

@@ -1,4 +1,3 @@
-# run_main.py
 import sys
 import os
 import sqlite3
@@ -10,21 +9,20 @@ sourcePath = os.path.join(path, "src")
 sys.path.insert(0, sourcePath)
 
 # pylint: disable=C0413 # Import must be placed after adding the correct path to sys.path
-from model.password import (
+from src.model.password import (
     Password,
     adapt_password,
     convert_password,
 )
 
-from model.password_information import (
+from src.model.password_information import (
     PasswordInformation,
     adapt_password_information,
     convert_password_information,
 )
 
-from tui import tui
-from cli import cli
-
+from src.tui import tui
+from src.cli import cli
 
 if __name__ == "__main__":
     sqlite3.register_converter("password", convert_password)

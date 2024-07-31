@@ -22,7 +22,7 @@ else:
 
 def main(stdscr: CursesWindow) -> None:
     with connect_to_db(DB_PATH) as connection:
-        asyncio.run(run_tui(stdscr, connection, connection.cursor))
+        asyncio.run(run_tui(stdscr, connection, connection.cursor()))
 
 
 async def run_tui(
