@@ -1,8 +1,9 @@
-from typing import Iterable, Optional, Type
+from typing import Iterable, Optional
 import pickle
-from src.model.password import Password, PasswordList
+from src.model.password import Password
 from src.model.user import User
 from src.crypto.placeholder import dummy_decrypt_fernet, dummy_encrypt_fernet
+from src.api.pawned import check_password
 
 
 class PasswordInformation:
@@ -13,12 +14,13 @@ class PasswordInformation:
         description: str,
         username: Optional[str] = None,
     ):
-        self.passwords: PasswordList = PasswordList([password])
+        self.passwords: list[Password] = [password]
         self.description: Optional[str] = description
         self.username: Optional[str] = username
         self.categories: list[str] = []
         self.note: str = ""
         self.user: User = user
+        self.is_encrypted = False
 
     def set_note(self, note: str) -> None:
         self.note = note
@@ -45,12 +47,20 @@ class PasswordInformation:
     def encrypt(self, key: bytes) -> None:
         for password in self.passwords:
             password.encrypt(key)
+        self.is_encrypted = True
         # TODO: Encrypt username, email, use_case, categories, notes
 
     def decrypt(self, key: bytes) -> None:
         for password in self.passwords:
             password.decrypt(key)
+        self.is_encrypted = False
         # TODO: Decrypt username, email, use_case, categories, notes
+
+    async def check_pwned_status(self, key: bytes) -> int:
+        latest_password = self.passwords[0]
+        if latest_password.is_encrypted:
+            latest_password.decrypt(key)
+        return await check_password(latest_password.password)
 
 
 def adapt_password_information(password_information: PasswordInformation) -> bytes:

@@ -1,0 +1,9 @@
+[
+  {
+    "description": "desc or URL",
+    "username": "username or null",
+    "password": "Password in Plain Text or encrypted?",
+    "categories": ["category 1", "category 2"],
+    "note": "A Note about the password"
+  }
+]

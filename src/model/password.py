@@ -73,7 +73,3 @@ def convert_password(password: bytes) -> Password:
     if not isinstance(retrieved_password, Password):
         raise TypeError("Password expected")
     return retrieved_password
-
-
-class PasswordList(list[Password]):
-    pass

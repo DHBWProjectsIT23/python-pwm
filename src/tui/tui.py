@@ -4,10 +4,11 @@ import time
 from typing import TYPE_CHECKING
 
 from src.controller.connection import DB_PATH, connect_to_db
+from src.model.user import User
 
 from .util import init_tui
 from .views.login import show_login
-from .views.overview import show_overview
+from .views.overview.overview import show_overview
 from .window import Window
 
 if TYPE_CHECKING:
@@ -54,13 +55,14 @@ async def run_tui(
     # choice = show_start(window)
     # window().clear()
     # if choice == 1:
-    user = show_login(window, cursor)
+    # user = show_login(window, cursor)
+    user = User.new("test", "test")
     # elif choice == 2:
     #     raise NotImplementedError
     # else:
     #     raise ValueError("Unexpted choice")
     # time.sleep(1)
     window().clear()
-    show_overview(window, cursor, user)
+    await show_overview(window, cursor, user)
 
     window().clear()
