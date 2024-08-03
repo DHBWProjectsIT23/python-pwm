@@ -34,7 +34,10 @@ class PasswordList:
         parent_max = parent().getmaxyx()
         self.pad_end = parent_max[0] + 3, parent_max[1] - 1
 
-        pad_height = len(passwords)
+        if len(passwords) > 0:
+            pad_height = len(passwords)
+        else:
+            pad_height = 1
         pad_width = self.pad_end[1] - 1
 
         self.pad = curses.newpad(pad_height, pad_width)
@@ -48,7 +51,8 @@ class PasswordList:
                 ListItem(password, i, self.calculate_columns(parent_max[1]), self)
             )
 
-        self.items[0].select()
+        if len(self.items) > 0:
+            self.items[0].select()
         self.refresh()
 
     def refresh(self):
@@ -62,6 +66,8 @@ class PasswordList:
         )
 
     def select_next(self):
+        if len(self.items) == 0:
+            return
         self.items[self.selected].deselect()
         if self.selected >= len(self.items) - 1:
             self.selected = len(self.items) - 1
@@ -76,6 +82,8 @@ class PasswordList:
         self.refresh()
 
     def select_previous(self):
+        if len(self.items) == 0:
+            return
         self.items[self.selected].deselect()
         if self.selected <= 0:
             self.selected = 0

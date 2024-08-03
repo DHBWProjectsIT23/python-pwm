@@ -5,13 +5,21 @@ from src.model.user import User
 
 
 def validate_login(cursor: sqlite3.Cursor, username: str, password: str) -> bool:
-    try:
-        return (
-            hash_sha256(password.encode())
-            == retrieve_user_by_name(cursor, username).password()
-        )
-    except ValueError:
-        return False
+    return (
+        hash_sha256(password.encode())
+        == retrieve_user_by_name(cursor, username).password()
+    )
+
+
+def validate_unique_user(cursor: sqlite3.Cursor, username: str) -> bool:
+    cursor.execute(
+        """
+    SELECT COUNT(username) FROM users WHERE username = ?
+    """,
+        (hash_sha256(username.encode()),),
+    )
+    existing_users = cursor.fetchall()[0][0]
+    return existing_users == 0
 
 
 def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
@@ -29,10 +37,16 @@ def retrieve_user_by_name(cursor: sqlite3.Cursor, username: str) -> User:
     return retrieve_user_by_hash(cursor, hash_sha256(username.encode()))
 
 
-def insert_user(cursor: sqlite3.Cursor, user: User) -> None:
+def insert_user(cursor: sqlite3.Cursor, user: User) -> User:
     cursor.execute(
         """
-        INSERT INTO users (username, password) VALUES(?, ?)
+        INSERT INTO users (username, password) VALUES(?, ?) RETURNING *
         """,
         (user.username, user.password),
     )
+    user: list[tuple[bytes, Password]] = cursor.fetchall()
+
+    if len(user) == 0:
+        raise ValueError("Failed to insert user")
+
+    return User(user[0][0], user[0][1])

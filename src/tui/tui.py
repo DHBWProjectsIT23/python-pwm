@@ -7,7 +7,9 @@ from src.controller.connection import DB_PATH, connect_to_db
 from src.model.user import User
 
 from .util import init_tui
+from .views.start import show_start
 from .views.login import show_login
+from .views.registration import show_registration
 from .views.overview.overview import show_overview
 from .window import Window
 
@@ -52,16 +54,18 @@ async def run_tui(
 
     window().clear()
 
-    # choice = show_start(window)
-    # window().clear()
-    # if choice == 1:
-    # user = show_login(window, cursor)
-    user = User.new("test", "test")
-    # elif choice == 2:
-    #     raise NotImplementedError
-    # else:
-    #     raise ValueError("Unexpted choice")
-    # time.sleep(1)
+    choice = show_start(window)
+    window().clear()
+    if choice == 1:
+        user = show_login(window, cursor)
+
+    elif choice == 2:
+        user = show_registration(window, connection, cursor)
+    else:
+        raise ValueError("Unexpted choice")
+
+    assert user.has_clear_password(), "Error during login"
+
     window().clear()
     await show_overview(window, cursor, user)
 

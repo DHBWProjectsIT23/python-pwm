@@ -1,5 +1,5 @@
 import curses
-import asyncio
+import sys
 import itertools
 import time
 from typing import TYPE_CHECKING
@@ -66,9 +66,10 @@ def pad_with(text: str, length: int, padding: str = " ") -> str:
     return text + (length - len(text)) * padding
 
 
-def show_loading(parent: Window, position: tuple[int, int]):
-    for symbol in itertools.cycle(["|", "/", "-", "\\"]):
-        parent().addstr(position[0], position[1], symbol)
-        parent().refresh()
-        # await asyncio.sleep(0.1)
-        time.sleep(0.1)
+def no_space_validator(ch: int) -> int:
+    if ch == 12:
+        sys.exit(1)
+    if ch == 32:
+        return 0
+
+    return ch

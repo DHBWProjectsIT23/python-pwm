@@ -33,6 +33,12 @@ class Window:
 
         self.window.addstr(y, (x - (text_length // 2)), text, attr)
 
+    def writeBottomCenterText(
+        self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
+    ) -> None:
+        bottom_line = (self.getSize()[0] // 2) - 1
+        self.writeCenteredText(text, (bottom_line + offset[0], offset[1]), attr)
+
     def writeCenteredMultilineText(
         self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
     ) -> None:
