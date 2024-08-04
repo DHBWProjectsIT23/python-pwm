@@ -10,7 +10,7 @@ from .metadata import EncryptedMetadata, Metadata
 class Password:
     def __init__(self, password: str, metadata: Metadata = Metadata()):
         self.is_encrypted: bool = False
-        self.password: bytes = str.encode(password)
+        self.password: bytes = password.encode()
         self.metadata: Metadata | EncryptedMetadata = metadata
         self.is_master = False
 

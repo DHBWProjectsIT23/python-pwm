@@ -15,7 +15,7 @@ class User:
         if not password.is_master:
             password.make_master()
 
-    def set_clear_password(self, password: str):
+    def set_clear_password(self, password: str) -> None:
         self._clear_password = password
 
     def get_clear_password(self) -> str:

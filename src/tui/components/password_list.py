@@ -200,7 +200,9 @@ class ListItem:
         if occurences == 0:
             self.pad.addstr(self.position, status_col, "✓", curses.color_pair(3))
         else:
-            self.pad.addstr(self.position, status_col, "⚠", curses.color_pair(2))
+            self.pad.addstr(
+                self.position, status_col, f"⚠ {occurences}", curses.color_pair(2)
+            )
 
     def select(self) -> None:
         self.display_description(curses.A_REVERSE)
