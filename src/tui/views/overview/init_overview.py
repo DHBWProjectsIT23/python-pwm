@@ -9,7 +9,7 @@ from src.tui.util import percentage_of
 
 
 def init_password_tab(
-    window_size: tuple[int, int], y_start
+    window_size: tuple[int, int], y_start: int
 ) -> tuple[Panel, Window, Window]:
     password_tab = Panel(
         panel.new_panel(curses.newwin(window_size[0], window_size[1], y_start, 1))
@@ -33,7 +33,7 @@ def init_password_tab(
 
 
 def init_password_list(
-    parent: Panel, passwords: list[PasswordInformation]
+    parent: Window, passwords: list[PasswordInformation]
 ) -> PasswordList:
     password_list = PasswordList(parent, passwords)
     desc_width, uname_width, pass_width, _ = PasswordList.calculate_columns(

@@ -55,7 +55,7 @@ class PasswordList:
             self.items[0].select()
         self.refresh()
 
-    def refresh(self):
+    def refresh(self) -> None:
         self.pad.refresh(
             self.position,
             0,
@@ -161,14 +161,14 @@ class ListItem:
             "?",
         )
 
-    def display_description(self, attr: int = 0):
+    def display_description(self, attr: int = 0) -> None:
         description = self.password.description
         if len(description) > self.col_width[0]:
             description = shorten_str(description, self.col_width[0])
         description = pad_with(description, self.col_width[2])
         self.pad.addstr(self.position, 0, description, attr)
 
-    def display_username(self, attr: int = 0):
+    def display_username(self, attr: int = 0) -> None:
         username = self.password.username
         if username is None:
             return
@@ -177,7 +177,7 @@ class ListItem:
         username = pad_with(username, self.col_width[0])
         self.pad.addstr(self.position, self.col_width[0], username, attr)
 
-    def display_password(self, attr: int = 0):
+    def display_password(self, attr: int = 0) -> None:
         password = 10 * "*"
         if self.showing_pass:
             if self.password.is_encrypted:
@@ -191,7 +191,7 @@ class ListItem:
             self.position, self.col_width[0] + self.col_width[1], password, attr
         )
 
-    async def display_status(self):
+    async def display_status(self) -> None:
         status_col = self.col_width[0] + self.col_width[1] + self.col_width[2] + 1
         self.pad.addstr(self.position, status_col, "⧖", curses.color_pair(3))
 
@@ -202,12 +202,12 @@ class ListItem:
         else:
             self.pad.addstr(self.position, status_col, "⚠", curses.color_pair(2))
 
-    def select(self):
+    def select(self) -> None:
         self.display_description(curses.A_REVERSE)
         self.display_username(curses.A_REVERSE)
         self.display_password(curses.A_REVERSE)
 
-    def deselect(self):
+    def deselect(self) -> None:
         self.display_description()
         self.display_username()
         self.display_password()

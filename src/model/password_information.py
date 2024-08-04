@@ -15,7 +15,7 @@ class PasswordInformation:
         username: Optional[str] = None,
     ):
         self.passwords: list[Password] = [password]
-        self.description: Optional[str] = description
+        self.description: str = description
         self.username: Optional[str] = username
         self.categories: list[str] = []
         self.note: str = ""
