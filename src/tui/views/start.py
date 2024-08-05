@@ -32,11 +32,11 @@ def show_start(window: Window) -> int:
     while True:
         input: int = window().getch()
         match input:
-            case curses.KEY_UP:
+            case 65:
                 hover_item(login_window, login_str)
                 unhover_item(register_window, register_str)
                 selected_option = 1
-            case curses.KEY_DOWN:
+            case 66:
                 unhover_item(login_window, login_str)
                 hover_item(register_window, register_str)
                 selected_option = 2

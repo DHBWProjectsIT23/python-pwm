@@ -1,6 +1,6 @@
-run_cli:
+cli:
 	python main.py test
-run_tui:
+tui:
 	python main.py
 watch_cli:
 	find src/**/*.py | entr -ac python main.py test
@@ -10,3 +10,5 @@ test:
 	python -m unittest discover -v
 watch_test:
 	find tests/**/*.py | entr -ac python -m unittest discover -v
+populate:
+	python populate.py

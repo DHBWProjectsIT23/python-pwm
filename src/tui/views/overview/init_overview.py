@@ -1,10 +1,10 @@
 import curses
 from curses import panel
 from src.model.password_information import PasswordInformation
-from src.tui.components.password_list import PasswordList
+from src.tui.views.overview.password_list import PasswordList
 from src.tui.window import Window
 from src.tui.panel import Panel
-from src.tui.components.tabbar import Tabbar
+from src.tui.views.overview.tabbar import Tabbar
 from src.tui.util import percentage_of
 
 
@@ -17,14 +17,12 @@ def init_password_tab(
 
     list_width = percentage_of(70, window_size[1])
 
-    list_window = Window(
-        password_tab().window().derwin(window_size[0], list_width, 0, 0)
-    )
+    list_window = Window(password_tab().derwin(window_size[0], list_width, 0, 0))
     list_window().box()
 
     summary_width = window_size[1] - list_width - 1
     summary_window = Window(
-        password_tab().window().derwin(window_size[0], summary_width, 0, list_width + 1)
+        password_tab().derwin(window_size[0], summary_width, 0, list_width + 1)
     )
     summary_window().box()
 
@@ -54,21 +52,21 @@ def init_password_list(
     return password_list
 
 
-def init_user_tab(window_size: tuple[int, int], y_start) -> Panel:
+def init_user_tab(window_size: tuple[int, int], y_start: int) -> Panel:
     user_tab = Panel(
         panel.new_panel(curses.newwin(window_size[0], window_size[1], y_start, 1))
     )
-    user_tab().window().box()
-    user_tab().window().refresh()
+    user_tab().box()
+    user_tab().refresh()
     return user_tab
 
 
-def init_io_tab(window_size: tuple[int, int], y_start) -> Panel:
+def init_io_tab(window_size: tuple[int, int], y_start: int) -> Panel:
     io_tab = Panel(
         panel.new_panel(curses.newwin(window_size[0], window_size[1], y_start, 1))
     )
-    io_tab().window().box()
-    io_tab().window().refresh()
+    io_tab().box()
+    io_tab().refresh()
     return io_tab
 
 

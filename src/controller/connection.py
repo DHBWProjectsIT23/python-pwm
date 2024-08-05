@@ -14,7 +14,12 @@ def connect_to_db(db_path: str) -> sqlite3.Connection:
 def initialize_tables(cursor: sqlite3.Cursor) -> None:
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS passwords (
-        password_information password_information NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        description BLOB NOT NULL,
+        username BLOB,
+        passwords BLOB NOT NULL,
+        categories BLOB,
+        note BLOB,
         user BLOB NOT NULL,
         FOREIGN KEY(user) REFERENCES users(username)
     );

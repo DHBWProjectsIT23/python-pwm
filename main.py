@@ -15,20 +15,12 @@ from src.model.password import (
     convert_password,
 )
 
-from src.model.password_information import (
-    PasswordInformation,
-    adapt_password_information,
-    convert_password_information,
-)
-
 from src.tui import tui
 from src.cli import cli
 
 if __name__ == "__main__":
     sqlite3.register_converter("password", convert_password)
-    sqlite3.register_converter("password_information", convert_password_information)
     sqlite3.register_adapter(Password, adapt_password)
-    sqlite3.register_adapter(PasswordInformation, adapt_password_information)
     if len(sys.argv) > 1:
         cli.main()
     else:

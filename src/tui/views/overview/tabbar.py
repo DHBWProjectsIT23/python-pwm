@@ -1,7 +1,7 @@
 import curses
 from curses import panel
-from ..window import Window
-from ..panel import Panel
+from src.tui.window import Window
+from src.tui.panel import Panel
 
 
 class Tabbar:
@@ -58,9 +58,9 @@ class Tab:
             self.title, attr=curses.A_REVERSE | curses.A_UNDERLINE
         )
         self.window().refresh()
-        self.panel().show()
+        self.panel.show()
 
     def deselect(self) -> None:
         self.window.writeCenteredText(self.title, attr=curses.A_UNDERLINE)
         self.window().refresh()
-        self.panel().hide()
+        self.panel.hide()

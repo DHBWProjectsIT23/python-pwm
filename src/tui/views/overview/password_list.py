@@ -7,7 +7,6 @@ from pickle import load
 import threading
 import time
 from src.model.password_information import PasswordInformation
-from src.tui.components.check_passwords_thread import CheckPasswordsThread
 from src.tui.window import Window
 from src.tui.util import percentage_of, shorten_str, pad_with
 
@@ -31,8 +30,8 @@ class PasswordList:
     def __init__(self, parent: Window, passwords: list[PasswordInformation]) -> None:
         parent_beg = parent().getbegyx()
         self.pad_beg = parent_beg[0] + 3, parent_beg[1] + 1
-        parent_max = parent().getmaxyx()
-        self.pad_end = parent_max[0] + 3, parent_max[1] - 1
+        self.parent_max = parent().getmaxyx()
+        self.pad_end = self.parent_max[0] + 3, self.parent_max[1] - 1
 
         if len(passwords) > 0:
             pad_height = len(passwords)
@@ -48,12 +47,29 @@ class PasswordList:
 
         for i, password in enumerate(passwords):
             self.items.append(
-                ListItem(password, i, self.calculate_columns(parent_max[1]), self)
+                ListItem(password, i, self.calculate_columns(self.parent_max[1]), self)
             )
 
         if len(self.items) > 0:
             self.items[0].select()
         self.refresh()
+
+    def add_item(self, password: PasswordInformation) -> None:
+        size = self.pad_end[0] - self.pad_beg[0], self.pad_end[1] - self.pad_beg[1]
+        self.pad.resize(size[0] + 50, size[1])
+        self.items.append(
+            ListItem(
+                password,
+                len(self.items),
+                self.calculate_columns(self.parent_max[1]),
+                self,
+            )
+        )
+        self.selected = len(self.items) - 1
+        self.position = len(self.items)
+        self.scroll_down()
+        self.refresh()
+        self.refresh_selected()
 
     def refresh(self) -> None:
         self.pad.refresh(
@@ -65,7 +81,7 @@ class PasswordList:
             self.pad_end[1],
         )
 
-    def select_next(self):
+    def select_next(self) -> None:
         if len(self.items) == 0:
             return
         self.items[self.selected].deselect()
@@ -81,7 +97,7 @@ class PasswordList:
 
         self.refresh()
 
-    def select_previous(self):
+    def select_previous(self) -> None:
         if len(self.items) == 0:
             return
         self.items[self.selected].deselect()
@@ -96,31 +112,37 @@ class PasswordList:
             self.scroll_up()
         self.refresh()
 
-    def scroll_down(self):
+    def scroll_down(self) -> None:
         if self.position >= self.pad_end[0] - self.pad_beg[0]:
             self.position = self.pad_end[0] - self.pad_beg[0]
         else:
             self.position += 1
         self.refresh()
 
-    def scroll_up(self):
+    def scroll_up(self) -> None:
         if self.position <= 0:
             self.position = 0
         else:
             self.position -= 1
         self.refresh()
 
-    def toggle_selected(self):
+    def toggle_selected(self) -> None:
         selected_item = self.items[self.selected]
         selected_item.showing_pass = not selected_item.showing_pass
         selected_item.select()
         self.refresh()
 
-    async def check_selected(self):
+    def get_selected(self) -> PasswordInformation:
+        return self.items[self.selected].password
+
+    def refresh_selected(self) -> None:
+        self.items[self.selected].select()
+
+    async def check_selected(self) -> None:
         await self.items[self.selected].display_status()
         self.refresh()
 
-    async def check_all(self):
+    async def check_all(self) -> None:
         async with asyncio.TaskGroup() as tg:
             tasks = [tg.create_task(item.display_status()) for item in self.items]
             await asyncio.gather(*tasks)
@@ -162,16 +184,17 @@ class ListItem:
         )
 
     def display_description(self, attr: int = 0) -> None:
-        description = self.password.description
+        description = self.password.description.decode()
         if len(description) > self.col_width[0]:
             description = shorten_str(description, self.col_width[0])
         description = pad_with(description, self.col_width[2])
         self.pad.addstr(self.position, 0, description, attr)
 
     def display_username(self, attr: int = 0) -> None:
-        username = self.password.username
-        if username is None:
-            return
+        username_bytes = self.password.username
+        username = "-"
+        if username_bytes is not None:
+            username = username_bytes.decode()
         if len(username) > self.col_width[0]:
             username = shorten_str(username, self.col_width[1])
         username = pad_with(username, self.col_width[0])
@@ -180,9 +203,8 @@ class ListItem:
     def display_password(self, attr: int = 0) -> None:
         password = 10 * "*"
         if self.showing_pass:
-            if self.password.is_encrypted:
-                self.password.decrypt(b"FAKEKEY")
-            password = self.password.passwords[0].password.decode()
+            self.password.decrypt_passwords()
+            password = self.password.passwords[-1].password.decode()
             if len(password) > self.col_width[2]:
                 password = shorten_str(password, self.col_width[2])
 

@@ -15,11 +15,15 @@ class Password:
         self.is_master = False
 
     def encrypt(self, key: bytes) -> None:
+        if self.is_encrypted:
+            return
         self.is_encrypted = True
         self._encrypt_password()
         self._encrypt_metadata(key)
 
     def decrypt(self, key: bytes) -> None:
+        if not self.is_encrypted:
+            return
         self.is_encrypted = False
         self._decrypt_password()
         self._decrypt_metadata(key)
