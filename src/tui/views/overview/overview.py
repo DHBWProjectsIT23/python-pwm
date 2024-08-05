@@ -3,6 +3,7 @@ import curses
 from curses.panel import new_panel
 from src.model.metadata import Metadata
 from src.model.password import Password
+from src.tui.views.overview.show_details import show_details
 from src.tui.views.overview.add_password_prompt import show_add_password_prompt
 from src.tui.views.overview.create_password_prompt import PasswordCreator
 from src.tui.views.overview.tabbar import Tabbar
@@ -31,7 +32,7 @@ CONTROL_STR: str = """
 - ⇆ Change Tab - q Quit -
 """.strip()
 PASS_CONTROL_STR: str = """
-- ↑↓ Navigate Passwords - r Reveal Password - a Add New Password - ↩ Show More Information
+- ↑↓ Navigate Passwords - r Reveal Password - ↩ Show More Information - ? All Keybinds -
 """.strip()
 # n - New Password - c Checl - C Check all
 
@@ -61,6 +62,8 @@ async def show_overview(
     window.writeBottomCenterText(PASS_CONTROL_STR, (-1, 0))
     window.writeBottomCenterText(CONTROL_STR)
 
+    await show_details(password_tab, password_list.get_selected())
+
     window().refresh()
 
     # show_add_password_prompt(password_tab, passwords[0])
@@ -70,8 +73,15 @@ async def show_overview(
         match key_input:
             case 9:
                 tabbar.next_tab()
-                if not password_tab().hidden():
+                if not password_tab.panel.hidden():
                     password_list.refresh()
+            case 10:
+                await show_details(password_tab, password_list.get_selected())
+                list_window().box()
+                list_window().refresh()
+                summary_window().box()
+                summary_window().refresh()
+                password_list.refresh()
             case curses.KEY_DOWN:
                 # password_list.scroll_down()
                 password_list.select_next()

@@ -129,8 +129,11 @@ class PasswordInformation:
         for password in self.passwords:
             password.decrypt(key.encode())
 
-    async def check_pwned_status(self, key: bytes) -> int:
-        latest_password = self.passwords[0]
+    async def check_pwned_status(self, *, key: Optional[str] = None) -> int:
+        if key is None:
+            key = self.user.get_clear_password()
+
+        latest_password = self.passwords[-1]
         if latest_password.is_encrypted:
             latest_password.decrypt(key)
         return await check_password(latest_password.password)

@@ -1,13 +1,9 @@
-from pickle import encode_long
+import pickle
 import sqlite3
-import json
-from src.crypto.placeholder import dummy_encrypt_fernet
-from src.model.password import Password, pickle
-from src.model.password_information import (
-    Optional,
-    PasswordInformation,
-    dummy_decrypt_fernet,
-)
+from typing import Optional
+from src.crypto.placeholder import dummy_encrypt_fernet, dummy_decrypt_fernet
+from src.model.password import Password
+from src.model.password_information import PasswordInformation
 from src.model.user import User
 
 
@@ -91,7 +87,7 @@ def validate_unique_password(
 
         username_bytes = username.encode() if username is not None else None
 
-        if desc == description.encode() or uname == username_bytes:
+        if desc == description.encode() and uname == username_bytes:
             return False
 
     return True

@@ -144,7 +144,7 @@ class PasswordCreator:
         curses.curs_set(True)
         note_textbox.edit()
         curses.curs_set(False)
-        note = note_textbox.gather().strip()
+        note = note_textbox.gather().strip().replace("\n", " ")
         return note if len(note) > 0 else None
 
     def _create_textbox(

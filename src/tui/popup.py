@@ -15,4 +15,5 @@ def create_popup(
     window: Window | Panel, y: int, x: int, height: int, width: int
 ) -> Window:
     popup_window = window().derwin(height, width, y, x)
+    popup_window.clear()
     return Window(popup_window)
