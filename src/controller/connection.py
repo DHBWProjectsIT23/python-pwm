@@ -4,6 +4,15 @@ DB_PATH: str = "test.db"
 
 
 def connect_to_db(db_path: str) -> sqlite3.Connection:
+    """
+    Establishes a connection to the SQLite database and initializes the necessary tables.
+
+    Args:
+        db_path (str): The path to the SQLite database file.
+
+    Returns:
+        sqlite3.Connection: The SQLite connection object.
+    """
     connection = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
     cursor = connection.cursor()
     initialize_tables(cursor)
@@ -12,6 +21,15 @@ def connect_to_db(db_path: str) -> sqlite3.Connection:
 
 
 def initialize_tables(cursor: sqlite3.Cursor) -> None:
+    """
+    Initializes the necessary tables in the SQLite database if they do not already exist.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+
+    Returns:
+        None
+    """
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

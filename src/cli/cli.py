@@ -20,6 +20,16 @@ from src.import_export.export_data import _convert_to_dict, export_to_json
 
 
 async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
+        """
+    Executes the CLI operations for managing users and passwords.
+
+    Args:
+        connection (sqlite3.Connection): The SQLite connection object.
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+
+    Returns:
+        None
+    """
     username = "admin"
     password = "admin"
     print(f"Username: {username}")
@@ -34,6 +44,14 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
 
 
 def main() -> None:
+    """
+    The main entry point for running the CLI application.
+
+    Establishes a connection to the database and runs the CLI operations.
+
+    Returns:
+        None
+    """
     print("Running in cli mode")
     with connect_to_db(DB_PATH) as connection:
         asyncio.run(run_cli(connection, connection.cursor()))

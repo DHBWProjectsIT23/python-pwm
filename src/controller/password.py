@@ -11,6 +11,16 @@ from src.model.user import User
 def retrieve_password_information(
     cursor: sqlite3.Cursor, user: User
 ) -> list[PasswordInformation]:
+    """
+    Retrieves password information for a given user from the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+        user (User): The user whose password information is to be retrieved.
+
+    Returns:
+        list[PasswordInformation]: A list of PasswordInformation objects for the given user.
+    """
     cursor.execute(
         """
         SELECT id, description, username, passwords, categories, note, metadata FROM passwords WHERE user=?
@@ -43,6 +53,17 @@ def retrieve_password_information(
 def update_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation, user: User
 ) -> None:
+    """
+    Updates existing password information in the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+        password_information (PasswordInformation): The updated PasswordInformation object.
+        user (User): The user who owns the password information.
+
+    Returns:
+        None
+    """
     if not password_information.data_is_encrypted:
         password_information.encrypt_data()
 
@@ -74,6 +95,18 @@ def update_password_information(
 def validate_unique_password(
     cursor: sqlite3.Cursor, description: str, username: Optional[str], user: User
 ) -> bool:
+    """
+    Validates that a password with the given description and username is unique for the user.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+        description (str): The description of the password.
+        username (Optional[str]): The username associated with the password.
+        user (User): The user who owns the password information.
+
+    Returns:
+        bool: True if the password is unique, False otherwise.
+    """
     # TODO: Encrypt/Decrypt same as in PWInfo
     cursor.execute(
         """
@@ -102,6 +135,16 @@ def validate_unique_password(
 def insert_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> PasswordInformation:
+    """
+    Inserts new password information into the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object.
+        password_information (PasswordInformation): The PasswordInformation object to insert.
+
+    Returns:
+        PasswordInformation: The inserted PasswordInformation object with the new ID.
+    """
     if not password_information.data_is_encrypted:
         password_information.encrypt_data()
 
