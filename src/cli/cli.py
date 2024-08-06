@@ -20,7 +20,7 @@ from src.import_export.export_data import _convert_to_dict, export_to_json
 
 
 async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
-        """
+    """
     Executes the CLI operations for managing users and passwords.
 
     Args:
