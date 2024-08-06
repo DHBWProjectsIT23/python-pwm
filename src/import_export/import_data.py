@@ -6,6 +6,19 @@ from src.model.user import User
 
 
 def import_json(target_file: str, user: User) -> list[PasswordInformation]:
+    """
+    Imports password information from a JSON file and converts it to a list of PasswordInformation objects.
+
+    Args:
+        target_file (str): The path to the JSON file to import.
+        user (User): The user associated with the imported password information.
+
+    Returns:
+        list[PasswordInformation]: A list of PasswordInformation objects created from the JSON data.
+
+    Raises:
+        ImportException: If there is an error in the JSON format or if required keys are missing or invalid.
+    """
     with open(target_file, "r") as file:
         try:
             data_list: list[PasswordInformationDict] = json.load(file)
@@ -17,6 +30,15 @@ def import_json(target_file: str, user: User) -> list[PasswordInformation]:
 
 
 def verify_required_key(data_list: list[PasswordInformationDict]) -> None:
+    """
+    Verifies that all required keys are present in each item of the imported JSON data.
+
+    Args:
+        data_list (list[PasswordInformationDict]): The list of dictionaries representing password information.
+
+    Raises:
+        ImportException: If any item is missing required keys or if password keys are missing.
+    """
     required_keys = PasswordInformationDict.__required_keys__
     password_required_keys = PasswordDict.__required_keys__
     for i, item in enumerate(data_list):
@@ -32,6 +54,15 @@ def verify_required_key(data_list: list[PasswordInformationDict]) -> None:
 
 
 def check_invalid_keys(data_list: list[PasswordInformationDict]) -> None:
+    """
+    Checks that all keys in the imported JSON data are valid, according to the allowed keys.
+
+    Args:
+        data_list (list[PasswordInformationDict]): The list of dictionaries representing password information.
+
+    Raises:
+        ImportException: If any item contains invalid keys or if password keys are invalid.
+    """
     allowed_keys = (
         PasswordInformationDict.__required_keys__
         | PasswordInformationDict.__optional_keys__
