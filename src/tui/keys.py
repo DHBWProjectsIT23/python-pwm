@@ -2,6 +2,9 @@ import enum
 
 
 class Keys(enum.IntEnum):
+    """
+    Enum for defining key codes used in the application.
+    """
     NULL = 0
     BELL = 7
     BACKSPACE = 8
