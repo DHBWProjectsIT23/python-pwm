@@ -52,8 +52,8 @@ async def run_tui(
 
         time.sleep(0.1)
 
-    # window().clear()
-    #
+    window().clear()
+
     # choice = show_start(window)
     # window().clear()
     # if choice == 1:
@@ -63,11 +63,15 @@ async def run_tui(
     #     user = show_registration(window, connection, cursor)
     # else:
     #     raise ValueError("Unexpted choice")
-    #
-    # assert user.has_clear_password(), "Error during login"
 
-    user = User.new("test", "test")
-    user.set_clear_password("test")
+    user = User.new("admin", "admin")
+    user.set_clear_username("admin")
+    user.set_clear_password("admin")
+    assert user.has_clear_password(), "Error during login"
+    assert user.has_clear_username(), "Error during login"
+
+    # user = User.new("test", "test")
+    # user.set_clear_password("test")
 
     window().clear()
     await show_overview(window, connection, cursor, user)

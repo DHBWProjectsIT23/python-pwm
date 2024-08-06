@@ -21,6 +21,7 @@ def initialize_tables(cursor: sqlite3.Cursor) -> None:
         categories BLOB,
         note BLOB,
         user BLOB NOT NULL,
+        metadata BLOB NOT NULL,
         FOREIGN KEY(user) REFERENCES users(username)
     );
         """)

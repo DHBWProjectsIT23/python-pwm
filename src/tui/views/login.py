@@ -5,9 +5,9 @@ from curses.textpad import Textbox
 from src.controller.user import retrieve_user_by_name, validate_login
 from src.model.user import User
 
-from ..password_input_validator import PasswordInputValidator
+from ..input_validator import InputValidator
 from ..popup import create_centered_popup
-from ..util import no_space_validator, print_centered_logo
+from ..util import print_centered_logo
 from ..window import Window
 
 
@@ -22,22 +22,22 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> User:
     username_textbox = Textbox(username_window)
     password_textbox = Textbox(password_window)
 
-    password_validator = PasswordInputValidator()
+    validator = InputValidator()
 
     while True:
         input_window().refresh()
         password_window.refresh()
 
         curses.curs_set(True)
-        username_textbox.edit(no_space_validator)
+        username_textbox.edit(InputValidator.no_spaces)
         username: str = username_textbox.gather()
         username = username.strip()
 
         username_window.refresh()
         password_window.refresh()
 
-        password_textbox.edit(password_validator)
-        password_str = password_validator.get_password_string().strip()
+        password_textbox.edit(validator.password)
+        password_str = validator.get_password_string().strip()
 
         input_window().box()
 
@@ -45,10 +45,11 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> User:
             show_successful_login(input_window)
             user = retrieve_user_by_name(cursor, username)
             user.set_clear_password(password_str)
+            user.set_clear_username(username)
             return user
 
         show_failed_login(input_window)
-        password_validator.reset_password()
+        validator.reset_password()
         password_window.clear()
         username_window.clear()
 

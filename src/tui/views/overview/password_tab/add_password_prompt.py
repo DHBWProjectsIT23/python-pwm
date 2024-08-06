@@ -1,13 +1,17 @@
+from contextlib import ExitStack
 import curses
-from typing import Optional
 from curses.textpad import Textbox
-from src.model.password_information import PasswordInformation
-from src.tui.util import no_space_validator
-from src.tui.views.overview.select_generated import show_select_generated_prompt
-from src.tui.window import Window
-from src.tui.panel import Panel
-from src.crypto.password_util import generate_secure_password, validate_password_safety
+from typing import Optional
 
+from src.crypto.password_util import generate_secure_password, validate_password_safety
+from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
+from src.model.password_information import PasswordInformation
+from src.tui.input_validator import InputValidator
+from src.tui.panel import Panel
+from src.tui.views.overview.password_tab.show_generate_menu import (
+    show_select_generated_prompt,
+)
+from src.tui.window import Window
 
 CONTROL_STR = " - ↩ Continue - "
 
@@ -41,7 +45,7 @@ def show_password_input(
     password_information: PasswordInformation | None,
     generated_password: str = "",
     title: Optional[str] = None,
-) -> str:
+) -> Optional[str]:
     prompt().clear()
     prompt().box()
     if title is not None:
@@ -65,14 +69,20 @@ def show_password_input(
         password_window.refresh()
 
         curses.curs_set(True)
-        password_textbox.edit(no_space_validator)
+        try:
+            password_textbox.edit(InputValidator.no_spaces_with_exit())
+        except ExitFromTextBoxException:
+            return None
         password = password_textbox.gather().strip()
         if len(password) == 0:
-            write_error("Field can't be empty")
+            write_error("Field can't be empty", prompt, title)
 
         confirm_window.refresh()
 
-        confirm_textbox.edit(no_space_validator)
+        try:
+            confirm_textbox.edit(InputValidator.no_spaces_with_exit())
+        except ExitFromTextBoxException:
+            return None
         confirm = confirm_textbox.gather().strip()
         if len(confirm) == 0:
             write_error("Field can't be empty", prompt, title)

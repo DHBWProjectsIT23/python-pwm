@@ -2,15 +2,9 @@ from __future__ import annotations
 import asyncio
 import curses
 
-from asyncio.base_events import itertools
-from pickle import load
-import threading
-import time
 from src.model.password_information import PasswordInformation
 from src.tui.window import Window
 from src.tui.util import percentage_of, shorten_str, pad_with
-
-# Columns: Description/URL 30% - Username 30% - Password 40%
 
 from typing import TYPE_CHECKING
 
@@ -31,7 +25,7 @@ class PasswordList:
         parent_beg = parent().getbegyx()
         self.pad_beg = parent_beg[0] + 3, parent_beg[1] + 1
         self.parent_max = parent().getmaxyx()
-        self.pad_end = self.parent_max[0] + 3, self.parent_max[1] - 1
+        self.pad_end = self.parent_max[0] + 5, self.parent_max[1] - 1
 
         if len(passwords) > 0:
             pad_height = len(passwords)
@@ -92,7 +86,9 @@ class PasswordList:
 
         self.items[self.selected].select()
 
-        if self.selected > self.position + self.pad_end[0] - self.pad_beg[0] - 2:
+        if self.selected > len(self.items) - 4:
+            pass
+        elif self.selected > self.position + self.pad_end[0] - self.pad_beg[0] - 3:
             self.scroll_down()
 
         self.refresh()
@@ -136,7 +132,8 @@ class PasswordList:
         return self.items[self.selected].password
 
     def refresh_selected(self) -> None:
-        self.items[self.selected].select()
+        if len(self.items) > 0:
+            self.items[self.selected].select()
 
     async def check_selected(self) -> None:
         await self.items[self.selected].display_status()
@@ -153,8 +150,8 @@ class PasswordList:
 
     @staticmethod
     def calculate_columns(parent_max_x: int) -> tuple[int, int, int, int]:
-        col_1 = percentage_of(28, parent_max_x - 2)
-        col_2 = percentage_of(27, parent_max_x - 2)
+        col_1 = percentage_of(35, parent_max_x - 2)
+        col_2 = percentage_of(20, parent_max_x - 2)
         col_3 = percentage_of(35, parent_max_x - 2)
         col_4 = percentage_of(10, parent_max_x - 2)
         return col_1, col_2, col_3, col_4
@@ -217,7 +214,7 @@ class ListItem:
         status_col = self.col_width[0] + self.col_width[1] + self.col_width[2] + 1
         self.pad.addstr(self.position, status_col, "⧖", curses.color_pair(3))
 
-        occurences = await self.password.check_pwned_status(b"FAKE KEY")
+        occurences = await self.password.check_pwned_status()
 
         if occurences == 0:
             self.pad.addstr(self.position, status_col, "✓", curses.color_pair(3))

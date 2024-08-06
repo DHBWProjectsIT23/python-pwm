@@ -1,6 +1,8 @@
 import curses
 import sys
 
+from src.tui.keys import Keys
+
 from ..window import Window
 from ..util import print_centered_logo
 from ..popup import create_centered_popup, create_popup
@@ -32,17 +34,17 @@ def show_start(window: Window) -> int:
     while True:
         input: int = window().getch()
         match input:
-            case 65:
+            case Keys.UP:
                 hover_item(login_window, login_str)
                 unhover_item(register_window, register_str)
                 selected_option = 1
-            case 66:
+            case Keys.DOWN:
                 unhover_item(login_window, login_str)
                 hover_item(register_window, register_str)
                 selected_option = 2
-            case 10:
+            case Keys.ENTER:
                 return selected_option
-            case 81 | 113:
+            case Keys.Q | Keys.q:
                 sys.exit(1)
 
 

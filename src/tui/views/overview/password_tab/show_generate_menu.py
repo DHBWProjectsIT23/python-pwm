@@ -1,5 +1,5 @@
 import curses
-from src.tui.popup import create_centered_popup
+from src.tui.views.overview.prompt import Prompt
 from src.tui.window import Window
 from src.tui.panel import Panel
 
@@ -9,12 +9,9 @@ SELECT_CONTROL_STR = """
 
 
 def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window]:
-    padding = create_centered_popup(parent, 12, 60)
-    padding().refresh()
-    prompt = create_centered_popup(parent, 10, 57)
-    prompt().clear()
-    select_generate(prompt)
-    deselect_own(prompt)
+    prompt = Prompt.create_prompt_with_padding(parent)
+    _select_generate(prompt)
+    _deselect_own(prompt)
     prompt.writeBottomCenterText(SELECT_CONTROL_STR, (-1, 0))
     prompt().box()
     prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
@@ -26,13 +23,13 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
         input_key = prompt().getch()
         match input_key:
             case 65:
-                select_generate(prompt)
-                deselect_own(prompt)
+                _select_generate(prompt)
+                _deselect_own(prompt)
                 prompt().refresh()
                 choice = 1
             case 66:
-                deselect_generate(prompt)
-                select_own(prompt)
+                _deselect_generate(prompt)
+                _select_own(prompt)
                 prompt().refresh()
                 choice = 2
             case 27:
@@ -50,17 +47,17 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
     return choice, prompt
 
 
-def select_generate(prompt: Window) -> None:
+def _select_generate(prompt: Window) -> None:
     prompt.writeCenteredText(" Generate Secure Password ", (-2, 0), curses.A_REVERSE)
 
 
-def select_own(prompt: Window) -> None:
+def _select_own(prompt: Window) -> None:
     prompt.writeCenteredText(" Enter Own Password ", (0, 0), curses.A_REVERSE)
 
 
-def deselect_generate(prompt: Window) -> None:
+def _deselect_generate(prompt: Window) -> None:
     prompt.writeCenteredText(" Generate Secure Password ", (-2, 0))
 
 
-def deselect_own(prompt: Window) -> None:
+def _deselect_own(prompt: Window) -> None:
     prompt.writeCenteredText(" Enter Own Password ", (0, 0))

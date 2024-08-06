@@ -66,10 +66,3 @@ def pad_with(text: str, length: int, padding: str = " ") -> str:
     return text + (length - len(text)) * padding
 
 
-def no_space_validator(ch: int) -> int:
-    if ch == 12:
-        sys.exit(1)
-    if ch == 32:
-        return 0
-
-    return ch

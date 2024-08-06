@@ -5,8 +5,8 @@ from curses.textpad import Textbox
 from src.controller.user import validate_unique_user, insert_user
 
 from ..popup import create_centered_popup
-from ..password_input_validator import PasswordInputValidator
-from ..util import print_centered_logo, no_space_validator
+from ..input_validator import InputValidator
+from ..util import print_centered_logo
 from ..window import Window
 from src.model.user import User
 from src.crypto.hashing import hash_sha256
@@ -27,7 +27,7 @@ def show_registration(
     password_textbox = Textbox(password_window)
     confirm_textbox = Textbox(confirm_window)
 
-    password_validator = PasswordInputValidator()
+    password_validator = InputValidator()
 
     while True:
         input_window().refresh()
@@ -36,7 +36,7 @@ def show_registration(
         username_window.refresh()
 
         curses.curs_set(True)
-        username_textbox.edit(no_space_validator)
+        username_textbox.edit(InputValidator.no_spaces)
         username: str = username_textbox.gather()
         username = username.strip()
 
@@ -61,13 +61,13 @@ def show_registration(
         password_window.refresh()
 
         password_validator.reset_password()
-        password_textbox.edit(password_validator)
+        password_textbox.edit(password_validator.password)
         password_str = password_validator.get_password_string().strip()
 
         confirm_window.refresh()
 
         password_validator.reset_password()
-        confirm_textbox.edit(password_validator)
+        confirm_textbox.edit(password_validator.password)
         confirm_str = password_validator.get_password_string().strip()
 
         window().addstr(5, 5, f"pw: {password_str} - cf: {confirm_str}")
@@ -103,6 +103,7 @@ def show_registration(
             raise ValueError("Error while inserting User")
 
         inserted_user.set_clear_password(password_str)
+        inserted_user.set_clear_username(username)
         return inserted_user
 
         # if validate_login(cursor, username, password_str):

@@ -3,30 +3,30 @@ from typing import Optional
 
 from src.crypto.hashing import hash_sha256
 from src.crypto.placeholder import dummy_decrypt_fernet, dummy_encrypt_fernet
-
-from .metadata import EncryptedMetadata, Metadata
+from src.exceptions.encryption_exception import EncryptionException
 
 
 class Password:
-    def __init__(self, password: str, metadata: Metadata = Metadata()):
+    def __init__(self, password: str):
         self.is_encrypted: bool = False
         self.password: bytes = password.encode()
-        self.metadata: Metadata | EncryptedMetadata = metadata
         self.is_master = False
 
     def encrypt(self, key: bytes) -> None:
+        if self.is_master:
+            raise EncryptionException("Master password can't be encrypted")
         if self.is_encrypted:
             return
         self.is_encrypted = True
         self._encrypt_password()
-        self._encrypt_metadata(key)
 
     def decrypt(self, key: bytes) -> None:
+        if self.is_master:
+            raise EncryptionException("Master password can't be decrypted")
         if not self.is_encrypted:
             return
         self.is_encrypted = False
         self._decrypt_password()
-        self._decrypt_metadata(key)
 
     def _encrypt_password(self) -> None:
         self.password = dummy_encrypt_fernet(self.password)
@@ -36,28 +36,12 @@ class Password:
         self.password = dummy_decrypt_fernet(self.password)
         # raise NotImplementedError
 
-    def _encrypt_metadata(self, key: bytes) -> None:
-        if not isinstance(self.metadata, Metadata):
-            raise TypeError("Metadata already encrypted")
-
-        self.metadata.access()
-        self.metadata = self.metadata.encrypt(key)
-
-    def _decrypt_metadata(self, key: bytes) -> None:
-        if not isinstance(self.metadata, EncryptedMetadata):
-            raise TypeError("Metadata not encrypted")
-
-        self.metadata = self.metadata.decrypt(key)
-
     def make_master(self) -> None:
         if self.is_master:
             raise ValueError("Password is already master")
         if self.is_encrypted:
             raise ValueError("Password is encrypted")
-        if self.metadata is None:
-            raise ValueError("Metadata not set")
 
-        self.metadata.modify()
         self.password = hash_sha256(self.password)
         self.is_master = True
 

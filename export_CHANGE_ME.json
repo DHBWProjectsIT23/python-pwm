@@ -1,0 +1,26 @@
+[
+  {
+    "description": "I am what you need at least",
+    "username": "",
+    "password": {
+      "current_password": "test_password_1",
+      "old_passwords": []
+    },
+    "categories": [],
+    "note": "",
+    "created_at": 1722963031.61202,
+    "last_modified": 1722963031.612021
+  },
+  {
+    "description": "I include all possible information",
+    "username": "simonTest",
+    "password": {
+      "current_password": "test_password_2",
+      "old_passwords": []
+    },
+    "categories": [],
+    "note": "",
+    "created_at": 1722937073.3668,
+    "last_modified": 1722937073.366801
+  }
+]

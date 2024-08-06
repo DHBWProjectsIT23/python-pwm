@@ -2,6 +2,7 @@ import pickle
 import sqlite3
 from typing import Optional
 from src.crypto.placeholder import dummy_encrypt_fernet, dummy_decrypt_fernet
+from src.model.metadata import EncryptedMetadata
 from src.model.password import Password
 from src.model.password_information import PasswordInformation
 from src.model.user import User
@@ -12,11 +13,13 @@ def retrieve_password_information(
 ) -> list[PasswordInformation]:
     cursor.execute(
         """
-        SELECT id, description, username, passwords, categories, note FROM passwords WHERE user=?
+        SELECT id, description, username, passwords, categories, note, metadata FROM passwords WHERE user=?
         """,
         (user.username,),
     )
-    results: list[tuple[int, bytes, bytes, bytes, bytes, bytes]] = cursor.fetchall()
+    results: list[tuple[int, bytes, bytes, bytes, bytes, bytes, bytes]] = (
+        cursor.fetchall()
+    )
 
     password_informations: list[PasswordInformation] = []
     for result in results:
@@ -26,10 +29,11 @@ def retrieve_password_information(
         passwords: list[Password] = pickle.loads(result[3])
         categories: list[bytes] = pickle.loads(result[4])
         note: Optional[bytes] = pickle.loads(result[5])
+        metadata: EncryptedMetadata = pickle.loads(result[6])
 
         password_informations.append(
-            PasswordInformation.load_from_db(
-                id, description, username, passwords, categories, note, user
+            PasswordInformation.from_db(
+                id, description, username, passwords, categories, note, user, metadata
             )
         )
 
@@ -51,7 +55,8 @@ def update_password_information(
             username = ?,
             passwords = ?,
             categories = ?,
-            note = ?
+            note = ?,
+            metadata = ?
         WHERE id = ?
         """,
         (
@@ -60,6 +65,7 @@ def update_password_information(
             pickle.dumps(password_information.passwords),
             pickle.dumps(password_information.categories),
             pickle.dumps(password_information.note),
+            pickle.dumps(password_information.metadata),
             password_information.id,
         ),
     )
@@ -104,8 +110,8 @@ def insert_password_information(
     cursor.execute(
         """
         INSERT INTO passwords(
-            description, username, passwords, categories, note, user
-        ) VALUES(?, ?, ?, ?, ?, ?)
+            description, username, passwords, categories, note, user, metadata
+        ) VALUES(?, ?, ?, ?, ?, ?, ?)
         RETURNING id
         """,
         (
@@ -115,8 +121,9 @@ def insert_password_information(
             pickle.dumps(password_information.categories),
             pickle.dumps(password_information.note),
             password_information.user.username,
+            pickle.dumps(password_information.metadata),
         ),
     )
     result: list[tuple[int]] = cursor.fetchall()
-    password_information.set_id(result[0][0])
+    password_information.id = result[0][0]
     return password_information

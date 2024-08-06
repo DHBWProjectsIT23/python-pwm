@@ -1,15 +1,17 @@
 import curses
 from src.model import password_information
+from src.model.metadata import Metadata
 from src.tui.panel import Panel
 from src.model.password_information import PasswordInformation
 from src.tui.popup import create_centered_popup
+from src.exceptions.encryption_exception import EncryptionException
 
 
 async def show_details(parent: Panel, password: PasswordInformation) -> None:
     title = "Password Details"
-    padding = create_centered_popup(parent, 22, 52)
+    padding = create_centered_popup(parent, 27, 52)
     padding().refresh()
-    popup = create_centered_popup(parent, 22, 50)
+    popup = create_centered_popup(parent, 25, 50)
     addstr = popup().addstr
     popup().box()
     addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
@@ -31,21 +33,27 @@ async def show_details(parent: Panel, password: PasswordInformation) -> None:
             addstr(y + i, x, f" {category.decode()}")
     y, _ = popup().getyx()
     addstr(y + 2, 1, "Note:", curses.A_UNDERLINE)
+    line_amount = 1
     if password.note is not None:
-        note = password.note.decode()
         inset = len("Note: ") + 1
         max_length = (popup().getmaxyx()[1] // 4 * 3) - 2 - inset
-        line_amount = len(note) // max_length
-        lines: list[str] = []
-        position = 0
-        for i in range(line_amount):
-            if position + max_length >= len(note):
-                break
-            lines.append(note[position : position + max_length])
-            position += max_length
+        note = password.note.decode()
+        line_amount = len(note) // max_length + 1
+        note_window = popup().derwin(line_amount, max_length, y + 2, inset)
+        note_window.addstr(note)
+    else:
+        addstr(" -")
 
-        for i, line in enumerate(lines):
-            addstr(y + 2 + i, inset, line)
+    y = popup().getyx()[0] + line_amount - 1
+    metadata = password.metadata
+    if not isinstance(metadata, Metadata):
+        raise EncryptionException("Metadata of password is still encrypted")
+
+    addstr(y + 2, 1, "Created at:", curses.A_UNDERLINE)
+    addstr(f" {metadata.created_at.strftime("%H:%M on %d.%m.%Y")}")
+
+    addstr(y + 4, 1, "Last Modified:", curses.A_UNDERLINE)
+    addstr(f" {metadata.last_modified.strftime("%H:%M on %d.%m.%Y")}")
 
     occurences = await password.check_pwned_status()
     y, _ = popup().getyx()

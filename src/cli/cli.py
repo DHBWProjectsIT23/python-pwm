@@ -8,12 +8,15 @@ from src.controller.password import (
     retrieve_password_information,
     update_password_information,
 )
+
 from src.controller.user import insert_user, validate_login
 from src.crypto import password_util
 from src.crypto.hashing import hash_sha256
+from src.import_export.import_data import import_json
 from src.model.password import Password
 from src.model.password_information import PasswordInformation
 from src.model.user import User
+from src.import_export.export_data import _convert_to_dict, export_to_json
 
 
 async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
@@ -24,28 +27,10 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
 
     user = User.new("test", "test")
     user.set_clear_password("test")
-    pw = retrieve_password_information(cursor, user)[-1]
-    print(f"Note full: {pw.note.decode()}")
-
-    note = pw.note.decode()
-    inset = len("Note: ")
-    max_length = 10
-    line_amount = len(note) // max_length
-    lines: list[str] = []
-    position = 0
-    for i in range(line_amount):
-        if position + max_length >= len(note):
-            break
-        print(f"Position: {position} / {len(note)}")
-        lines.append(note[position : position + max_length])
-        position += max_length
-
-    for i, line in enumerate(lines):
-        print(f"Line: {line} - {len(line)}")
-        # addstr(y + 2 + i, inset, line)
-
-    # print(f"{validate_login(cursor, username, password)}")
-    # retrieve_password_information(cursor, hash_sha256(b"test"))
+    pw = retrieve_password_information(cursor, user)
+    pws = import_json("import.json", user)
+    for p in pws:
+        print(p)
 
 
 def main() -> None:

@@ -5,10 +5,19 @@ from src.model.user import User
 
 
 def validate_login(cursor: sqlite3.Cursor, username: str, password: str) -> bool:
-    return (
-        hash_sha256(password.encode())
-        == retrieve_user_by_name(cursor, username).password()
-    )
+    return validate_login_hashed(cursor, hash_sha256(username.encode()), password)
+
+
+def validate_login_hashed(
+    cursor: sqlite3.Cursor, username: bytes, password: str
+) -> bool:
+    try:
+        return (
+            hash_sha256(password.encode())
+            == retrieve_user_by_hash(cursor, username).password()
+        )
+    except ValueError:
+        return False
 
 
 def validate_unique_user(cursor: sqlite3.Cursor, username: str) -> bool:
