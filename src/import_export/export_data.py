@@ -24,7 +24,7 @@ def export_to_json(
     password_informations: list[PasswordInformation],
     target_file: Optional[str] = None,
 ) -> str:
-        """
+    """
     Exports a list of PasswordInformation objects to a JSON file.
 
     Args:

@@ -2,7 +2,6 @@ import sqlite3
 from typing import Optional
 
 from src.controller.password import validate_unique_password
-from src.model import password_information
 from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.panel import Panel
@@ -17,10 +16,8 @@ class PasswordEditor(PasswordCreator):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
         super().__init__(parent, user, cursor)
 
-    def run(
-        self, passwordInformation: Optional[PasswordInformation] = None
-    ) -> PasswordInformation:
-        if passwordInformation is None:
+    def run(self, password_information: PasswordInformation) -> PasswordInformation:
+        if password_information is None:
             raise ValueError("PasswordInformation must be provided for editing")
 
         self.prompt = self.create_prompt_with_padding(self.parent)
@@ -39,10 +36,14 @@ class PasswordEditor(PasswordCreator):
                 else ""
             )
             username = self._enter_username(initial_username, title=title + " 3/3")
-
+            old_username = (
+                password_information.username.encode()
+                if password_information.username
+                else None
+            )
             if (
-                description == password_information.description
-                and username == password_information.username
+                description.encode() == password_information.description
+                and username == old_username
             ):
                 break
 

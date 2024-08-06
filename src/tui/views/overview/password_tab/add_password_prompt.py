@@ -70,8 +70,9 @@ def show_password_input(
 
         curses.curs_set(True)
         try:
-            password_textbox.edit(InputValidator.no_spaces_with_exit())
+            password_textbox.edit(InputValidator.no_spaces_with_exit)
         except ExitFromTextBoxException:
+            curses.curs_set(False)
             return None
         password = password_textbox.gather().strip()
         if len(password) == 0:
@@ -80,9 +81,11 @@ def show_password_input(
         confirm_window.refresh()
 
         try:
-            confirm_textbox.edit(InputValidator.no_spaces_with_exit())
+            confirm_textbox.edit(InputValidator.no_spaces_with_exit)
         except ExitFromTextBoxException:
             return None
+        finally:
+            curses.curs_set(False)
         confirm = confirm_textbox.gather().strip()
         if len(confirm) == 0:
             write_error("Field can't be empty", prompt, title)
@@ -104,7 +107,7 @@ def show_password_input(
 
         # TODO: Validate security
         if validate_password_safety(password) < 3:
-            write_error("Password is too weak")
+            write_error("Password is too weak", prompt, title)
             continue
 
         prompt().clear()

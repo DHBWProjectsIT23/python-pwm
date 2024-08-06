@@ -92,7 +92,7 @@ class PasswordTab(TabInterface):
 
     def _handle_add_input(self):
         password_information = self.password_list.get_selected()
-        new_password = show_add_password_prompt(self, password_information)
+        new_password = show_add_password_prompt(self.tab, password_information)
         if new_password is not None:
             password_information.add_password(Password(new_password))
             update_password_information(self.cursor, password_information, self.user)
