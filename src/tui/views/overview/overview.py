@@ -36,7 +36,7 @@ async def show_overview(
     passwords = retrieve_password_information(cursor, user)
 
     password_tab = PasswordTab(window_size, y_start, passwords, user, connection)
-    user_tab = UserTab(window_size, y_start, user)
+    user_tab = UserTab(window_size, y_start, user, connection)
     io_tab = IoTab(window_size, y_start, user, connection)
 
     tabs = {"Passwords": password_tab, "User": user_tab, "Import/Export": io_tab}
@@ -48,7 +48,6 @@ async def show_overview(
 
     window().refresh()
 
-    tabbar.next_tab()
     tabbar.next_tab()
 
     while True:

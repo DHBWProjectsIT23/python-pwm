@@ -1,0 +1,109 @@
+import curses
+import sqlite3
+
+from src.controller.password import retrieve_password_information
+from src.controller.user import (
+    validate_login,
+    validate_login_hashed,
+    validate_unique_user,
+)
+from src.crypto.hashing import hash_sha256
+from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
+from src.import_export.export_data import export_to_json
+from src.model.user import User
+from src.tui.input_validator import InputValidator
+from src.tui.keys import Keys
+from src.tui.panel import Panel
+from src.tui.views.overview.prompt import Prompt
+from typing import Optional
+
+
+class UpdateUsernamePrompt(Prompt):
+    def __init__(self, parent: Panel, cursor: sqlite3.Cursor, user: User) -> None:
+        super().__init__(parent)
+        self.user = user
+        self.cursor = cursor
+        self.title = "Update Username"
+
+    def run(self) -> Optional[str]:
+        self.prompt = self.create_prompt_with_padding(self.parent)
+        self.prompt().clear()
+        self.prompt().refresh()
+        self._reset_prompt(self.title)
+
+        try:
+            if not self._confirm_password():
+                # Lock Account
+                self.prompt().clear()
+                self.prompt().refresh()
+                return None
+        except ExitFromTextBoxException:
+            self.prompt().clear()
+            self.prompt().refresh()
+            return None
+
+        username = ""
+        try:
+            username = self._enter_new_username()
+        except ExitFromTextBoxException:
+            self.prompt().clear()
+            self.prompt().refresh()
+            return None
+
+        self._reset_prompt(self.title)
+        self.prompt.writeCenteredText("Username changed", (-1, 0), curses.A_BOLD)
+        self.prompt.writeBottomCenterText("- ↩ Continue -", (-1, 0))
+
+        self.prompt().clear()
+        self.prompt().refresh()
+        return username
+
+    def _confirm_password(self) -> bool:
+        self.prompt().addstr(2, 2, "Confirm Password:", curses.A_UNDERLINE)
+        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+        password_textbox, password_window = self._create_textbox((1, 32), (4, 2))
+        validator = InputValidator()
+
+        attempts = 0
+        while True:
+            if attempts > 3:
+                return False
+
+            curses.curs_set(True)
+            password_textbox.edit(validator.password_with_exit)
+            curses.curs_set(False)
+            if (
+                hash_sha256(validator.get_password_string().encode())
+                != self.user.password.password
+            ):
+                self._write_error("Wrong Password", self.title)
+                validator.reset_password()
+                password_window.clear()
+                password_window.refresh()
+                attempts += 1
+                continue
+
+            return True
+
+    def _enter_new_username(self) -> str:
+        self._reset_prompt(self.title)
+        self.prompt().addstr(2, 2, "New Username:", curses.A_UNDERLINE)
+        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+        username_textbox, _ = self._create_textbox((1, 32), (4, 2))
+
+        while True:
+            curses.curs_set(True)
+            username_textbox.edit(InputValidator.no_spaces_with_exit)
+            username = username_textbox.gather().strip()
+            curses.curs_set(False)
+            if hash_sha256(username.encode()) == self.user.username:
+                self._write_error("Username must be different", self.title)
+                continue
+            if len(username) < 4:
+                self._write_error("Username must have 4 or more characters", self.title)
+                continue
+            if not validate_unique_user(self.cursor, username):
+                self._write_error("Username is already taken", self.title)
+                continue
+
+            return username

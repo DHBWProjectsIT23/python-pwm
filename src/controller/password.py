@@ -56,6 +56,7 @@ def update_password_information(
             passwords = ?,
             categories = ?,
             note = ?,
+            user = ?,
             metadata = ?
         WHERE id = ?
         """,
@@ -66,6 +67,7 @@ def update_password_information(
             pickle.dumps(password_information.categories),
             pickle.dumps(password_information.note),
             pickle.dumps(password_information.metadata),
+            password_information.user.username,
             password_information.id,
         ),
     )

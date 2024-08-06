@@ -3,6 +3,7 @@ import sqlite3
 
 from src.controller.user import validate_login, validate_login_hashed
 from src.controller.password import retrieve_password_information
+from src.crypto.hashing import hash_sha256
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.user import User
 from src.tui.keys import Keys
@@ -71,8 +72,9 @@ class ExportPopup(Prompt):
             curses.curs_set(True)
             password_textbox.edit(validator.password_with_exit)
             curses.curs_set(False)
-            if not validate_login_hashed(
-                self.cursor, self.user.username, validator.get_password_string()
+            if (
+                hash_sha256(validator.get_password_string().encode())
+                != self.user.password.password
             ):
                 self._write_error("Wrong Password", "Export Passwords")
                 validator.reset_password()

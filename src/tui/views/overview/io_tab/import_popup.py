@@ -1,24 +1,22 @@
 import curses
 import os
 import sqlite3
-from typing import Optional
 
-from src.controller.user import validate_login, validate_login_hashed
 from src.controller.password import (
     insert_password_information,
-    retrieve_password_information,
     validate_unique_password,
 )
+from src.controller.user import validate_login_hashed
+from src.crypto.hashing import hash_sha256
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.exceptions.import_exception import ImportException
+from src.import_export.import_data import import_json
 from src.model.password_information import PasswordInformation
 from src.model.user import User
+from src.tui.input_validator import InputValidator
 from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.password_tab.password_list import PasswordList
 from src.tui.views.overview.prompt import Prompt
-from src.tui.input_validator import InputValidator
-from src.import_export.import_data import import_json
 
 
 class ImportPopup(Prompt):
@@ -39,20 +37,22 @@ class ImportPopup(Prompt):
                 # Lock Account
                 self.prompt().clear()
                 self.prompt().refresh()
-                return None
+                return []
         except ExitFromTextBoxException:
+            curses.curs_set(False)
             self.prompt().clear()
             self.prompt().refresh()
-            return None
+            return []
 
         # File?
         file = ""
         try:
             file = self._enter_target_file()
         except ExitFromTextBoxException:
+            curses.curs_set(False)
             self.prompt().clear()
             self.prompt().refresh()
-            return None
+            return []
 
         self._reset_prompt(self.title)
         self.prompt.writeBottomCenterText("- ↩ Continue -", (-1, 0))
@@ -124,8 +124,9 @@ class ImportPopup(Prompt):
             curses.curs_set(True)
             password_textbox.edit(validator.password_with_exit)
             curses.curs_set(False)
-            if not validate_login_hashed(
-                self.cursor, self.user.username, validator.get_password_string()
+            if (
+                hash_sha256(validator.get_password_string().encode())
+                != self.user.password.password
             ):
                 self._write_error("Wrong Password", self.title)
                 validator.reset_password()

@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Optional
 from src.crypto.hashing import hash_sha256
 from src.model.password import Password
 from src.model.user import User
@@ -27,7 +28,7 @@ def validate_unique_user(cursor: sqlite3.Cursor, username: str) -> bool:
     """,
         (hash_sha256(username.encode()),),
     )
-    existing_users = cursor.fetchall()[0][0]
+    existing_users: int = cursor.fetchall()[0][0]
     return existing_users == 0
 
 
@@ -44,6 +45,22 @@ def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
 
 def retrieve_user_by_name(cursor: sqlite3.Cursor, username: str) -> User:
     return retrieve_user_by_hash(cursor, hash_sha256(username.encode()))
+
+
+def update_user(
+    cursor: sqlite3.Cursor, user: User, new_username: Optional[bytes] = None
+) -> None:
+    if new_username is None:
+        new_username = user.username
+    cursor.execute(
+        """
+        UPDATE users
+        SET username = ?,
+            password = ?
+        WHERE username = ?
+        """,
+        (new_username, user.password, user.username),
+    )
 
 
 def insert_user(cursor: sqlite3.Cursor, user: User) -> User:
