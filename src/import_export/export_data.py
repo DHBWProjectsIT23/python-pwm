@@ -8,6 +8,15 @@ from .password_dict import PasswordInformationDict
 def _convert_to_dict(
     password_informations: list[PasswordInformation],
 ) -> list[PasswordInformationDict]:
+    """
+    Converts a list of PasswordInformation objects to a list of dictionaries.
+
+    Args:
+        password_informations (list[PasswordInformation]): The list of PasswordInformation objects to convert.
+
+    Returns:
+        list[PasswordInformationDict]: A list of dictionaries representing the PasswordInformation objects.
+    """
     return [pw_info.to_dict() for pw_info in password_informations]
 
 
@@ -15,6 +24,20 @@ def export_to_json(
     password_informations: list[PasswordInformation],
     target_file: Optional[str] = None,
 ) -> str:
+        """
+    Exports a list of PasswordInformation objects to a JSON file.
+
+    Args:
+        password_informations (list[PasswordInformation]): The list of PasswordInformation objects to export.
+        target_file (Optional[str], optional): The path of the target JSON file. If None, a default filename with
+                                               the current timestamp will be used. Defaults to None.
+
+    Returns:
+        str: The path of the exported JSON file.
+
+    Notes:
+        - If target_file is not provided, the filename will include a placeholder for the current timestamp.
+    """
     dicts = _convert_to_dict(password_informations)
     if target_file is None:
         # current_timestamp = datetime.now().strftime("%d%m%y%H%M")

@@ -3,6 +3,16 @@ from src.crypto.hashing import hash_sha1
 
 
 async def check_password(password: bytes) -> int:
+    """
+    Checks the given password against the Pwned Passwords API to determine if it has been compromised.
+
+    Args:
+        password (bytes): The password to check, provided as a bytes object.
+
+    Returns:
+        int: The number of times the password has been found in data breaches.
+    """
+
     password_hash = hash_sha1(password).hex()
     first_five = password_hash[:5]
 
