@@ -11,15 +11,15 @@ else:
 
 
 class Window:
-    def __init__(self, window: CursesWindow) -> None:
+    def __init__(self, curses_window: CursesWindow) -> None:
         """
         Initializes a Window object with a given curses window.
 
         Args:
-            window (CursesWindow): The curses window object to be wrapped by
+            curses_window (CursesWindow): The curses window object to be wrapped by
                                    this Window class.
         """
-        self.window = window
+        self.curses_window = curses_window
 
     def get_size(self) -> tuple[int, int]:
         """
@@ -29,7 +29,7 @@ class Window:
             tuple[int, int]: A tuple containing the height and width of the
                              window.
         """
-        return self.window.getmaxyx()
+        return self.curses_window.getmaxyx()
 
     def get_center(self) -> tuple[int, int]:
         """
@@ -67,7 +67,7 @@ class Window:
         if text_length > width:
             raise ValueError("Text is too long")
 
-        self.window.addstr(y, (x - (text_length // 2)), text, attr)
+        self.curses_window.addstr(y, (x - (text_length // 2)), text, attr)
 
     def write_bottom_center_text(
             self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
@@ -121,7 +121,7 @@ class Window:
         start_y = y - (text_height // 2)
         start_x = x - (text_length // 2)
         for i, line in enumerate(text.split("\n")):
-            self.window.addstr(start_y + i, start_x, line, attr)
+            self.curses_window.addstr(start_y + i, start_x, line, attr)
 
     def __call__(self) -> CursesWindow:
         """
@@ -131,4 +131,4 @@ class Window:
         Returns:
             CursesWindow: The curses window object wrapped by this Window class.
         """
-        return self.window
+        return self.curses_window

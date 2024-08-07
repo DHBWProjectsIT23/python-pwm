@@ -15,7 +15,7 @@ class TestUser(unittest.TestCase):
         user_password = Password("test")
         username = hash_sha256(b"test")
         user = User(username, user_password)
-        self.assertTrue(isinstance(user, User))
+        self.assertIsInstance(user, User)
         self.assertEqual(user.username, hash_sha256(b"test"))
         self.assertEqual(user.password(), hash_sha256(b"test"))
 
@@ -24,6 +24,6 @@ class TestUser(unittest.TestCase):
         Test the static method `User.new()` for creating a User instance.
         """
         user = User.new("test", "test")
-        self.assertTrue(isinstance(user, User))
+        self.assertIsInstance(user, User)
         self.assertEqual(user.username, hash_sha256(b"test"))
         self.assertEqual(user.password(), hash_sha256(b"test"))
