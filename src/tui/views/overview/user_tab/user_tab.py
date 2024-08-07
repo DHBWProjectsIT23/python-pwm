@@ -1,5 +1,6 @@
 import curses
 import sqlite3
+import sys
 from src.controller.password import (
     retrieve_password_information,
     update_password_information,
@@ -13,6 +14,7 @@ from src.tui.popup import create_centered_popup
 from src.tui.views.overview.tab_interface import TabInterface
 from src.model.user import User
 from src.model.password import Password
+from src.tui.views.overview.user_tab.delete_user_prompt import DeleteUserPrompt
 from src.tui.views.overview.user_tab.update_password_prompt import (
     show_update_password_prompt,
 )
@@ -51,6 +53,8 @@ class UserTab(TabInterface):
 
     async def process_input(self, input_key: int) -> None:
         match input_key:
+            case Keys.D | Keys.d:
+                self._handle_delete_user_input()
             case Keys.P | Keys.p:
                 self._handle_update_pw_input()
             case Keys.U | Keys.u:
@@ -103,6 +107,13 @@ class UserTab(TabInterface):
 
         update_user(self.cursor, self.user)
         self.connection.commit()
+
+    def _handle_delete_user_input(self) -> None:
+        deleted = DeleteUserPrompt(self.tab, self.user, self.cursor).run()
+        if deleted:
+            self.connection.commit()
+            sys.exit(0)
+        self.refresh()
 
     def _display_user_info(self) -> None:
         height = percentage_of(70, self.tab.getSize()[0])

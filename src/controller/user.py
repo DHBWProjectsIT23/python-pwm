@@ -88,6 +88,15 @@ def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
     return User(user[0][0], user[0][1])
 
 
+def delete_user(cursor: sqlite3.Cursor, user: User) -> None:
+    cursor.execute(
+        """
+        DELETE FROM users WHERE username=?
+        """,
+        (user.username,),
+    )
+
+
 def retrieve_user_by_name(cursor: sqlite3.Cursor, username: str) -> User:
     """
     Retrieves a user from the database by username.

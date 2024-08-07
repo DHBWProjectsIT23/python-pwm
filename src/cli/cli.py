@@ -42,6 +42,13 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
     #     print(p)
     # send_auth_mail("simon21.blum@gmail.com", "513")
     user = User.new("test", "test")
+    user.set_clear_password("test")
+    pws = retrieve_password_information(cursor, user)
+    print(len(pws))
+    pws = list(
+        filter(PasswordInformation.create_password_filter("www.github.com"), pws)
+    )
+    print(len(pws))
 
 
 def main() -> None:

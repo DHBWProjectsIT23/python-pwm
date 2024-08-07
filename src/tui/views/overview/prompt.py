@@ -71,7 +71,7 @@ class Prompt:
             curses.curs_set(True)
             password_textbox.edit(validator.password_with_exit)
             curses.curs_set(False)
-            if validate_login_hashed(
+            if not validate_login_hashed(
                 self.cursor, self.user.username, validator.get_password_string()
             ):
                 self._write_error("Wrong Password", self.title)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any, Dict, Iterable, Optional  # noqa: F401
+from typing import Any, Callable, Dict, Iterable, Optional  # noqa: F401
 from src.import_export.password_dict import PasswordInformationDict
 
 from src.api.pawned import check_password
@@ -27,6 +27,7 @@ class PasswordInformation:
         data_is_encrypted (bool): Flag indicating whether the data is encrypted.
         id (Optional[int]): An optional identifier for the password information.
     """
+
     def __init__(
         self,
         user: User,
@@ -372,3 +373,19 @@ class PasswordInformation:
         password_information.data_is_encrypted = True
         password_information.decrypt_data()
         return password_information
+
+    @staticmethod
+    def create_password_filter(
+        search_string: str,
+    ) -> Callable[[PasswordInformation], bool]:
+        def filter_passwords(password: PasswordInformation) -> bool:
+            if password.data_is_encrypted:
+                raise EncryptionException("Data needs to be decrypted for searching")
+            if search_string.lower() in password.description.decode().lower():
+                return True
+            for category in password.categories:
+                if search_string.lower() in category.decode().lower():
+                    return True
+            return False
+
+        return filter_passwords

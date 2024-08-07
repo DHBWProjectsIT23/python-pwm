@@ -134,6 +134,26 @@ def validate_unique_password(
     return True
 
 
+def delete_password_information(
+    cursor: sqlite3.Cursor, password_information: PasswordInformation
+) -> None:
+    cursor.execute(
+        """
+        DELETE FROM passwords WHERE id=?
+        """,
+        (password_information.id,),
+    )
+
+
+def delete_password_information_of_user(cursor: sqlite3.Cursor, user: User) -> None:
+    cursor.execute(
+        """
+        DELETE FROM passwords WHERE user=?
+        """,
+        (user.username,),
+    )
+
+
 def insert_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> PasswordInformation:

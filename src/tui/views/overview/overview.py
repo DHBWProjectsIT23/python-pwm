@@ -1,4 +1,5 @@
 import curses
+from src.model.password_information import PasswordInformation
 from src.tui.views.overview.io_tab.io_tab import IoTab
 from src.tui.views.overview.password_tab.password_tab import PasswordTab
 import sqlite3
@@ -28,8 +29,11 @@ async def show_overview(
     window_size = screen_size[0] - y_start - 1, screen_size[1] - 2
 
     passwords = retrieve_password_information(cursor, user)
+    passwords = list(
+        filter(PasswordInformation.create_password_filter("www.github.com"), passwords)
+    )
 
-    password_tab = PasswordTab(window_size, y_start, passwords, user, connection)
+    password_tab = PasswordTab(window_size, y_start, user, connection)
     user_tab = UserTab(window_size, y_start, user, connection)
     io_tab = IoTab(window_size, y_start, user, connection)
 

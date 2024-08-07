@@ -4,6 +4,11 @@ from src.tui.keys import Keys
 from src.model.password_information import PasswordInformation
 from src.tui.util import generate_control_str
 from src.tui.views.overview.controls_popup import ControlsPopup
+from src.tui.views.overview.password_tab.delete_password_prompt import (
+    DeletePasswordPrompt,
+)
+from src.tui.views.overview.password_tab.history_popup import HistoryPopup
+from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
 from src.tui.views.overview.tab_interface import TabInterface
 from src.tui.window import Window
 from src.tui.panel import Panel
@@ -11,7 +16,7 @@ from src.tui.views.overview.password_tab.password_list import PasswordList
 from src.model.password import Password
 from src.tui.views.overview.password_tab.edit_password_prompt import PasswordEditor
 from src.tui.views.overview.password_tab.show_details import show_details
-from src.model.user import User
+from src.model.user import Optional, User
 from src.tui.views.overview.password_tab.add_password_prompt import (
     show_add_password_prompt,
 )
@@ -28,12 +33,16 @@ from src.controller.password import (
 CONTROLS: dict["str", "str"] = {
     "↑↓": "Navigate Passwords",
     "↩": "Show Details",
+    "n": "Create new Password",
+    "u": "Update Password",
     "e": "Edit Details",
-    "a": "Add Password",
+    "d": "Delete Password",
+    "r": "Reveal selected Password",
+    "R": "Reveal all Passwords",
     "c": "Check if Password has been leaked",
     "C": "Check all Passwords",
-    "n": "Create new Password",
-    "r": "Reveal selected Password",
+    "s": "Search",
+    "h": "Display History",
 }
 
 
@@ -42,10 +51,14 @@ class PasswordTab(TabInterface):
         self,
         window_size: tuple[int, int],
         y_start: int,
-        passwords: list[PasswordInformation],
         user: User,
         connection: sqlite3.Connection,
     ):
+        self.user = user
+        self.connection = connection
+        self.cursor = self.connection.cursor()
+        self.controls = CONTROLS
+
         self.tab = Panel(
             curses.panel.new_panel(
                 curses.newwin(window_size[0], window_size[1], y_start, 1)
@@ -59,15 +72,13 @@ class PasswordTab(TabInterface):
         )
         self.tab().box()
 
-        self.password_list = PasswordList(self.list_window, passwords)
+        self.password_list = PasswordList(
+            self.list_window, retrieve_password_information(self.cursor, self.user)
+        )
         self._init_table_headings()
 
         self.password_list.refresh()
-
-        self.user = user
-        self.connection = connection
-        self.cursor = self.connection.cursor()
-        self.controls = CONTROLS
+        self.reload_passwords()
         self.refresh()
 
     def _init_table_headings(self) -> None:
@@ -97,16 +108,26 @@ class PasswordTab(TabInterface):
                 self.password_list.select_previous()
             case Keys.E | Keys.e:
                 self._handle_edit_input()
+            case Keys.H | Keys.h:
+                HistoryPopup(self.tab, self.password_list.get_selected()).run()
+                self.refresh()
             case Keys.c:
                 await self.password_list.check_selected()
             case Keys.C:
                 await self._handle_check_all_input()
+            case Keys.D | Keys.d:
+                self._handle_delete_password_input()
             case Keys.N | Keys.n:
                 self._handle_new_input()
-            case Keys.A | Keys.a:
+
+            case Keys.U | Keys.u:
                 self._handle_add_input()
-            case Keys.R | Keys.r:
+            case Keys.r:
                 self.password_list.toggle_selected()
+            case Keys.R:
+                self._handle_reveal_all_input()
+            case Keys.S | Keys.s:
+                self._handle_search_password_input()
             case Keys.QUESTION_MARK:
                 ControlsPopup(self.tab, self.controls).run()
                 self.refresh()
@@ -119,6 +140,7 @@ class PasswordTab(TabInterface):
             update_password_information(self.cursor, password_information, self.user)
             password_information.decrypt_data()
             self.connection.commit()
+            self.reload_passwords()
 
         self.refresh()
 
@@ -129,6 +151,7 @@ class PasswordTab(TabInterface):
             self.connection.commit()
             new_password.decrypt_data()
             self.password_list.add_item(new_password)
+            self.reload_passwords()
 
         self.refresh()
 
@@ -144,6 +167,7 @@ class PasswordTab(TabInterface):
         self.connection.commit()
         updated_password.decrypt_data()
         self.password_list.refresh_selected()
+        self.reload_passwords()
 
         self.refresh()
 
@@ -157,17 +181,47 @@ class PasswordTab(TabInterface):
         loading_popup().refresh()
         await self.password_list.check_all()
 
-    def refresh(self) -> None:
-        passwords = retrieve_password_information(self.cursor, self.user)
-        if len(passwords) > len(self.password_list.items):
-            self.password_list = PasswordList(self.list_window, passwords)
+    def _handle_delete_password_input(self) -> None:
+        password = self.password_list.get_selected()
+        deleted = DeletePasswordPrompt(self.tab, self.user, password, self.cursor).run()
+        if deleted:
+            self.connection.commit()
+            self.reload_passwords()
+        else:
+            self.refresh()
 
+    def _handle_search_password_input(self) -> None:
+        term = SearchPrompt(self.tab, self.user, self.cursor).run()
+        if term is None:
+            return
+        self.reload_passwords(term)
+        self.refresh()
+
+    def _handle_reveal_all_input(self) -> None:
+        selected = self.password_list.selected
+        for item in self.password_list.items:
+            item.showing_pass = not item.showing_pass
+            item.deselect()
+        self.password_list.items[selected].select()
+        self.refresh()
+
+    def refresh(self) -> None:
         self.tab().box()
         self._display_controls()
         self.tab().refresh()
         self.list_window().refresh()
         self.password_list.refresh_selected()
         self.password_list.refresh()
+
+    def reload_passwords(self, search_string: Optional[str] = None) -> None:
+        passwords = retrieve_password_information(self.cursor, self.user)
+        if search_string is not None:
+            passwords = list(
+                filter(
+                    PasswordInformation.create_password_filter(search_string), passwords
+                )
+            )
+        self.password_list = PasswordList(self.list_window, passwords)
 
     def _display_controls(self) -> None:
         controls_str = generate_control_str(self.controls)
