@@ -16,15 +16,25 @@ else:
 
 
 class Panel(Window):
+    """
+    Initialize the Panel with a curses panel object.
+
+    Args:
+        panel (CursesPanel): The curses panel object.
+    """
+
     def __init__(self, panel: CursesPanel) -> None:
         super().__init__(panel.window())
         self.panel = panel
 
-    def getSize(self) -> tuple[int, int]:
-        return self.window.getmaxyx()
-
     def show(self) -> None:
+        """
+        Show the panel.
+        """
         self.panel.show()
 
     def hide(self) -> None:
+        """
+        Hide the panel.
+        """
         self.panel.hide()

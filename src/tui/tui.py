@@ -24,6 +24,14 @@ else:
 
 
 def main(stdscr: CursesWindow) -> None:
+    """
+    Entry point for the application. Initializes the TUI and database connection,
+    then starts the asynchronous event loop to run the TUI interface.
+
+    Args:
+        stdscr (CursesWindow): The standard curses window object used for drawing 
+                               the user interface.
+    """
     with connect_to_db(DB_PATH) as connection:
         asyncio.run(run_tui(stdscr, connection, connection.cursor()))
 
@@ -31,6 +39,23 @@ def main(stdscr: CursesWindow) -> None:
 async def run_tui(
     stdscr: CursesWindow, connection: sqlite3.Connection, cursor: sqlite3.Cursor
 ) -> None:
+    """
+    Runs the terminal user interface (TUI) in an asynchronous context. Handles
+    terminal size validation and UI initialization. Displays the overview screen
+    after validating user credentials.
+
+    Args:
+        stdscr (CursesWindow): The standard curses window object used for drawing
+                               the user interface.
+        connection (sqlite3.Connection): The database connection used for data 
+                                         operations.
+        cursor (sqlite3.Cursor): The database cursor used for querying and 
+                                 executing commands.
+
+    Raises:
+        Exception: If any unexpected errors occur during TUI operations or database
+                   interactions.
+    """
     window: Window = init_tui(stdscr)
 
     height, width = window.getSize()
