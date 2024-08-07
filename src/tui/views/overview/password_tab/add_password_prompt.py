@@ -34,7 +34,7 @@ def show_add_password_prompt(
 def show_with_generated(
         prompt: Window,
         password_information: PasswordInformation,
-        title: Optional[str] = None,
+        title: str = "",
 ) -> Optional[str]:
     return show_password_input(
         prompt, password_information, generate_secure_password(), title
@@ -45,12 +45,11 @@ def show_password_input(
         prompt: Window,
         password_information: PasswordInformation | None,
         generated_password: str = "",
-        title: Optional[str] = None,
+        title: str = "",
 ) -> Optional[str]:
     prompt().clear()
     prompt().box()
-    if title is not None:
-        prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
+    prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
     prompt().addstr(3, 2, "    ")
     prompt().addstr(3, 6, "New Password:", curses.A_UNDERLINE)
     prompt().addstr(5, 2, "Confirm Password:", curses.A_UNDERLINE)
@@ -108,7 +107,7 @@ def show_password_input(
 def _validate_inputs(confirm: str,
                      password: str,
                      prompt: Window,
-                     title: str) -> True:
+                     title: str) -> bool:
     if len(confirm) == 0:
         write_error("Field can't be empty", prompt, title)
         return False

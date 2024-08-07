@@ -8,8 +8,8 @@ from src.tui.util import generate_control_str
 from src.tui.util import percentage_of
 from src.tui.views.overview.io_tab.io_tab import IoTab
 from src.tui.views.overview.password_tab.password_tab import PasswordTab
-from src.tui.views.overview.tab_interface import TabInterface
-from src.tui.views.overview.tabbar import Tabbar
+from src.tui.views.overview.components.tab_interface import TabInterface
+from src.tui.views.overview.components.tabbar import Tabbar
 from src.tui.views.overview.user_tab.user_tab import UserTab
 from src.tui.window import Window
 

@@ -110,14 +110,14 @@ class Prompt:
 
 
 class SimplePrompt:
-    def __init__(self, parent: Panel, size: tuple[int, int]):
+    def __init__(self, parent: Panel, size: tuple[int, int]) -> None:
         self.popup = Prompt.create_prompt_with_padding(parent, size)
 
     def break_out(self) -> None:
         self.popup().clear()
         self.popup().refresh()
 
-    def enter_dismiss_loop(self):
+    def enter_dismiss_loop(self) -> None:
         self.popup().refresh()
         while True:
             key_input = self.popup().getch()

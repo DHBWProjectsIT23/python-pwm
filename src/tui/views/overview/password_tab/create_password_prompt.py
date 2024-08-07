@@ -14,7 +14,7 @@ from src.tui.views.overview.password_tab import add_password_prompt
 from src.tui.views.overview.password_tab.show_generate_menu import (
     show_select_generated_prompt,
 )
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.components.prompt import Prompt
 
 CONTROL_E = 5
 MULTILINE_CTR_STR = "- ^G Continue - ^E Cancel -"

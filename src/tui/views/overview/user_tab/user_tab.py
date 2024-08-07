@@ -11,8 +11,8 @@ from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.popup import create_centered_popup
 from src.tui.util import percentage_of
-from src.tui.views.overview.controls_popup import ControlsPrompt
-from src.tui.views.overview.tab_interface import TabInterface
+from src.tui.views.overview.components.controls_popup import ControlsPrompt
+from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.views.overview.user_tab.delete_user_prompt import DeleteUserPrompt
 from src.tui.views.overview.user_tab.update_password_prompt import (
     show_update_password_prompt,

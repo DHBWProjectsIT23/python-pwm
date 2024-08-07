@@ -1,7 +1,7 @@
 import curses
 
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import SimplePrompt
+from src.tui.views.overview.components.prompt import SimplePrompt
 
 
 class ControlsPrompt(SimplePrompt):

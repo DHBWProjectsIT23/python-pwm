@@ -1,7 +1,7 @@
 import curses
 from curses import panel
 
-from src.tui.views.overview.tab_interface import TabInterface
+from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.window import Window
 
 

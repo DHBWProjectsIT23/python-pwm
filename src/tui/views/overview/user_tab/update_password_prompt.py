@@ -9,8 +9,7 @@ from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
 from src.tui.views.overview.password_tab.add_password_prompt import write_error
-from src.tui.views.overview.prompt import Prompt
-from src.tui.window import Window
+from src.tui.views.overview.components.prompt import Prompt
 
 CONTROL_STR = " - ↩ Continue - "
 

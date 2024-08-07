@@ -2,7 +2,7 @@ import curses
 
 from src.model.password_information import PasswordInformation
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import SimplePrompt
+from src.tui.views.overview.components.prompt import SimplePrompt
 
 
 class HistoryPopup(SimplePrompt):

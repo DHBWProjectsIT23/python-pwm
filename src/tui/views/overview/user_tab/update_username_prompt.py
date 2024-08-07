@@ -10,7 +10,7 @@ from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.components.prompt import Prompt
 
 
 class UpdateUsernamePrompt(Prompt):

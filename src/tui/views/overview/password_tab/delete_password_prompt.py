@@ -6,7 +6,7 @@ from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.components.prompt import Prompt
 
 
 class DeletePasswordPrompt(Prompt):

@@ -6,7 +6,7 @@ from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.components.prompt import Prompt
 
 
 class IoPrompt(Prompt):
@@ -27,7 +27,7 @@ class IoPrompt(Prompt):
         self.break_out()
         self._reset_prompt(self.title)
 
-    def break_out(self):
+    def break_out(self) -> None:
         self.prompt_window().clear()
         self.prompt_window().refresh()
 

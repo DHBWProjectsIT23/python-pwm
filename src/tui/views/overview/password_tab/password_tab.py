@@ -10,7 +10,7 @@ from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.popup import create_centered_popup
-from src.tui.views.overview.controls_popup import ControlsPrompt
+from src.tui.views.overview.components.controls_popup import ControlsPrompt
 from src.tui.views.overview.password_tab.add_password_prompt import (
     show_add_password_prompt,
 )
@@ -26,7 +26,7 @@ from src.tui.views.overview.password_tab.history_popup import HistoryPopup
 from src.tui.views.overview.password_tab.password_list import PasswordList
 from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
 from src.tui.views.overview.password_tab.show_details import show_details
-from src.tui.views.overview.tab_interface import TabInterface
+from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.window import Window
 
 CONTROLS: dict["str", "str"] = {

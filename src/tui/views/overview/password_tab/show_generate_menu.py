@@ -1,7 +1,7 @@
 import curses
 
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.components.prompt import Prompt
 from src.tui.window import Window
 
 SELECT_CONTROL_STR = """
