@@ -42,6 +42,7 @@ class Metadata:
         Returns: EncryptedMetadata: An instance of EncryptedMetadata
         containing the encrypted metadata.
         """
+        _ = key
         return EncryptedMetadata(self)
 
 
@@ -97,6 +98,7 @@ class EncryptedMetadata:
         Returns:
             Metadata: An instance of Metadata with the decrypted data.
         """
+        _ = key
         metadata = Metadata()
         metadata.created_at = pickle.loads(dummy_decrypt_fernet(self.created_at))
         metadata.last_modified = pickle.loads(dummy_decrypt_fernet(self.modified_at))

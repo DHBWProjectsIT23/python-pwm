@@ -5,10 +5,10 @@ from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.panel import Panel
 from src.tui.util import generate_control_str
-from src.tui.views.overview.controls_popup import ControlsPopup
-from src.tui.views.overview.io_tab.export_popup import ExportPopup
+from src.tui.views.overview.controls_popup import ControlsPrompt
+from src.tui.views.overview.io_tab.export_prompt import ExportPrompt
 from src.tui.views.overview.io_tab.import_export_menu import ImportExportMenu
-from src.tui.views.overview.io_tab.import_popup import ImportPopup
+from src.tui.views.overview.io_tab.import_prompt import ImportPrompt
 from src.tui.views.overview.tab_interface import TabInterface
 
 CONTROLS: dict["str", "str"] = {
@@ -25,11 +25,7 @@ class IoTab(TabInterface):
         user: User,
         connection: sqlite3.Connection,
     ) -> None:
-        self.tab = Panel(
-            curses.panel.new_panel(
-                curses.newwin(window_size[0], window_size[1], y_start, 1)
-            )
-        )
+        super().__init__(window_size, y_start, CONTROLS)
         self.tab().box()
         self.menu = ImportExportMenu(self.tab)
         self.tab().refresh()
@@ -47,37 +43,22 @@ class IoTab(TabInterface):
             case Keys.ENTER:
                 self._handle_enter_input()
             case Keys.QUESTION_MARK:
-                ControlsPopup(self.tab, self.controls).run()
+                ControlsPrompt(self.tab, self.controls).run()
                 self.refresh()
 
     def _handle_enter_input(self) -> None:
         if self.menu.get_choice() == 1:
-            imported_passwords = ImportPopup(self.tab, self.user, self.cursor).run()
+            imported_passwords = ImportPrompt(self.tab, self.user, self.cursor).run()
             if len(imported_passwords) > 0:
                 self.connection.commit()
             else:
                 self.connection.rollback()
         elif self.menu.get_choice() == 2:
-            ExportPopup(self.tab, self.user, self.cursor).run()
+            ExportPrompt(self.tab, self.user, self.cursor).run()
         else:
             raise ValueError("Invalid Menu Option")
 
         self.refresh()
-
-    def _display_controls(self) -> None:
-        controls_str = generate_control_str(self.controls)
-        try:
-            self.tab.write_bottom_center_text(controls_str, (-1, 0))
-        except ValueError:
-            self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
-        finally:
-            self.tab().refresh()
-
-    def show(self) -> None:
-        self.tab.show()
-
-    def hide(self) -> None:
-        self.tab.hide()
 
     def refresh(self) -> None:
         self.menu.refresh()

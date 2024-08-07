@@ -8,6 +8,7 @@ from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
+from src.tui.views.overview.password_tab.add_password_prompt import write_error
 from src.tui.views.overview.prompt import Prompt
 from src.tui.window import Window
 
@@ -58,6 +59,7 @@ def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
         confirm = confirm_textbox.gather().strip()
         if len(confirm) == 0:
             write_error("Field can't be empty", prompt, title)
+            continue
 
         if password != confirm:
             write_error("Passwords must match", prompt, title)
@@ -75,11 +77,3 @@ def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
         prompt().clear()
         prompt().refresh()
         return password
-
-
-def write_error(msg: str, prompt: Window, title: Optional[str] = None) -> None:
-    prompt().box()
-    if title is not None:
-        prompt().addstr(0, 0, title, curses.color_pair(3) | curses.A_BOLD)
-    prompt.write_bottom_center_text(msg, attr=curses.color_pair(2))
-    prompt().refresh()

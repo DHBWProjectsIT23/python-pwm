@@ -10,37 +10,28 @@ from src.import_export.import_data import import_json
 from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.input_validator import InputValidator
-from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.io_tab.io_prompt import IoPrompt
 
 
-class ImportPopup(Prompt):
-    def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
-        super().__init__(parent, user, cursor)
-        self.title = "Import Passwords"
+class ImportPrompt(IoPrompt):
+    def __init__(self,
+                 parent: Panel,
+                 user: User,
+                 cursor: sqlite3.Cursor) -> None:
+        super().__init__(parent, user, cursor, "Import Passwords")
 
     def run(self) -> list[PasswordInformation]:
         self.initialize()
 
-        try:
-            if not self._confirm_password():
-                # Lock Account
-                self.prompt_window().clear()
-                self.prompt_window().refresh()
-                return []
-        except ExitFromTextBoxException:
-            curses.curs_set(False)
-            self.prompt_window().clear()
-            self.prompt_window().refresh()
+        if not self._confirm():
             return []
 
         try:
             file = self._enter_target_file()
         except ExitFromTextBoxException:
             curses.curs_set(False)
-            self.prompt_window().clear()
-            self.prompt_window().refresh()
+            self.break_out()
             return []
 
         self._reset_prompt(self.title)
@@ -71,7 +62,10 @@ class ImportPopup(Prompt):
                 else None
             )
             if not validate_unique_password(
-                self.cursor, password.description.decode(), username, self.user
+                    self.cursor,
+                    password.description.decode(),
+                    username,
+                    self.user
             ):
                 self.prompt_window.write_centered_text(
                     "File contains passwords that are/would be duplicate",
@@ -85,26 +79,16 @@ class ImportPopup(Prompt):
 
         if len(passwords) > 0:
             self._reset_prompt(self.title)
-            self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
+            self.prompt_window.write_bottom_center_text("- ↩ Continue -",
+                                                        (-1, 0))
             self.prompt_window.write_centered_text(
                 f"Imported {len(passwords)} passwords",
                 (-1, 0),
                 curses.A_BOLD,
             )
 
-        while True:
-            input_key = self.prompt_window().getch()
-            if input_key == Keys.ENTER:
-                break
-
-        self.prompt_window().clear()
-        self.prompt_window().refresh()
+        self._enter_dismiss_loop()
         return passwords
-
-    def initialize(self) -> None:
-        self.prompt_window().clear()
-        self.prompt_window().refresh()
-        self._reset_prompt(self.title)
 
     def _enter_target_file(self) -> str:
         self._reset_prompt(self.title)

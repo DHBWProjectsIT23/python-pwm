@@ -17,11 +17,11 @@ SINGLELINE_CTR_STR = "- ↩ Continue -"
 
 class PasswordEditPrompt(PasswordCreationPrompt):
     def __init__(
-        self,
-        parent: Panel,
-        user: User,
-        password_information: PasswordInformation,
-        cursor: sqlite3.Cursor,
+            self,
+            parent: Panel,
+            user: User,
+            password_information: PasswordInformation,
+            cursor: sqlite3.Cursor,
     ):
         super().__init__(parent, user, cursor)
         self.password_information = password_information
@@ -44,20 +44,21 @@ class PasswordEditPrompt(PasswordCreationPrompt):
                     if self.password_information.details.username
                     else ""
                 )
-                username = self._enter_username(initial_username, title=title + " 3/3")
+                username = self._enter_username(initial_username,
+                                                title=title + " 3/3")
                 old_username = (
                     self.password_information.details.username.decode()
                     if self.password_information.details.username
                     else None
                 )
                 if (
-                    description.encode() == self.password_information.description
-                    and username == old_username
+                        description.encode() == self.password_information.description
+                        and username == old_username
                 ):
                     break
 
                 if validate_unique_password(
-                    self.cursor, description, username, self.user
+                        self.cursor, description, username, self.user
                 ):
                     self.password_information.description = description.encode()
                     self.password_information.details.username = (

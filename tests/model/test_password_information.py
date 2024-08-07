@@ -6,8 +6,6 @@ from src.model.metadata import EncryptedMetadata
 from src.model.metadata import Metadata
 from src.model.password import Password
 from src.model.password_information import PasswordInformation
-from src.model.password_information import adapt_password_information
-from src.model.password_information import convert_password_information
 from src.model.user import User
 
 
@@ -19,7 +17,7 @@ class TestPasswordInformation(unittest.TestCase):
         info, pw, user = create_test_info()
         note = "This password is a test"
         info.set_note(note)
-        self.assertEqual(info.note, note)
+        self.assertEqual(info.details.note, note)
 
     def test_category_maximum(self):
         info, pw, user = create_test_info()
@@ -62,27 +60,6 @@ class TestPasswordInformation(unittest.TestCase):
             self.assertFalse(password.is_encrypted)
             self.assertTrue(isinstance(password.metadata, Metadata))
 
-    def test_adapter(self):
-        info, pw, user = create_test_info()
-        self.assertRaises(ValueError, adapt_password_information, info)
-        info.encrypt("FakeKey")
-        adapted = adapt_password_information(info)
-        decrypted = dummy_decrypt_fernet(adapted)
-        returned_info = pickle.loads(decrypted)
-        self.assertTrue(isinstance(returned_info, PasswordInformation))
-        self.assertEqual(pickle.dumps(info), pickle.dumps(returned_info))
-
-    def test_converter(self):
-        info, pw, user = create_test_info()
-        self.assertRaises(ValueError, adapt_password_information, info)
-        info.encrypt("FakeKey")
-        adapted = adapt_password_information(info)
-        decrypted = dummy_decrypt_fernet(adapted)
-        returned_info = pickle.loads(decrypted)
-        converted_info = convert_password_information(adapted)
-        self.assertTrue(isinstance(converted_info, PasswordInformation))
-        self.assertEqual(pickle.dumps(converted_info), pickle.dumps(returned_info))
-        self.assertEqual(pickle.dumps(converted_info), pickle.dumps(info))
 
 
 def create_test_info() -> tuple[PasswordInformation, Password, User]:

@@ -118,22 +118,24 @@ def clear_border(input_window: Window) -> None:
     input_window().refresh()
 
 
-def show_successful_login(input_window: Window) -> None:
-    success_message = " Registration successful! "
+def show_successful_register(input_window: Window) -> None:
+    register_success_message = " Registration successful! "
     input_window().addstr(
         6,
-        (35 // 2) - (len(success_message) // 2),
-        success_message,
+        (35 // 2) - (len(register_success_message) // 2),
+        register_success_message,
         curses.color_pair(3),
     )
     input_window().refresh()
 
 
-def show_failed_registration(input_window: Window, message: str) -> None:
+def show_failed_registration(
+    input_window: Window, register_failed_message: str
+) -> None:
     input_window().addstr(
         8,
-        (input_window.get_size()[1] // 2) - (len(message) // 2),
-        message,
+        (input_window.get_size()[1] // 2) - (len(register_failed_message) // 2),
+        register_failed_message,
         curses.color_pair(2),
     )
     input_window().refresh()

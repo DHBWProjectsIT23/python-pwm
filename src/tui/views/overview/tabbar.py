@@ -7,7 +7,10 @@ from src.tui.window import Window
 
 class Tabbar:
     def __init__(
-        self, parent: Window, tabs: dict[str, TabInterface], position: tuple[int, int]
+            self,
+            parent: Window,
+            tabs: dict[str, TabInterface],
+            position: tuple[int, int]
     ) -> None:
         length: int = 0
         for tab_title in tabs:
@@ -51,10 +54,17 @@ class Tabbar:
 
 class Tab:
     def __init__(
-        self, parent: Window, title: str, tab_content: TabInterface, position: int
+            self,
+            parent: Window,
+            title: str,
+            tab_content: TabInterface,
+            position: int
     ) -> None:
         self.title = title
-        self.window: Window = Window(parent().derwin(1, len(title) + 2, 0, position))
+        self.window: Window = Window(parent().derwin(1,
+                                                     len(title) + 2,
+                                                     0,
+                                                     position))
         self.tab_content: TabInterface = tab_content
 
         self.window.write_centered_text(self.title, attr=curses.A_UNDERLINE)

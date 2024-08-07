@@ -9,10 +9,8 @@ from src.model.password import Password
 from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.keys import Keys
-from src.tui.panel import Panel
 from src.tui.popup import create_centered_popup
-from src.tui.util import generate_control_str
-from src.tui.views.overview.controls_popup import ControlsPopup
+from src.tui.views.overview.controls_popup import ControlsPrompt
 from src.tui.views.overview.password_tab.add_password_prompt import (
     show_add_password_prompt,
 )
@@ -22,7 +20,8 @@ from src.tui.views.overview.password_tab.create_password_prompt import (
 from src.tui.views.overview.password_tab.delete_password_prompt import (
     DeletePasswordPrompt,
 )
-from src.tui.views.overview.password_tab.edit_password_prompt import PasswordEditPrompt
+from src.tui.views.overview.password_tab.edit_password_prompt import \
+    PasswordEditPrompt
 from src.tui.views.overview.password_tab.history_popup import HistoryPopup
 from src.tui.views.overview.password_tab.password_list import PasswordList
 from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
@@ -48,22 +47,18 @@ CONTROLS: dict["str", "str"] = {
 
 class PasswordTab(TabInterface):
     def __init__(
-        self,
-        window_size: tuple[int, int],
-        y_start: int,
-        user: User,
-        connection: sqlite3.Connection,
+            self,
+            window_size: tuple[int, int],
+            y_start: int,
+            user: User,
+            connection: sqlite3.Connection,
     ):
+        super().__init__(window_size, y_start, CONTROLS)
+
         self.user = user
         self.connection = connection
         self.cursor = self.connection.cursor()
         self.controls = CONTROLS
-
-        self.tab = Panel(
-            curses.panel.new_panel(
-                curses.newwin(window_size[0], window_size[1], y_start, 1)
-            )
-        )
 
         list_width = window_size[1]
 
@@ -73,7 +68,8 @@ class PasswordTab(TabInterface):
         self.tab().box()
 
         self.password_list = PasswordList(
-            self.list_window, retrieve_password_information(self.cursor, self.user)
+            self.list_window,
+            retrieve_password_information(self.cursor, self.user)
         )
         self._init_table_headings()
 
@@ -129,7 +125,7 @@ class PasswordTab(TabInterface):
             case Keys.S | Keys.S_LOWER:
                 self._handle_search_password_input()
             case Keys.QUESTION_MARK:
-                ControlsPopup(self.tab, self.controls).run()
+                ControlsPrompt(self.tab, self.controls).run()
                 self.refresh()
 
     def _handle_add_input(self) -> None:
@@ -145,9 +141,12 @@ class PasswordTab(TabInterface):
         self.refresh()
 
     def _handle_new_input(self) -> None:
-        new_password = PasswordCreationPrompt(self.tab, self.user, self.cursor).run()
+        new_password = PasswordCreationPrompt(self.tab,
+                                              self.user,
+                                              self.cursor).run()
         if new_password is not None:
-            new_password = insert_password_information(self.cursor, new_password)
+            new_password = insert_password_information(self.cursor,
+                                                       new_password)
             self.connection.commit()
             new_password.decrypt_data()
             self.password_list.add_item(new_password)
@@ -183,7 +182,10 @@ class PasswordTab(TabInterface):
 
     def _handle_delete_password_input(self) -> None:
         password = self.password_list.get_selected()
-        deleted = DeletePasswordPrompt(self.tab, self.user, password, self.cursor).run()
+        deleted = DeletePasswordPrompt(self.tab,
+                                       self.user,
+                                       password,
+                                       self.cursor).run()
         if deleted:
             self.connection.commit()
             self.reload_passwords()
@@ -205,6 +207,17 @@ class PasswordTab(TabInterface):
         self.password_list.items[selected].select()
         self.refresh()
 
+    def reload_passwords(self, search_string: Optional[str] = None) -> None:
+        passwords = retrieve_password_information(self.cursor, self.user)
+        if search_string is not None:
+            passwords = list(
+                filter(
+                    PasswordInformation.create_password_filter(search_string),
+                    passwords
+                )
+            )
+        self.password_list = PasswordList(self.list_window, passwords)
+
     def refresh(self) -> None:
         self.tab().box()
         self._display_controls()
@@ -212,26 +225,3 @@ class PasswordTab(TabInterface):
         self.list_window().refresh()
         self.password_list.refresh_selected()
         self.password_list.refresh()
-
-    def reload_passwords(self, search_string: Optional[str] = None) -> None:
-        passwords = retrieve_password_information(self.cursor, self.user)
-        if search_string is not None:
-            passwords = list(
-                filter(
-                    PasswordInformation.create_password_filter(search_string), passwords
-                )
-            )
-        self.password_list = PasswordList(self.list_window, passwords)
-
-    def _display_controls(self) -> None:
-        controls_str = generate_control_str(self.controls)
-        try:
-            self.tab.write_bottom_center_text(controls_str, (-1, 0))
-        except ValueError:
-            self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
-
-    def show(self) -> None:
-        self.tab.show()
-
-    def hide(self) -> None:
-        self.tab.hide()

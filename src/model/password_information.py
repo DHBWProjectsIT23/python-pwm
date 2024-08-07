@@ -31,11 +31,11 @@ class PasswordInformation:
     """
 
     def __init__(
-        self,
-        user: User,
-        password: Password,
-        description: str,
-        username: Optional[str] = None,
+            self,
+            user: User,
+            password: Password,
+            description: str,
+            username: Optional[str] = None,
     ):
         """
         Initializes PasswordInformation with given details.
@@ -131,7 +131,8 @@ class PasswordInformation:
             if category.encode() in self.details.categories:
                 raise ValueError("Category already exists")
 
-        self.details.categories.extend([category.encode() for category in categories])
+        self.details.categories.extend([category.encode() for category in
+                                        categories])
         self.metadata.modify()
 
     def modify(self) -> None:
@@ -221,7 +222,6 @@ class PasswordInformation:
             key (Optional[str]): The decryption key. If not provided, the user's
             clear password is used.
         """
-        key_bytes = b""
         if key is None:
             key = self.user.get_clear_password()
 
@@ -265,7 +265,8 @@ class PasswordInformation:
         self.decrypt_passwords()
 
         if not isinstance(self.metadata, Metadata):
-            raise EncryptionException("Can't convert to dict if metadata is encrypted")
+            raise EncryptionException(
+                "Can't convert to dict if metadata is encrypted")
 
         return {
             "description": self.description.decode(),
@@ -273,10 +274,12 @@ class PasswordInformation:
             "password": {
                 "current_password": self.passwords[-1].password_bytes.decode(),
                 "old_passwords": [
-                    password.password_bytes.decode() for password in self.passwords[:-1]
+                    password.password_bytes.decode() for password in
+                    self.passwords[:-1]
                 ],
             },
-            "categories": [category.decode() for category in self.details.categories],
+            "categories": [category.decode() for category in
+                           self.details.categories],
             "note": self.details.note.decode() if self.details.note else "",
             "created_at": self.metadata.created_at.timestamp(),
             "last_modified": self.metadata.last_modified.timestamp(),
@@ -284,7 +287,7 @@ class PasswordInformation:
 
     @classmethod
     def from_dict(
-        cls, data: PasswordInformationDict, user: User
+            cls, data: PasswordInformationDict, user: User
     ) -> PasswordInformation:
         """
         Creates a PasswordInformation instance from a dictionary.
@@ -304,8 +307,11 @@ class PasswordInformation:
         passwords = data["password"].get("old_passwords", [])
         passwords.append(current_password)
 
-        password_information = cls(user, Password("WILL_BE_CHANGED"), description)
-        password_information.passwords = [Password(password) for password in passwords]
+        password_information = cls(user,
+                                   Password("WILL_BE_CHANGED"),
+                                   description)
+        password_information.passwords = [Password(password) for password in
+                                          passwords]
 
         # Optional Data
         metadata = Metadata()
@@ -333,11 +339,11 @@ class PasswordInformation:
 
     @classmethod
     def from_db(
-        cls,
-        description: bytes,
-        details: tuple[Optional[bytes], list[bytes], Optional[bytes]],
-        passwords: list[Password],
-        user: User,
+            cls,
+            description: bytes,
+            details: tuple[Optional[bytes], list[bytes], Optional[bytes]],
+            passwords: list[Password],
+            user: User,
     ) -> PasswordInformation:
         password_information = cls(user, passwords[0], "")
         password_information.description = description
@@ -346,16 +352,16 @@ class PasswordInformation:
         password_information.details.categories = details[1]
         password_information.details.note = details[2]
         password_information.data_is_encrypted = True
-        password_information.decrypt_data()
         return password_information
 
     @staticmethod
     def create_password_filter(
-        search_string: str,
+            search_string: str,
     ) -> Callable[[PasswordInformation], bool]:
         def filter_passwords(password: PasswordInformation) -> bool:
             if password.data_is_encrypted:
-                raise EncryptionException("Data needs to be decrypted for searching")
+                raise EncryptionException(
+                    "Data needs to be decrypted for searching")
             if search_string.lower() in password.description.decode().lower():
                 return True
             for category in password.details.categories:
@@ -368,13 +374,17 @@ class PasswordInformation:
 
 class PasswordDetails:
     def __init__(
-        self, username: Optional[bytes], categories: list[bytes], note: Optional[bytes]
+            self,
+            username: Optional[bytes],
+            categories: list[bytes],
+            note: Optional[bytes]
     ):
         self.username = username
         self.categories = categories
         self.note = note
 
     def encrypt(self, key: bytes) -> None:
+        _ = key
         if self.username is not None:
             self.username = dummy_encrypt_fernet(self.username)
 
@@ -386,6 +396,7 @@ class PasswordDetails:
         ]
 
     def decrypt(self, key: bytes) -> None:
+        _ = key
         if self.username is not None:
             self.username = dummy_decrypt_fernet(self.username)
 

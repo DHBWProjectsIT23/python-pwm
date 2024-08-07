@@ -1,37 +1,29 @@
 import curses
 
-from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.prompt import SimplePrompt
 
 
-class ControlsPopup:
+class ControlsPrompt(SimplePrompt):
     def __init__(self, parent: Panel, controls: dict[str, str]):
         self.controls = controls
-
         height = len(controls) + 5
-        width = max((len(f"{key} {value}") for key, value in self.controls.items())) + 5
-        self.value_inset = max(len(key) for key in self.controls.keys()) + 3
+        width = max((len(f"{key} {value}") for key, value in
+                     self.controls.items())) + 5
+        super().__init__(parent, (height, width))
 
-        self.popup = Prompt.create_prompt_with_padding(parent, (height, width))
+        self.value_inset = max(len(key) for key in self.controls.keys()) + 3
 
     def run(self) -> None:
         self.popup().box()
-        self.popup().addstr(0, 0, "Controls", curses.A_BOLD | curses.color_pair(3))
+        self.popup().addstr(0,
+                            0,
+                            "Controls",
+                            curses.A_BOLD | curses.color_pair(3))
         self.popup.write_bottom_center_text("- ESC Dismiss -")
 
         for i, (key, value) in enumerate(self.controls.items()):
             self.popup().addstr(i + 2, 2, key)
             self.popup().addstr(i + 2, self.value_inset, value)
 
-        self.popup().refresh()
-
-        while True:
-            key_input = self.popup().getch()
-            if key_input == Keys.ESCAPE:
-                self.break_out()
-                break
-
-    def break_out(self) -> None:
-        self.popup().clear()
-        self.popup().refresh()
+        self.enter_dismiss_loop()

@@ -11,7 +11,7 @@ from src.model.user import User
 
 
 def retrieve_password_information(
-    cursor: sqlite3.Cursor, user: User
+        cursor: sqlite3.Cursor, user: User
 ) -> list[PasswordInformation]:
     """
     Retrieves password information for a given user from the database.
@@ -52,13 +52,14 @@ def retrieve_password_information(
         )
         pw_info.id = password_id
         pw_info.metadata = metadata
+        pw_info.decrypt_data()
         password_informations.append(pw_info)
 
     return password_informations
 
 
 def update_password_information(
-    cursor: sqlite3.Cursor, password_information: PasswordInformation
+        cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     """
     Updates existing password information in the database.
@@ -101,7 +102,10 @@ def update_password_information(
 
 
 def validate_unique_password(
-    cursor: sqlite3.Cursor, description: str, username: Optional[str], user: User
+        cursor: sqlite3.Cursor,
+        description: str,
+        username: Optional[str],
+        user: User
 ) -> bool:
     """
     Validates that a password with the given description and username is
@@ -139,7 +143,7 @@ def validate_unique_password(
 
 
 def delete_password_information(
-    cursor: sqlite3.Cursor, password_information: PasswordInformation
+        cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     cursor.execute(
         """
@@ -149,7 +153,8 @@ def delete_password_information(
     )
 
 
-def delete_password_information_of_user(cursor: sqlite3.Cursor, user: User) -> None:
+def delete_password_information_of_user(cursor: sqlite3.Cursor,
+                                        user: User) -> None:
     cursor.execute(
         """
         DELETE FROM passwords WHERE user=?
@@ -159,7 +164,7 @@ def delete_password_information_of_user(cursor: sqlite3.Cursor, user: User) -> N
 
 
 def insert_password_information(
-    cursor: sqlite3.Cursor, password_information: PasswordInformation
+        cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> PasswordInformation:
     """
     Inserts new password information into the database.

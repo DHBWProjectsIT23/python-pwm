@@ -1,10 +1,5 @@
 [MAIN]
 
-disable=
-        C0114,
-        C0115,
-        C0116
-
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
 # only in one or another interpreter, leading to false positives when analysed.
@@ -101,7 +96,7 @@ prefer-stubs=no
 py-version=3.11
 
 # Discover python modules and packages in the file system subtree.
-recursive=yes
+recursive=no
 
 # Add paths to the list of the source roots. Supports globbing patterns. The
 # source root is an absolute path or a path relative to the current working

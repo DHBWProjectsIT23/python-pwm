@@ -75,7 +75,9 @@ def print_centered_logo(window: Window, offset: tuple[int, int]) -> None:
 
     window.write_centered_multiline_text(logo, offset, curses.color_pair(5))
     window.write_centered_text(
-        logo_caption, (-5, 0), curses.color_pair(5) | curses.A_BOLD | curses.A_REVERSE
+        logo_caption,
+        (-5, 0),
+        curses.color_pair(5) | curses.A_BOLD | curses.A_REVERSE
     )
     window().refresh()
 

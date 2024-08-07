@@ -23,7 +23,9 @@ else:
 
 
 class PasswordList:
-    def __init__(self, parent: Window, passwords: list[PasswordInformation]) -> None:
+    def __init__(self,
+                 parent: Window,
+                 passwords: list[PasswordInformation]) -> None:
         parent_beg = parent().getbegyx()
         self.pad_beg = parent_beg[0] + 3, parent_beg[1] + 1
         self.parent_max = parent().getmaxyx()
@@ -43,7 +45,10 @@ class PasswordList:
 
         for i, password in enumerate(passwords):
             self.items.append(
-                ListItem(password, i, self.calculate_columns(self.parent_max[1]), self)
+                ListItem(password,
+                         i,
+                         self.calculate_columns(self.parent_max[1]),
+                         self)
             )
 
         if len(self.items) > 0:
@@ -51,7 +56,8 @@ class PasswordList:
         self.refresh()
 
     def add_item(self, password: PasswordInformation) -> None:
-        size = self.pad_end[0] - self.pad_beg[0], self.pad_end[1] - self.pad_beg[1]
+        size = self.pad_end[0] - self.pad_beg[0], self.pad_end[1] - \
+               self.pad_beg[1]
         self.pad.resize(size[0] + 50, size[1])
         self.items.append(
             ListItem(
@@ -89,7 +95,8 @@ class PasswordList:
         self.items[self.selected].select()
 
         if self.selected <= len(self.items) - 4:
-            if self.selected > self.position + self.pad_end[0] - self.pad_beg[0] - 3:
+            if self.selected > self.position + self.pad_end[0] - self.pad_beg[
+                0] - 3:
                 self.scroll_down()
 
         self.refresh()
@@ -142,7 +149,8 @@ class PasswordList:
 
     async def check_all(self) -> None:
         async with asyncio.TaskGroup() as tg:
-            tasks = [tg.create_task(item.display_status()) for item in self.items]
+            tasks = [tg.create_task(item.display_status()) for item in
+                     self.items]
             await asyncio.gather(*tasks)
         self.refresh()
 
@@ -157,11 +165,11 @@ class PasswordList:
 
 class ListItem:
     def __init__(
-        self,
-        password: PasswordInformation,
-        position: int,
-        column_width: tuple[int, int, int, int],
-        parent_list: PasswordList,
+            self,
+            password: PasswordInformation,
+            position: int,
+            column_width: tuple[int, int, int, int],
+            parent_list: PasswordList,
     ) -> None:
         self.pad = parent_list.pad
         self.position = position
@@ -209,16 +217,23 @@ class ListItem:
         )
 
     async def display_status(self) -> None:
-        status_col = self.col_width[0] + self.col_width[1] + self.col_width[2] + 1
+        status_col = self.col_width[0] + self.col_width[1] + self.col_width[
+            2] + 1
         self.pad.addstr(self.position, status_col, "⧖", curses.color_pair(3))
 
         occurences = await self.password.check_pwned_status()
 
         if occurences == 0:
-            self.pad.addstr(self.position, status_col, "✓", curses.color_pair(3))
+            self.pad.addstr(self.position,
+                            status_col,
+                            "✓",
+                            curses.color_pair(3))
         else:
             self.pad.addstr(
-                self.position, status_col, f"⚠ {occurences}", curses.color_pair(2)
+                self.position,
+                status_col,
+                f"⚠ {occurences}",
+                curses.color_pair(2)
             )
 
     def select(self) -> None:

@@ -1,26 +1,25 @@
 import curses
 
 from src.model.password_information import PasswordInformation
-from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.tui.views.overview.prompt import Prompt
+from src.tui.views.overview.prompt import SimplePrompt
 
 
-class HistoryPopup:
+class HistoryPopup(SimplePrompt):
     def __init__(self, parent: Panel, password: PasswordInformation):
         self.password = password
         height = len(self.password.passwords[-10:]) + 7
         self.password.decrypt_passwords()
         width = (
-            max(
-                (
-                    len(password.password_bytes.decode())
-                    for password in self.password.passwords
+                max(
+                    (
+                        len(password.password_bytes.decode())
+                        for password in self.password.passwords
+                    )
                 )
-            )
-            + 10
+                + 10
         )
-        self.popup = Prompt.create_prompt_with_padding(parent, (height, width))
+        super().__init__(parent, (height, width))
 
     def run(self) -> None:
         self.popup().box()
@@ -36,14 +35,4 @@ class HistoryPopup:
             self.popup().addstr(i + 2, 2, f"{i + 1}")
             self.popup().addstr(i + 2, 5, password.password_bytes.decode())
 
-        self.popup().refresh()
-
-        while True:
-            key_input = self.popup().getch()
-            if key_input == Keys.ESCAPE:
-                self.break_out()
-                break
-
-    def break_out(self) -> None:
-        self.popup().clear()
-        self.popup().refresh()
+        self.enter_dismiss_loop()

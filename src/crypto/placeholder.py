@@ -12,7 +12,6 @@ def dummy_decrypt_fernet(data: bytes) -> bytes:
     f = Fernet(KEY)
     return f.decrypt(data)
 
-
 # def encrypt_password_aes256(password: bytes) -> tuple[bytes, CipherContext]:
 #     """
 #     PLACEHOLDER WITH CHAT-GPT - MIGHT NOT BE CORRECT!

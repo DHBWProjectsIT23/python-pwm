@@ -43,7 +43,7 @@ class Window:
         return (height // 2), (width // 2)
 
     def write_centered_text(
-        self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
+            self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
     ) -> None:
         """
         Writes a string of text centered in the window with an optional offset
@@ -70,7 +70,7 @@ class Window:
         self.window.addstr(y, (x - (text_length // 2)), text, attr)
 
     def write_bottom_center_text(
-        self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
+            self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
     ) -> None:
         """
         Writes a string of text centered horizontally at the bottom of the
@@ -86,10 +86,12 @@ class Window:
                                   text. Defaults to 0.
         """
         bottom_line = (self.get_size()[0] // 2) - 1
-        self.write_centered_text(text, (bottom_line + offset[0], offset[1]), attr)
+        self.write_centered_text(text,
+                                 (bottom_line + offset[0], offset[1]),
+                                 attr)
 
     def write_centered_multiline_text(
-        self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
+            self, text: str, offset: tuple[int, int] = (0, 0), attr: int = 0
     ) -> None:
         """
         Writes multiline text centered in the window with an optional offset

@@ -9,7 +9,8 @@ from src.model.password_information import PasswordInformation
 from src.model.user import User
 
 
-async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
+async def run_cli(connection: sqlite3.Connection,
+                  cursor: sqlite3.Cursor) -> None:
     """
     Executes the CLI operations for managing users and passwords.
 
@@ -32,12 +33,14 @@ async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> Non
     # for p in pws:
     #     print(p)
     # send_auth_mail("simon21.blum@gmail.com", "513")
+    _ = connection
     user = User.new("test", "test")
     user.set_clear_password("test")
     pws = retrieve_password_information(cursor, user)
     print(len(pws))
     pws = list(
-        filter(PasswordInformation.create_password_filter("www.github.com"), pws)
+        filter(PasswordInformation.create_password_filter("www.github.com"),
+               pws)
     )
     print(len(pws))
 

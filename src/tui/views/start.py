@@ -48,7 +48,9 @@ def show_start(window: Window) -> int:
                 sys.exit(1)
 
 
-def init_menu_option(parent: Window, text: str, position: tuple[int, int]) -> Window:
+def init_menu_option(parent: Window,
+                     text: str,
+                     position: tuple[int, int]) -> Window:
     item_window = create_popup(
         parent, position[0], position[1], MENU_ITEM_SIZE[0], MENU_ITEM_SIZE[1]
     )

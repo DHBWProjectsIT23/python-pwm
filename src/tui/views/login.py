@@ -66,11 +66,11 @@ def init_input_window(parent: Window) -> Window:
 
 
 def show_successful_login(input_window: Window) -> None:
-    success_message = " Login successful! "
+    login_success_message = " Login successful! "
     input_window().addstr(
         6,
-        (35 // 2) - (len(success_message) // 2),
-        success_message,
+        (35 // 2) - (len(login_success_message) // 2),
+        login_success_message,
         curses.color_pair(3),
     )
     input_window().refresh()

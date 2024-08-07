@@ -24,7 +24,8 @@ SINGLELINE_CTR_STR = "- ↩ Continue - ^E Cancel -"
 class PasswordCreationPrompt(Prompt):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
         super().__init__(parent, user, cursor)
-        self.prompt = show_select_generated_prompt(self.parent, "New Password")[1]
+        self.prompt = show_select_generated_prompt(self.parent, "New Password")[
+            1]
         self.tile = "New Password"
 
     def run(self) -> Optional[PasswordInformation]:
@@ -47,12 +48,13 @@ class PasswordCreationPrompt(Prompt):
                 username = self._enter_username(title=self.title + " 3/6")
 
                 if validate_unique_password(
-                    self.cursor, description, username, self.user
+                        self.cursor, description, username, self.user
                 ):
                     break
                 initial_error = "Identical combination already exists"
 
-            password = self._enter_password(password_str, title=self.title + " 4/6")
+            password = self._enter_password(password_str,
+                                            title=self.title + " 4/6")
             if password is None:
                 self.break_out()
                 return None
@@ -75,7 +77,11 @@ class PasswordCreationPrompt(Prompt):
             return None
 
     def _enter_description(
-        self, initial_error: str = "", initial_description: str = "", *, title: str
+            self,
+            initial_error: str = "",
+            initial_description: str = "",
+            *,
+            title: str
     ) -> str:
         self._reset_prompt(title)
         if len(initial_error) > 0:
@@ -83,7 +89,10 @@ class PasswordCreationPrompt(Prompt):
         self.prompt().addstr(2, 2, "Description:", curses.A_UNDERLINE)
         self.prompt().addstr(4, 2, initial_description)
         self.prompt().addstr(
-            6, 2, "Description/Username combination must be unique", curses.A_ITALIC
+            6,
+            2,
+            "Description/Username combination must be unique",
+            curses.A_ITALIC
         )
         self.prompt.write_bottom_center_text(SINGLELINE_CTR_STR, (-1, 0))
         desc_textbox, _ = self._create_textbox((1, 32), (4, 2))
@@ -99,7 +108,7 @@ class PasswordCreationPrompt(Prompt):
             return description
 
     def _enter_username(
-        self, initial_username: str = "", *, title: str = ""
+            self, initial_username: str = "", *, title: str = ""
     ) -> Optional[str]:
         self._reset_prompt(title)
 
@@ -107,7 +116,10 @@ class PasswordCreationPrompt(Prompt):
         self.prompt().addstr(2, 2, "Optional - Username:", curses.A_UNDERLINE)
         self.prompt().addstr(4, 2, initial_username)
         self.prompt().addstr(
-            6, 2, "Description/Username combination must be unique", curses.A_ITALIC
+            6,
+            2,
+            "Description/Username combination must be unique",
+            curses.A_ITALIC
         )
         self.prompt.write_bottom_center_text(SINGLELINE_CTR_STR, (-1, 0))
         username_textbox, _ = self._create_textbox((1, 32), (4, 2))
@@ -118,7 +130,8 @@ class PasswordCreationPrompt(Prompt):
         username = username_textbox.gather().strip()
         return username if len(username) > 0 else None
 
-    def _enter_password(self, password: str, *, title: str) -> Optional[Password]:
+    def _enter_password(self, password: str, *, title: str) -> Optional[
+        Password]:
         password_str = add_password_prompt.show_password_input(
             self.prompt, None, password, title
         )
@@ -128,7 +141,10 @@ class PasswordCreationPrompt(Prompt):
         return Password(password_str)
 
     def _enter_categories(
-        self, initial_categories: Optional[list[str]] = None, *, title: str = ""
+            self,
+            initial_categories: Optional[list[str]] = None,
+            *,
+            title: str = ""
     ) -> list[str]:
         if initial_categories is None:
             initial_categories = []
@@ -144,7 +160,8 @@ class PasswordCreationPrompt(Prompt):
         )
         self.prompt.write_bottom_center_text(MULTILINE_CTR_STR, (-1, 0))
 
-        category_textbox, category_window = self._create_textbox((2, 32), (3, 2))
+        category_textbox, category_window = self._create_textbox((2, 32),
+                                                                 (3, 2))
         if len(initial_categories) > 0:
             category_window.addstr(0, 0, ", ".join(initial_categories))
         category_textbox.do_command(CONTROL_E)
@@ -156,15 +173,17 @@ class PasswordCreationPrompt(Prompt):
 
             # Validate Categories:
             categories: list[str] = category_text.split(",")
-            categories = list({category.lower().strip() for category in categories})
+            categories = list({category.lower().strip() for category in
+                               categories})
             if len(categories) > 5:
-                self._write_error("Please enter a maximum of 5 Categories", title)
+                self._write_error("Please enter a maximum of 5 Categories",
+                                  title)
                 continue
 
             return categories
 
     def _enter_note(
-        self, initial_note: Optional[str] = None, *, title: str
+            self, initial_note: Optional[str] = None, *, title: str
     ) -> Optional[str]:
         self._reset_prompt(title)
         self.prompt().addstr(

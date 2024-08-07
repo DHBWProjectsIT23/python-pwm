@@ -6,7 +6,9 @@ from src.model.password import Password
 from src.model.user import User
 
 
-def validate_login(cursor: sqlite3.Cursor, username: str, password: str) -> bool:
+def validate_login(cursor: sqlite3.Cursor,
+                   username: str,
+                   password: str) -> bool:
     """
     Validates the login credentials of a user by username and password.
 
@@ -18,11 +20,13 @@ def validate_login(cursor: sqlite3.Cursor, username: str, password: str) -> bool
     Returns:
         bool: True if the credentials are valid, False otherwise.
     """
-    return validate_login_hashed(cursor, hash_sha256(username.encode()), password)
+    return validate_login_hashed(cursor,
+                                 hash_sha256(username.encode()),
+                                 password)
 
 
 def validate_login_hashed(
-    cursor: sqlite3.Cursor, username: bytes, password: str
+        cursor: sqlite3.Cursor, username: bytes, password: str
 ) -> bool:
     """
     Validates the login credentials of a user by hashed username and password.
@@ -37,8 +41,8 @@ def validate_login_hashed(
     """
     try:
         return (
-            hash_sha256(password.encode())
-            == retrieve_user_by_hash(cursor, username).password()
+                hash_sha256(password.encode())
+                == retrieve_user_by_hash(cursor, username).password()
         )
     except ValueError:
         return False
@@ -113,10 +117,10 @@ def retrieve_user_by_name(cursor: sqlite3.Cursor, username: str) -> User:
 
 
 def update_user(
-    cursor: sqlite3.Cursor, user: User, new_username: Optional[bytes] = None
+        cursor: sqlite3.Cursor, user: User, old_username: Optional[bytes] = None
 ) -> None:
-    if new_username is None:
-        new_username = user.username
+    if old_username is None:
+        old_username = user.username
     cursor.execute(
         """
         UPDATE users
@@ -124,7 +128,7 @@ def update_user(
             password = ?
         WHERE username = ?
         """,
-        (new_username, user.password, user.username),
+        (user.username, user.password, old_username),
     )
 
 

@@ -29,6 +29,7 @@ class Password:
             EncryptionException: If the password is a master password or is
             already encrypted.
         """
+        _ = key
         if self.is_master:
             raise EncryptionException("Master password can't be encrypted")
         if self.is_encrypted:
@@ -47,6 +48,7 @@ class Password:
             EncryptionException: If the password is a master password or is not
             encrypted.
         """
+        _ = key
         if self.is_master:
             raise EncryptionException("Master password can't be decrypted")
         if not self.is_encrypted:

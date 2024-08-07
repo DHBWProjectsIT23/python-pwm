@@ -1,3 +1,11 @@
+# pylint: disable=E1101
+# Appears to be bugged, changes were recently merged for astroid 3.3.0
+# However as of now 3.2.4 is used
+# Reference:
+#   Pylint issue: https://github.com/pylint-dev/pylint/issues/7126
+#   Astroid pull request: https://github.com/pylint-dev/astroid/pull/2431
+#   Pylint Documentation:
+#       https://pylint.readthedocs.io/en/latest/user_guide/messages/error/no-member.html
 import json
 
 from src.exceptions.import_exception import ImportException
@@ -75,11 +83,11 @@ def check_invalid_keys(data_list: list[PasswordInformationDict]) -> None:
         are invalid.
     """
     allowed_keys = (
-        PasswordInformationDict.__required_keys__
-        | PasswordInformationDict.__optional_keys__
+            PasswordInformationDict.__required_keys__
+            | PasswordInformationDict.__optional_keys__
     )
     allowed_password_keys = (
-        PasswordDict.__required_keys__ | PasswordDict.__optional_keys__
+            PasswordDict.__required_keys__ | PasswordDict.__optional_keys__
     )
 
     for i, item in enumerate(data_list):
@@ -90,7 +98,7 @@ def check_invalid_keys(data_list: list[PasswordInformationDict]) -> None:
         invalid_password_keys = item["password"].keys() - allowed_password_keys
         if len(invalid_password_keys) != 0:
             raise ImportException(
-                f"""Item {i + 1} contains invalid password keys 
+                f"""Item {i + 1} contains invalid password keys
                 {invalid_password_keys}""".replace(
                     "\n", " "
                 )

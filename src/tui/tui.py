@@ -35,7 +35,9 @@ def main(stdscr: CursesWindow) -> None:
 
 
 async def run_tui(
-    stdscr: CursesWindow, connection: sqlite3.Connection, cursor: sqlite3.Cursor
+        stdscr: CursesWindow,
+        connection: sqlite3.Connection,
+        cursor: sqlite3.Cursor
 ) -> None:
     """
     Runs the terminal user interface (TUI) in an asynchronous context. Handles

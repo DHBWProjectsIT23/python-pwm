@@ -50,7 +50,7 @@ async def display_pwned(password: PasswordInformation, popup: Window) -> None:
 
 
 def display_metadata(
-    line_amount: int, password: PasswordInformation, popup: Window
+        line_amount: int, password: PasswordInformation, popup: Window
 ) -> None:
     y = popup().getyx()[0] + line_amount
     metadata = password.metadata
@@ -89,7 +89,7 @@ def display_categories(password: PasswordInformation, popup: Window) -> None:
 
 
 def display_basic_infos(
-    password: PasswordInformation, popup: Window, title: str
+        password: PasswordInformation, popup: Window, title: str
 ) -> None:
     popup().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
     popup().addstr(2, 1, "Description:", curses.A_UNDERLINE)

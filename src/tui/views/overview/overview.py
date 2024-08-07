@@ -17,7 +17,7 @@ CONTROLS: dict[str, str] = {"⇆": "Change Tab", "q": "Quit"}
 
 
 async def show_overview(
-    window: Window, connection: sqlite3.Connection, user: User
+        window: Window, connection: sqlite3.Connection, user: User
 ) -> None:
     curses.curs_set(False)
     screen_size = window.get_size()
@@ -29,7 +29,10 @@ async def show_overview(
     user_tab = UserTab(window_size, y_start, user, connection)
     io_tab = IoTab(window_size, y_start, user, connection)
 
-    tabs = {"Passwords": password_tab, "User": user_tab, "Import/Export": io_tab}
+    tabs = {
+        "Passwords": password_tab,
+        "User": user_tab,
+        "Import/Export": io_tab}
 
     _, tabbar = init_top_window(window, screen_size, tabs)
 
@@ -59,7 +62,9 @@ async def show_overview(
 
 
 def init_top_window(
-    parent: Window, screen_size: tuple[int, int], tabs: dict[str, TabInterface]
+        parent: Window,
+        screen_size: tuple[int, int],
+        tabs: dict[str, TabInterface]
 ) -> tuple[Window, Tabbar]:
     top_window_height = percentage_of(15, screen_size[0]) - 1
     top_window = Window(

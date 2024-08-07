@@ -11,10 +11,10 @@ from src.tui.views.overview.prompt import Prompt
 
 class DeleteUserPrompt(Prompt):
     def __init__(
-        self,
-        parent: Panel,
-        user: User,
-        cursor: sqlite3.Cursor,
+            self,
+            parent: Panel,
+            user: User,
+            cursor: sqlite3.Cursor,
     ) -> None:
         super().__init__(parent, user, cursor)
         self.title = "Delete User"
@@ -33,7 +33,8 @@ class DeleteUserPrompt(Prompt):
         self.prompt_window.write_centered_text(
             "User deleted succesfully!", attr=curses.A_BOLD
         )
-        self.prompt_window.write_bottom_center_text("- ↩ Exit Application -", (-1, 0))
+        self.prompt_window.write_bottom_center_text("- ↩ Exit Application -",
+                                                    (-1, 0))
         while True:
             input_key = self.prompt_window().getch()
             if input_key == Keys.ENTER:
