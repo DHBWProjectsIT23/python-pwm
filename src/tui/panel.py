@@ -24,7 +24,7 @@ class Panel(Window):
     """
 
     def __init__(self, panel: CursesPanel) -> None:
-        super().__init__(panel.curses_window())
+        super().__init__(panel.window())
         self.panel = panel
 
     def show(self) -> None:
