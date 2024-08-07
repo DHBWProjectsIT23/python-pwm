@@ -2,13 +2,12 @@ import pickle
 import unittest
 
 from src.crypto.placeholder import dummy_decrypt_fernet
-from src.model.metadata import EncryptedMetadata, Metadata
-from src.model.password import Password, convert_password
-from src.model.password_information import (
-    PasswordInformation,
-    adapt_password_information,
-    convert_password_information,
-)
+from src.model.metadata import EncryptedMetadata
+from src.model.metadata import Metadata
+from src.model.password import Password
+from src.model.password_information import PasswordInformation
+from src.model.password_information import adapt_password_information
+from src.model.password_information import convert_password_information
 from src.model.user import User
 
 

@@ -1,8 +1,8 @@
 import pickle
-from typing import Optional
 
 from src.crypto.hashing import hash_sha256
-from src.crypto.placeholder import dummy_decrypt_fernet, dummy_encrypt_fernet
+from src.crypto.placeholder import dummy_decrypt_fernet
+from src.crypto.placeholder import dummy_encrypt_fernet
 from src.exceptions.encryption_exception import EncryptionException
 
 
@@ -15,7 +15,7 @@ class Password:
             password (str): The password to be stored, in plaintext.
         """
         self.is_encrypted: bool = False
-        self.password: bytes = password.encode()
+        self.password_bytes: bytes = password.encode()
         self.is_master = False
 
     def encrypt(self, key: bytes) -> None:
@@ -26,7 +26,8 @@ class Password:
             key (bytes): The encryption key.
 
         Raises:
-            EncryptionException: If the password is a master password or is already encrypted.
+            EncryptionException: If the password is a master password or is
+            already encrypted.
         """
         if self.is_master:
             raise EncryptionException("Master password can't be encrypted")
@@ -43,7 +44,8 @@ class Password:
             key (bytes): The decryption key.
 
         Raises:
-            EncryptionException: If the password is a master password or is not encrypted.
+            EncryptionException: If the password is a master password or is not
+            encrypted.
         """
         if self.is_master:
             raise EncryptionException("Master password can't be decrypted")
@@ -56,29 +58,28 @@ class Password:
         """
         Performs the actual decryption of the password.
         """
-        self.password = dummy_encrypt_fernet(self.password)
-        # raise NotImplementedError
+        self.password_bytes = dummy_encrypt_fernet(self.password_bytes)
 
     def _decrypt_password(self) -> None:
         """
         Performs the actual decryption of the password.
         """
-        self.password = dummy_decrypt_fernet(self.password)
-        # raise NotImplementedError
+        self.password_bytes = dummy_decrypt_fernet(self.password_bytes)
 
     def make_master(self) -> None:
         """
         Marks the password as a master password by hashing it.
 
         Raises:
-            ValueError: If the password is already a master password or is encrypted.
+            ValueError: If the password is already a master password or is
+            encrypted.
         """
         if self.is_master:
             raise ValueError("Password is already master")
         if self.is_encrypted:
             raise ValueError("Password is encrypted")
 
-        self.password = hash_sha256(self.password)
+        self.password_bytes = hash_sha256(self.password_bytes)
         self.is_master = True
 
     def __call__(self) -> bytes:
@@ -88,7 +89,7 @@ class Password:
         Returns:
             bytes: The password in its current form (encrypted or plaintext).
         """
-        return self.password
+        return self.password_bytes
 
 
 def adapt_password(password: Password) -> bytes:
@@ -102,7 +103,8 @@ def adapt_password(password: Password) -> bytes:
         bytes: The serialized Password instance.
 
     Raises:
-        TypeError: If the Password instance is neither encrypted nor a master password.
+        TypeError: If the Password instance is neither encrypted nor a master
+        password.
     """
     if not password.is_encrypted and not password.is_master:
         raise TypeError("Password is not encrypted")

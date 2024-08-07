@@ -1,4 +1,3 @@
-import curses
 import sys
 
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException

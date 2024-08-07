@@ -1,6 +1,5 @@
 import curses
-from curses.textpad import rectangle
-from src.tui.keys import Keys
+
 from src.tui.panel import Panel
 from src.tui.popup import create_centered_popup
 from src.tui.window import Window
@@ -48,25 +47,25 @@ class ImportExportMenu:
             raise ValueError("Invalid menu choice")
 
     def _select_import(self) -> None:
-        self.import_button.writeCenteredText(self.import_text)
+        self.import_button.write_centered_text(self.import_text)
         self.import_button().box()
         self.import_button().bkgd(" ", curses.A_REVERSE)
         self.import_button().refresh()
 
     def _deselect_import(self) -> None:
-        self.import_button.writeCenteredText(self.import_text)
+        self.import_button.write_centered_text(self.import_text)
         self.import_button().box()
         self.import_button().bkgd(" ")
         self.import_button().refresh()
 
     def _select_export(self) -> None:
-        self.export_button.writeCenteredText(self.export_text)
+        self.export_button.write_centered_text(self.export_text)
         self.export_button().box()
         self.export_button().bkgd(" ", curses.A_REVERSE)
         self.export_button().refresh()
 
     def _deselect_export(self) -> None:
-        self.export_button.writeCenteredText(self.export_text)
+        self.export_button.write_centered_text(self.export_text)
         self.export_button().box()
         self.export_button().bkgd(" ")
         self.export_button().refresh()

@@ -1,15 +1,15 @@
 from cryptography.fernet import Fernet
 
-key = b"NsnezLc_TNwg9XFD3roUsS-Wd9jbGKRln7-kGtCw2nM="
+KEY = b"NsnezLc_TNwg9XFD3roUsS-Wd9jbGKRln7-kGtCw2nM="
 
 
 def dummy_encrypt_fernet(data: bytes) -> bytes:
-    f = Fernet(key)
+    f = Fernet(KEY)
     return f.encrypt(data)
 
 
 def dummy_decrypt_fernet(data: bytes) -> bytes:
-    f = Fernet(key)
+    f = Fernet(KEY)
     return f.decrypt(data)
 
 

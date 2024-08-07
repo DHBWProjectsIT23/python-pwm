@@ -1,12 +1,14 @@
 from __future__ import annotations
+
 import asyncio
 import curses
+from typing import TYPE_CHECKING
 
 from src.model.password_information import PasswordInformation
+from src.tui.util import pad_with
+from src.tui.util import percentage_of
+from src.tui.util import shorten_str
 from src.tui.window import Window
-from src.tui.util import percentage_of, shorten_str, pad_with
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from _curses import _CursesWindow
@@ -86,10 +88,9 @@ class PasswordList:
 
         self.items[self.selected].select()
 
-        if self.selected > len(self.items) - 4:
-            pass
-        elif self.selected > self.position + self.pad_end[0] - self.pad_beg[0] - 3:
-            self.scroll_down()
+        if self.selected <= len(self.items) - 4:
+            if self.selected > self.position + self.pad_end[0] - self.pad_beg[0] - 3:
+                self.scroll_down()
 
         self.refresh()
 
@@ -145,9 +146,6 @@ class PasswordList:
             await asyncio.gather(*tasks)
         self.refresh()
 
-    # async def _process_item_with_spinner(self, item: ListItem):
-    #     await item.display_status()
-
     @staticmethod
     def calculate_columns(parent_max_x: int) -> tuple[int, int, int, int]:
         col_1 = percentage_of(35, parent_max_x - 2)
@@ -188,7 +186,7 @@ class ListItem:
         self.pad.addstr(self.position, 0, description, attr)
 
     def display_username(self, attr: int = 0) -> None:
-        username_bytes = self.password.username
+        username_bytes = self.password.details.username
         username = "-"
         if username_bytes is not None:
             username = username_bytes.decode()
@@ -201,7 +199,7 @@ class ListItem:
         password = 10 * "*"
         if self.showing_pass:
             self.password.decrypt_passwords()
-            password = self.password.passwords[-1].password.decode()
+            password = self.password.passwords[-1].password_bytes.decode()
             if len(password) > self.col_width[2]:
                 password = shorten_str(password, self.col_width[2])
 

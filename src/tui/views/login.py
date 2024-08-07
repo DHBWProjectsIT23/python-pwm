@@ -2,9 +2,9 @@ import curses
 import sqlite3
 from curses.textpad import Textbox
 
-from src.controller.user import retrieve_user_by_name, validate_login
+from src.controller.user import retrieve_user_by_name
+from src.controller.user import validate_login
 from src.model.user import User
-
 from ..input_validator import InputValidator
 from ..popup import create_centered_popup
 from ..util import print_centered_logo
@@ -60,7 +60,7 @@ def init_input_window(parent: Window) -> Window:
     input_window().addstr(0, 0, "Login", curses.A_BOLD)
     input_window().addstr(2, 2, "Username:")
     input_window().addstr(4, 2, "Password:")
-    parent.writeBottomCenterText("- ↲ Continue - ^L Quit - ")
+    parent.write_bottom_center_text("- ↲ Continue - ^L Quit - ")
     parent().refresh()
     return input_window
 

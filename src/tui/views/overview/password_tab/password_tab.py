@@ -1,34 +1,34 @@
 import curses
 import sqlite3
-from src.tui.keys import Keys
+from typing import Optional
+
+from src.controller.password import insert_password_information
+from src.controller.password import retrieve_password_information
+from src.controller.password import update_password_information
+from src.model.password import Password
 from src.model.password_information import PasswordInformation
+from src.model.user import User
+from src.tui.keys import Keys
+from src.tui.panel import Panel
+from src.tui.popup import create_centered_popup
 from src.tui.util import generate_control_str
 from src.tui.views.overview.controls_popup import ControlsPopup
-from src.tui.views.overview.password_tab.delete_password_prompt import (
-    DeletePasswordPrompt,
-)
-from src.tui.views.overview.password_tab.history_popup import HistoryPopup
-from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
-from src.tui.views.overview.tab_interface import TabInterface
-from src.tui.window import Window
-from src.tui.panel import Panel
-from src.tui.views.overview.password_tab.password_list import PasswordList
-from src.model.password import Password
-from src.tui.views.overview.password_tab.edit_password_prompt import PasswordEditor
-from src.tui.views.overview.password_tab.show_details import show_details
-from src.model.user import Optional, User
 from src.tui.views.overview.password_tab.add_password_prompt import (
     show_add_password_prompt,
 )
-
-from src.tui.views.overview.password_tab.create_password_prompt import PasswordCreator
-from src.tui.popup import create_centered_popup
-from src.controller.password import (
-    insert_password_information,
-    retrieve_password_information,
-    update_password_information,
+from src.tui.views.overview.password_tab.create_password_prompt import (
+    PasswordCreationPrompt,
 )
-
+from src.tui.views.overview.password_tab.delete_password_prompt import (
+    DeletePasswordPrompt,
+)
+from src.tui.views.overview.password_tab.edit_password_prompt import PasswordEditPrompt
+from src.tui.views.overview.password_tab.history_popup import HistoryPopup
+from src.tui.views.overview.password_tab.password_list import PasswordList
+from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
+from src.tui.views.overview.password_tab.show_details import show_details
+from src.tui.views.overview.tab_interface import TabInterface
+from src.tui.window import Window
 
 CONTROLS: dict["str", "str"] = {
     "↑↓": "Navigate Passwords",
@@ -83,7 +83,7 @@ class PasswordTab(TabInterface):
 
     def _init_table_headings(self) -> None:
         desc_width, uname_width, pass_width, _ = PasswordList.calculate_columns(
-            self.list_window.getSize()[1]
+            self.list_window.get_size()[1]
         )
         heading_attr: int = curses.color_pair(4) | curses.A_BOLD | curses.A_UNDERLINE
 
@@ -106,27 +106,27 @@ class PasswordTab(TabInterface):
                 self.password_list.select_next()
             case Keys.UP:
                 self.password_list.select_previous()
-            case Keys.E | Keys.e:
+            case Keys.E | Keys.E_LOWER:
                 self._handle_edit_input()
-            case Keys.H | Keys.h:
+            case Keys.H | Keys.H_LOWER:
                 HistoryPopup(self.tab, self.password_list.get_selected()).run()
                 self.refresh()
-            case Keys.c:
+            case Keys.C_LOWER:
                 await self.password_list.check_selected()
             case Keys.C:
                 await self._handle_check_all_input()
-            case Keys.D | Keys.d:
+            case Keys.D | Keys.D_LOWER:
                 self._handle_delete_password_input()
-            case Keys.N | Keys.n:
+            case Keys.N | Keys.N_LOWER:
                 self._handle_new_input()
 
-            case Keys.U | Keys.u:
+            case Keys.U | Keys.U_LOWER:
                 self._handle_add_input()
-            case Keys.r:
+            case Keys.R_LOWER:
                 self.password_list.toggle_selected()
             case Keys.R:
                 self._handle_reveal_all_input()
-            case Keys.S | Keys.s:
+            case Keys.S | Keys.S_LOWER:
                 self._handle_search_password_input()
             case Keys.QUESTION_MARK:
                 ControlsPopup(self.tab, self.controls).run()
@@ -137,7 +137,7 @@ class PasswordTab(TabInterface):
         new_password = show_add_password_prompt(self.tab, password_information)
         if new_password is not None:
             password_information.add_password(Password(new_password))
-            update_password_information(self.cursor, password_information, self.user)
+            update_password_information(self.cursor, password_information)
             password_information.decrypt_data()
             self.connection.commit()
             self.reload_passwords()
@@ -145,7 +145,7 @@ class PasswordTab(TabInterface):
         self.refresh()
 
     def _handle_new_input(self) -> None:
-        new_password = PasswordCreator(self.tab, self.user, self.cursor).run()
+        new_password = PasswordCreationPrompt(self.tab, self.user, self.cursor).run()
         if new_password is not None:
             new_password = insert_password_information(self.cursor, new_password)
             self.connection.commit()
@@ -156,14 +156,14 @@ class PasswordTab(TabInterface):
         self.refresh()
 
     def _handle_edit_input(self) -> None:
-        updated_password = PasswordEditor(self.tab, self.user, self.cursor).run(
-            self.password_list.get_selected()
-        )
+        updated_password = PasswordEditPrompt(
+            self.tab, self.user, self.password_list.get_selected(), self.cursor
+        ).run()
         if updated_password is None:
             self.refresh()
             return
 
-        update_password_information(self.cursor, updated_password, self.user)
+        update_password_information(self.cursor, updated_password)
         self.connection.commit()
         updated_password.decrypt_data()
         self.password_list.refresh_selected()
@@ -177,7 +177,7 @@ class PasswordTab(TabInterface):
             self.list_window, 5, len(loading_message) + 4
         )
         loading_popup().box()
-        loading_popup.writeCenteredText(loading_message, (0, 0))
+        loading_popup.write_centered_text(loading_message, (0, 0))
         loading_popup().refresh()
         await self.password_list.check_all()
 
@@ -226,9 +226,9 @@ class PasswordTab(TabInterface):
     def _display_controls(self) -> None:
         controls_str = generate_control_str(self.controls)
         try:
-            self.tab.writeBottomCenterText(controls_str, (-1, 0))
+            self.tab.write_bottom_center_text(controls_str, (-1, 0))
         except ValueError:
-            self.tab.writeBottomCenterText("- ? Show Keybinds -", (-1, 0))
+            self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
 
     def show(self) -> None:
         self.tab.show()

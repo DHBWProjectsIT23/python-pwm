@@ -2,12 +2,8 @@ import curses
 import os
 import sqlite3
 
-from src.controller.password import (
-    insert_password_information,
-    validate_unique_password,
-)
-from src.controller.user import validate_login_hashed
-from src.crypto.hashing import hash_sha256
+from src.controller.password import insert_password_information
+from src.controller.password import validate_unique_password
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.exceptions.import_exception import ImportException
 from src.import_export.import_data import import_json
@@ -25,59 +21,59 @@ class ImportPopup(Prompt):
         self.title = "Import Passwords"
 
     def run(self) -> list[PasswordInformation]:
-        self.prompt().clear()
-        self.prompt().refresh()
-        self._reset_prompt(self.title)
+        self.initialize()
 
         try:
             if not self._confirm_password():
                 # Lock Account
-                self.prompt().clear()
-                self.prompt().refresh()
+                self.prompt_window().clear()
+                self.prompt_window().refresh()
                 return []
         except ExitFromTextBoxException:
             curses.curs_set(False)
-            self.prompt().clear()
-            self.prompt().refresh()
+            self.prompt_window().clear()
+            self.prompt_window().refresh()
             return []
 
-        # File?
-        file = ""
         try:
             file = self._enter_target_file()
         except ExitFromTextBoxException:
             curses.curs_set(False)
-            self.prompt().clear()
-            self.prompt().refresh()
+            self.prompt_window().clear()
+            self.prompt_window().refresh()
             return []
 
         self._reset_prompt(self.title)
-        self.prompt.writeBottomCenterText("- ↩ Continue -", (-1, 0))
+        self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
         passwords: list[PasswordInformation] = []
         try:
             passwords = import_json(file, self.user)
-            self.prompt.writeCenteredText(
+            self.prompt_window.write_centered_text(
                 "Importing passwords...", (-1, 0), curses.A_BOLD
             )
         except ImportException as e:
-            self.prompt.writeCenteredText(
+            self.prompt_window.write_centered_text(
                 f"Error while importing file: {e.message}",
                 (-1, 0),
                 curses.A_BOLD | curses.color_pair(2),
             )
         except UnicodeDecodeError:
-            self.prompt.writeCenteredText(
+            self.prompt_window.write_centered_text(
                 "Error while reading file",
                 (-1, 0),
                 curses.A_BOLD | curses.color_pair(2),
             )
 
         for password in passwords:
-            username = password.username.decode() if password.username else None
+            username = (
+                password.details.username.decode()
+                if password.details.username
+                else None
+            )
             if not validate_unique_password(
                 self.cursor, password.description.decode(), username, self.user
             ):
-                self.prompt.writeCenteredText(
+                self.prompt_window.write_centered_text(
                     "File contains passwords that are/would be duplicate",
                     (-1, 0),
                     curses.A_BOLD | curses.color_pair(2),
@@ -89,29 +85,36 @@ class ImportPopup(Prompt):
 
         if len(passwords) > 0:
             self._reset_prompt(self.title)
-            self.prompt.writeBottomCenterText("- ↩ Continue -", (-1, 0))
-            self.prompt.writeCenteredText(
+            self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
+            self.prompt_window.write_centered_text(
                 f"Imported {len(passwords)} passwords",
                 (-1, 0),
                 curses.A_BOLD,
             )
 
         while True:
-            input_key = self.prompt().getch()
+            input_key = self.prompt_window().getch()
             if input_key == Keys.ENTER:
                 break
 
-        self.prompt().clear()
-        self.prompt().refresh()
+        self.prompt_window().clear()
+        self.prompt_window().refresh()
         return passwords
+
+    def initialize(self) -> None:
+        self.prompt_window().clear()
+        self.prompt_window().refresh()
+        self._reset_prompt(self.title)
 
     def _enter_target_file(self) -> str:
         self._reset_prompt(self.title)
-        self.prompt().addstr(2, 2, "Enter Filepath:", curses.A_UNDERLINE)
-        self.prompt().addstr(
+        self.prompt_window().addstr(2, 2, "Enter Filepath:", curses.A_UNDERLINE)
+        self.prompt_window().addstr(
             6, 2, "The filepath can be absolute or relative", curses.A_ITALIC
         )
-        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+        self.prompt_window.write_bottom_center_text(
+            "- ↩ Confirm - ^E Cancel -", (-1, 0)
+        )
 
         file_textbox, _ = self._create_textbox((1, 50), (4, 2))
         while True:
@@ -123,4 +126,6 @@ class ImportPopup(Prompt):
                 return file_path
 
             self._write_error("File not found", self.title)
-        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+            self.prompt_window.write_bottom_center_text(
+                "- ↩ Confirm - ^E Cancel -", (-1, 0)
+            )

@@ -1,8 +1,8 @@
 import curses
 from curses import panel
+
 from src.tui.views.overview.tab_interface import TabInterface
 from src.tui.window import Window
-from src.tui.panel import Panel
 
 
 class Tabbar:
@@ -41,6 +41,9 @@ class Tabbar:
             self.selected += 1
             self.tabs[self.selected].select()
 
+        self.refresh()
+
+    def refresh(self) -> None:
         panel.update_panels()
         curses.doupdate()
         self.tabs[self.selected].refresh()
@@ -54,18 +57,18 @@ class Tab:
         self.window: Window = Window(parent().derwin(1, len(title) + 2, 0, position))
         self.tab_content: TabInterface = tab_content
 
-        self.window.writeCenteredText(self.title, attr=curses.A_UNDERLINE)
+        self.window.write_centered_text(self.title, attr=curses.A_UNDERLINE)
         self.window().refresh()
 
     def select(self) -> None:
-        self.window.writeCenteredText(
+        self.window.write_centered_text(
             self.title, attr=curses.A_REVERSE | curses.A_UNDERLINE
         )
         self.window().refresh()
         self.tab_content.show()
 
     def deselect(self) -> None:
-        self.window.writeCenteredText(self.title, attr=curses.A_UNDERLINE)
+        self.window.write_centered_text(self.title, attr=curses.A_UNDERLINE)
         self.window().refresh()
         self.tab_content.hide()
 

@@ -1,15 +1,15 @@
 import curses
 import sqlite3
+
+from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.panel import Panel
-from src.model.user import User
 from src.tui.util import generate_control_str
 from src.tui.views.overview.controls_popup import ControlsPopup
 from src.tui.views.overview.io_tab.export_popup import ExportPopup
 from src.tui.views.overview.io_tab.import_export_menu import ImportExportMenu
 from src.tui.views.overview.io_tab.import_popup import ImportPopup
 from src.tui.views.overview.tab_interface import TabInterface
-
 
 CONTROLS: dict["str", "str"] = {
     "↑↓": "Navigate Menu",
@@ -38,7 +38,7 @@ class IoTab(TabInterface):
         self.cursor = self.connection.cursor()
         self.controls = CONTROLS
 
-    async def proccess_input(self, input_key: int) -> None:
+    async def process_input(self, input_key: int) -> None:
         match input_key:
             case Keys.UP:
                 self.menu.up_action()
@@ -67,9 +67,9 @@ class IoTab(TabInterface):
     def _display_controls(self) -> None:
         controls_str = generate_control_str(self.controls)
         try:
-            self.tab.writeBottomCenterText(controls_str, (-1, 0))
+            self.tab.write_bottom_center_text(controls_str, (-1, 0))
         except ValueError:
-            self.tab.writeBottomCenterText("- ? Show Keybinds -", (-1, 0))
+            self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
         finally:
             self.tab().refresh()
 

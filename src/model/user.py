@@ -8,7 +8,9 @@ from src.model.password import Password
 
 class User:
     def __init__(
-        self, hashed_username: bytes, password: Password, email: Optional[str] = None
+        self,
+        hashed_username: bytes,
+        password: Password,
     ):
         """
         Initializes a new User instance.

@@ -1,8 +1,9 @@
-import sys
 import os
 import sqlite3
-from dotenv import load_dotenv
+import sys
 from curses import wrapper
+
+from dotenv import load_dotenv
 
 # Add the src directory to the Python path
 path = os.path.dirname(os.path.abspath(__file__))

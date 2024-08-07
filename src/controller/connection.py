@@ -1,13 +1,13 @@
+# TODO: Docstring
 import sqlite3
+
 from src.config import db_path
 
 
 def connect_to_db() -> sqlite3.Connection:
     """
-    Establishes a connection to the SQLite database and initializes the necessary tables.
-
-    Args:
-        db_path (str): The path to the SQLite database file.
+    Establishes a connection to the SQLite database and initializes the
+    necessary tables.
 
     Returns:
         sqlite3.Connection: The SQLite connection object.
@@ -21,7 +21,8 @@ def connect_to_db() -> sqlite3.Connection:
 
 def initialize_tables(cursor: sqlite3.Cursor) -> None:
     """
-    Initializes the necessary tables in the SQLite database if they do not already exist.
+    Initializes the necessary tables in the SQLite database if they do not
+    already exist.
 
     Args:
         cursor (sqlite3.Cursor): The SQLite cursor object.
@@ -29,7 +30,8 @@ def initialize_tables(cursor: sqlite3.Cursor) -> None:
     Returns:
         None
     """
-    cursor.execute("""
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         description BLOB NOT NULL,
@@ -41,10 +43,13 @@ def initialize_tables(cursor: sqlite3.Cursor) -> None:
         metadata BLOB NOT NULL,
         FOREIGN KEY(user) REFERENCES users(username)
     );
-        """)
-    cursor.execute("""
+        """
+    )
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS users (
         username BLOB UNIQUE NOT NULL,
         password password NOT NULL
     );
-    """)
+    """
+    )

@@ -1,7 +1,7 @@
 import json
 import random
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 
 # Constants
 DESCRIPTIONS = [

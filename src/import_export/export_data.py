@@ -1,8 +1,9 @@
-from datetime import datetime
 import json
+from datetime import datetime
 from typing import Optional
+
+from src.import_export.password_dict import PasswordInformationDict
 from src.model.password_information import PasswordInformation
-from .password_dict import PasswordInformationDict
 
 
 def _convert_to_dict(
@@ -12,10 +13,12 @@ def _convert_to_dict(
     Converts a list of PasswordInformation objects to a list of dictionaries.
 
     Args:
-        password_informations (list[PasswordInformation]): The list of PasswordInformation objects to convert.
+        password_informations (list[PasswordInformation]): The list of
+        PasswordInformation objects to convert.
 
     Returns:
-        list[PasswordInformationDict]: A list of dictionaries representing the PasswordInformation objects.
+        list[PasswordInformationDict]: A list of dictionaries representing the
+        PasswordInformation objects.
     """
     return [pw_info.to_dict() for pw_info in password_informations]
 
@@ -28,22 +31,23 @@ def export_to_json(
     Exports a list of PasswordInformation objects to a JSON file.
 
     Args:
-        password_informations (list[PasswordInformation]): The list of PasswordInformation objects to export.
-        target_file (Optional[str], optional): The path of the target JSON file. If None, a default filename with
-                                               the current timestamp will be used. Defaults to None.
+        password_informations (list[PasswordInformation]): The list of
+        PasswordInformation objects to export.
+        target_file (Optional[str], optional): The path of the target JSON file.
+        If None, a default filename with
+        the current timestamp will be used. Defaults to None.
 
     Returns:
         str: The path of the exported JSON file.
 
-    Notes:
-        - If target_file is not provided, the filename will include a placeholder for the current timestamp.
+    Notes: - If target_file is not provided, the filename will include a
+    placeholder for the current timestamp.
     """
     dicts = _convert_to_dict(password_informations)
     if target_file is None:
-        # current_timestamp = datetime.now().strftime("%d%m%y%H%M")
-        current_timestamp = "CHANGE_ME"
+        current_timestamp = datetime.now().strftime("%d%m%y%H%M")
         target_file = f"export_{current_timestamp}.json"
-    with open(target_file, "w") as file:
+    with open(target_file, "w", encoding="utf-8") as file:
         json.dump(dicts, file, indent=2)
 
     return target_file

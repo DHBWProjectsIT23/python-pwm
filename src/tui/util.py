@@ -1,8 +1,6 @@
 import curses
-import sys
-import itertools
-import time
 from typing import TYPE_CHECKING
+
 from .window import Window
 
 if TYPE_CHECKING:
@@ -17,7 +15,7 @@ else:
 
 def init_tui(stdscr: CursesWindow) -> Window:
     """
-    Initializes the terminal user interface (TUI) by setting up curses 
+    Initializes the terminal user interface (TUI) by setting up curses
     environment and returning a Window instance.
 
     Args:
@@ -40,7 +38,7 @@ def _init_colors(stdscr: CursesWindow) -> None:
     color pairs for various text attributes.
 
     Args:
-        stdscr (CursesWindow): The standard curses window object used for 
+        stdscr (CursesWindow): The standard curses window object used for
                                initializing color pairs.
     """
     curses.use_default_colors()
@@ -60,21 +58,23 @@ def print_centered_logo(window: Window, offset: tuple[int, int]) -> None:
     Prints a centered ASCII logo and caption on the given Window object.
 
     Args:
-        window (Window): The Window object where the logo and caption will 
+        window (Window): The Window object where the logo and caption will
                          be printed.
         offset (tuple[int, int]): The (y, x) offset for positioning the logo.
     """
-    logo: str = """
+    logo: str = (
+        """
 ██████  ██████  ██     ██ ███    ███
 ██   ██ ██   ██ ██     ██ ████  ████
 ██████  ██████  ██  █  ██ ██ ████ ██
 ██      ██      ██ ███ ██ ██  ██  ██
 ██      ██       ███ ███  ██      ██
  """.strip()
+    )
     logo_caption = " Python Password Manager "
 
-    window.writeCenteredMultilineText(logo, offset, curses.color_pair(5))
-    window.writeCenteredText(
+    window.write_centered_multiline_text(logo, offset, curses.color_pair(5))
+    window.write_centered_text(
         logo_caption, (-5, 0), curses.color_pair(5) | curses.A_BOLD | curses.A_REVERSE
     )
     window().refresh()
@@ -102,7 +102,7 @@ def shorten_str(text: str, length: int, substitute: str = "...") -> str:
     Args:
         text (str): The original string to be shortened.
         length (int): The desired length of the shortened string.
-        substitute (str, optional): The string to append if shortening is 
+        substitute (str, optional): The string to append if shortening is
                                      necessary. Defaults to '...'.
 
     Returns:
@@ -119,7 +119,7 @@ def pad_with(text: str, length: int, padding: str = " ") -> str:
     Args:
         text (str): The original string to be padded.
         length (int): The desired length of the padded string.
-        padding (str, optional): The character to use for padding. Defaults 
+        padding (str, optional): The character to use for padding. Defaults
                                  to a space character.
 
     Returns:

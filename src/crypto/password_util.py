@@ -1,3 +1,7 @@
+import secrets
+import string
+
+
 def generate_secure_password() -> str:
     """
     Generates a secure random password that meets complexity requirements.
@@ -12,15 +16,15 @@ def generate_secure_password() -> str:
     Returns:
         str: A randomly generated secure password.
     """
-    import string
-    import secrets
     alphabet = string.ascii_letters + string.digits + string.punctuation
     while True:
-        password = ''.join(secrets.choice(alphabet) for i in range(12))
-        if (any(c.islower() for c in password)
-                and any(c.isupper() for c in password)
-                and sum(c.isdigit() for c in password) >= 3
-                and any(c in string.punctuation for c in password)):
+        password = "".join(secrets.choice(alphabet) for _ in range(12))
+        if (
+            any(c.islower() for c in password)
+            and any(c.isupper() for c in password)
+            and sum(c.isdigit() for c in password) >= 3
+            and any(c in string.punctuation for c in password)
+        ):
             break
 
     return password

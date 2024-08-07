@@ -1,20 +1,15 @@
-from contextlib import ExitStack
 import curses
 from curses.textpad import Textbox
 from typing import Optional
 
 from src.crypto.hashing import hash_sha256
-from src.crypto.password_util import generate_secure_password, validate_password_safety
+from src.crypto.password_util import validate_password_safety
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
-from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
-from src.tui.views.overview.password_tab.show_generate_menu import (
-    show_select_generated_prompt,
-)
-from src.tui.window import Window
 from src.tui.views.overview.prompt import Prompt
+from src.tui.window import Window
 
 CONTROL_STR = " - ↩ Continue - "
 
@@ -24,12 +19,11 @@ def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
     title = "Update Password"
     prompt().clear()
     prompt().box()
-    if title is not None:
-        prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
+    prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
     prompt().addstr(3, 2, "    ")
     prompt().addstr(3, 2, "Updated Password:", curses.A_UNDERLINE)
     prompt().addstr(5, 2, "Confirm Password:", curses.A_UNDERLINE)
-    prompt.writeBottomCenterText(CONTROL_STR, (-1, 0))
+    prompt.write_bottom_center_text(CONTROL_STR, (-1, 0))
 
     password_window = prompt().derwin(1, 32, 3, 20)
     confirm_window = prompt().derwin(1, 32, 5, 20)
@@ -69,15 +63,13 @@ def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
             write_error("Passwords must match", prompt, title)
             continue
 
-        if hash_sha256(password.encode()) == user.password.password:
-            write_error(
-                "Password must be different to before", prompt, title="Update Password"
-            )
+        if hash_sha256(password.encode()) == user.password.password_bytes:
+            write_error("Password must be different to before", prompt, title=title)
             continue
 
         # TODO: Validate security
         if validate_password_safety(password) < 3:
-            write_error("Password is too weak", prompt, title="Update Password")
+            write_error("Password is too weak", prompt, title=title)
             continue
 
         prompt().clear()
@@ -89,5 +81,5 @@ def write_error(msg: str, prompt: Window, title: Optional[str] = None) -> None:
     prompt().box()
     if title is not None:
         prompt().addstr(0, 0, title, curses.color_pair(3) | curses.A_BOLD)
-    prompt.writeBottomCenterText(msg, attr=curses.color_pair(2))
+    prompt.write_bottom_center_text(msg, attr=curses.color_pair(2))
     prompt().refresh()

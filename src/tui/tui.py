@@ -4,13 +4,11 @@ import time
 from typing import TYPE_CHECKING
 
 from src.controller.connection import connect_to_db
-from src.model.user import User
-
 from .util import init_tui
-from .views.start import show_start
 from .views.login import show_login
-from .views.registration import show_registration
 from .views.overview.overview import show_overview
+from .views.registration import show_registration
+from .views.start import show_start
 from .window import Window
 
 if TYPE_CHECKING:
@@ -58,7 +56,7 @@ async def run_tui(
     """
     window: Window = init_tui(stdscr)
 
-    height, width = window.getSize()
+    height, width = window.get_size()
     window().refresh()
 
     to_small = False
@@ -68,9 +66,9 @@ async def run_tui(
     while to_small:
         # height_2, width_2 = window.getSize()
         # if height_2 != height or width_2 != width:
-        height, width = window.getSize()
+        height, width = window.get_size()
         window().clear()
-        window.writeCenteredText(f"Your terminal size {width}x{height} is too small")
+        window.write_centered_text(f"Your terminal size {width}x{height} is too small")
         window().refresh()
         if height >= 30 and width >= 80:
             to_small = False
@@ -99,6 +97,6 @@ async def run_tui(
     # user.set_clear_password("test")
 
     window().clear()
-    await show_overview(window, connection, cursor, user)
+    await show_overview(window, connection, user)
 
     window().clear()

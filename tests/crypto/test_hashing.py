@@ -1,5 +1,6 @@
 # pylint: disable=C
 import unittest
+
 import src.crypto.hashing as crypto
 
 

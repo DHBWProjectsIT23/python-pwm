@@ -1,26 +1,25 @@
 import curses
 import sqlite3
 import sys
-from src.controller.password import (
-    retrieve_password_information,
-    update_password_information,
-)
+
+from src.controller.password import retrieve_password_information
+from src.controller.password import update_password_information
 from src.controller.user import update_user
 from src.crypto.hashing import hash_sha256
-from src.model import password_information
+from src.model.password import Password
+from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.panel import Panel
 from src.tui.popup import create_centered_popup
+from src.tui.util import generate_control_str
+from src.tui.util import percentage_of
+from src.tui.views.overview.controls_popup import ControlsPopup
 from src.tui.views.overview.tab_interface import TabInterface
-from src.model.user import User
-from src.model.password import Password
 from src.tui.views.overview.user_tab.delete_user_prompt import DeleteUserPrompt
 from src.tui.views.overview.user_tab.update_password_prompt import (
     show_update_password_prompt,
 )
 from src.tui.views.overview.user_tab.update_username_prompt import UpdateUsernamePrompt
-from src.tui.util import generate_control_str, percentage_of
-from src.tui.views.overview.controls_popup import ControlsPopup
 
 CONTROLS: dict["str", "str"] = {
     "u": "Change Username",
@@ -53,11 +52,11 @@ class UserTab(TabInterface):
 
     async def process_input(self, input_key: int) -> None:
         match input_key:
-            case Keys.D | Keys.d:
+            case Keys.D | Keys.D_LOWER:
                 self._handle_delete_user_input()
-            case Keys.P | Keys.p:
+            case Keys.P | Keys.P_LOWER:
                 self._handle_update_pw_input()
-            case Keys.U | Keys.u:
+            case Keys.U | Keys.U_LOWER:
                 self._handle_update_uname_input()
             case Keys.QUESTION_MARK:
                 ControlsPopup(self.tab, self.controls).run()
@@ -78,7 +77,7 @@ class UserTab(TabInterface):
 
         for pw_info in password_infos:
             pw_info.user = self.user
-            update_password_information(self.cursor, pw_info, self.user)
+            update_password_information(self.cursor, pw_info)
             pw_info.decrypt_passwords()
 
         self.user.username = old_username
@@ -103,7 +102,7 @@ class UserTab(TabInterface):
 
         for pw_info in password_infos:
             pw_info.user = self.user
-            update_password_information(self.cursor, pw_info, self.user)
+            update_password_information(self.cursor, pw_info)
 
         update_user(self.cursor, self.user)
         self.connection.commit()
@@ -116,8 +115,8 @@ class UserTab(TabInterface):
         self.refresh()
 
     def _display_user_info(self) -> None:
-        height = percentage_of(70, self.tab.getSize()[0])
-        width = percentage_of(70, self.tab.getSize()[1])
+        height = percentage_of(70, self.tab.get_size()[0])
+        width = percentage_of(70, self.tab.get_size()[1])
 
         info_display = create_centered_popup(self.tab, height, width)
 
@@ -148,9 +147,9 @@ class UserTab(TabInterface):
     def _display_controls(self) -> None:
         controls_str = generate_control_str(self.controls)
         try:
-            self.tab.writeBottomCenterText(controls_str, (-1, 0))
+            self.tab.write_bottom_center_text(controls_str, (-1, 0))
         except ValueError:
-            self.tab.writeBottomCenterText("- ? Show Keybinds -", (-1, 0))
+            self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
 
     def show(self) -> None:
         self.tab.show()

@@ -6,22 +6,27 @@ from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.panel import Panel
-from src.tui.views.overview.password_tab.create_password_prompt import PasswordCreator
+from src.tui.views.overview.password_tab.create_password_prompt import (
+    PasswordCreationPrompt,
+)
 
 CONTROL_E = 5
 MULTILINE_CTR_STR = "- ^G Continue -"
 SINGLELINE_CTR_STR = "- ↩ Continue -"
 
 
-class PasswordEditor(PasswordCreator):
-    def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
+class PasswordEditPrompt(PasswordCreationPrompt):
+    def __init__(
+        self,
+        parent: Panel,
+        user: User,
+        password_information: PasswordInformation,
+        cursor: sqlite3.Cursor,
+    ):
         super().__init__(parent, user, cursor)
+        self.password_information = password_information
 
-    def run(
-        self, password_information: PasswordInformation
-    ) -> Optional[PasswordInformation]:
-        if password_information is None:
-            raise ValueError("PasswordInformation must be provided for editing")
+    def run(self) -> Optional[PasswordInformation]:
 
         self.prompt = self.create_prompt_with_padding(self.parent)
         title = "Edit Password"
@@ -31,22 +36,22 @@ class PasswordEditor(PasswordCreator):
             while True:
                 description = self._enter_description(
                     initial_error,
-                    password_information.description.decode(),
+                    self.password_information.description.decode(),
                     title=title + " 2/2",
                 )
                 initial_username = (
-                    password_information.username.decode()
-                    if password_information.username
+                    self.password_information.details.username.decode()
+                    if self.password_information.details.username
                     else ""
                 )
                 username = self._enter_username(initial_username, title=title + " 3/3")
                 old_username = (
-                    password_information.username.decode()
-                    if password_information.username
+                    self.password_information.details.username.decode()
+                    if self.password_information.details.username
                     else None
                 )
                 if (
-                    description.encode() == password_information.description
+                    description.encode() == self.password_information.description
                     and username == old_username
                 ):
                     break
@@ -54,42 +59,41 @@ class PasswordEditor(PasswordCreator):
                 if validate_unique_password(
                     self.cursor, description, username, self.user
                 ):
-                    password_information.description = description.encode()
-                    password_information.username = (
+                    self.password_information.description = description.encode()
+                    self.password_information.details.username = (
                         username.encode() if username else None
                     )
-                    password_information.modify()
+                    self.password_information.modify()
                     break
                 initial_error = "Identical combination already exists"
 
             categories = [
-                category.decode() for category in password_information.categories
+                category.decode()
+                for category in self.password_information.details.categories
             ]
             updated_categories = self._enter_categories(
                 categories, title=title + " 5/5"
             )
             if updated_categories != categories:
-                password_information.categories = [
+                self.password_information.details.categories = [
                     category.encode() for category in updated_categories
                 ]
-                password_information.modify()
+                self.password_information.modify()
 
             old_note = (
-                password_information.note.decode()
-                if password_information.note
+                self.password_information.details.note.decode()
+                if self.password_information.details.note
                 else None
             )
             updated_note = self._enter_note(old_note, title=title + " 6/6")
             note_bytes = updated_note.encode() if updated_note else None
-            if note_bytes != password_information.note:
-                password_information.note = note_bytes
-                password_information.modify()
+            if note_bytes != self.password_information.details.note:
+                self.password_information.details.note = note_bytes
+                self.password_information.modify()
 
         except ExitFromTextBoxException:
-            self.prompt().clear()
-            self.prompt().refresh()
+            self.break_out()
             return None
 
-        self.prompt().clear()
-        self.prompt().refresh()
-        return password_information
+        self.break_out()
+        return self.password_information

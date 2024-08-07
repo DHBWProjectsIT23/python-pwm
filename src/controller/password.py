@@ -1,7 +1,9 @@
+# TODO: Docstring
 import pickle
 import sqlite3
 from typing import Optional
-from src.crypto.placeholder import dummy_encrypt_fernet, dummy_decrypt_fernet
+
+from src.crypto.placeholder import dummy_decrypt_fernet
 from src.model.metadata import EncryptedMetadata
 from src.model.password import Password
 from src.model.password_information import PasswordInformation
@@ -18,12 +20,13 @@ def retrieve_password_information(
         cursor (sqlite3.Cursor): The SQLite cursor object.
         user (User): The user whose password information is to be retrieved.
 
-    Returns:
-        list[PasswordInformation]: A list of PasswordInformation objects for the given user.
+    Returns: list[PasswordInformation]: A list of PasswordInformation objects
+    for the given user.
     """
     cursor.execute(
         """
-        SELECT id, description, username, passwords, categories, note, metadata FROM passwords WHERE user=?
+        SELECT id, description, username, passwords, categories, note, metadata
+        FROM passwords WHERE user=?
         """,
         (user.username,),
     )
@@ -33,7 +36,7 @@ def retrieve_password_information(
 
     password_informations: list[PasswordInformation] = []
     for result in results:
-        id: int = result[0]
+        password_id: int = result[0]
         description: bytes = result[1]
         username: Optional[bytes] = pickle.loads(result[2])
         passwords: list[Password] = pickle.loads(result[3])
@@ -41,25 +44,28 @@ def retrieve_password_information(
         note: Optional[bytes] = pickle.loads(result[5])
         metadata: EncryptedMetadata = pickle.loads(result[6])
 
-        password_informations.append(
-            PasswordInformation.from_db(
-                id, description, username, passwords, categories, note, user, metadata
-            )
+        pw_info = PasswordInformation.from_db(
+            description,
+            (username, categories, note),
+            passwords,
+            user,
         )
+        pw_info.id = password_id
+        pw_info.metadata = metadata
+        password_informations.append(pw_info)
 
     return password_informations
 
 
 def update_password_information(
-    cursor: sqlite3.Cursor, password_information: PasswordInformation, user: User
+    cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     """
     Updates existing password information in the database.
 
-    Args:
-        cursor (sqlite3.Cursor): The SQLite cursor object.
-        password_information (PasswordInformation): The updated PasswordInformation object.
-        user (User): The user who owns the password information.
+    Args: cursor (sqlite3.Cursor): The SQLite cursor object.
+    password_information (PasswordInformation): The updated
+    PasswordInformation object.
 
     Returns:
         None
@@ -83,10 +89,10 @@ def update_password_information(
         """,
         (
             password_information.description,
-            pickle.dumps(password_information.username),
+            pickle.dumps(password_information.details.username),
             pickle.dumps(password_information.passwords),
-            pickle.dumps(password_information.categories),
-            pickle.dumps(password_information.note),
+            pickle.dumps(password_information.details.categories),
+            pickle.dumps(password_information.details.note),
             password_information.user.username,
             pickle.dumps(password_information.metadata),
             password_information.id,
@@ -98,7 +104,8 @@ def validate_unique_password(
     cursor: sqlite3.Cursor, description: str, username: Optional[str], user: User
 ) -> bool:
     """
-    Validates that a password with the given description and username is unique for the user.
+    Validates that a password with the given description and username is
+    unique for the user.
 
     Args:
         cursor (sqlite3.Cursor): The SQLite cursor object.
@@ -120,11 +127,8 @@ def validate_unique_password(
     results: list[tuple[bytes, bytes]] = cursor.fetchall()
     for result in results:
         desc: bytes = dummy_decrypt_fernet(result[0])
-        uname: Optional[bytes] = (
-            dummy_decrypt_fernet(pickle.loads(result[1]))
-            if pickle.loads(result[1]) is not None
-            else None
-        )
+        uname: Optional[bytes] = pickle.loads(result[1])
+        uname = dummy_decrypt_fernet(uname) if uname else None
 
         username_bytes = username.encode() if username is not None else None
 
@@ -160,12 +164,12 @@ def insert_password_information(
     """
     Inserts new password information into the database.
 
-    Args:
-        cursor (sqlite3.Cursor): The SQLite cursor object.
-        password_information (PasswordInformation): The PasswordInformation object to insert.
+    Args: cursor (sqlite3.Cursor): The SQLite cursor object.
+    password_information (PasswordInformation): The PasswordInformation
+    object to insert.
 
-    Returns:
-        PasswordInformation: The inserted PasswordInformation object with the new ID.
+    Returns: PasswordInformation: The inserted PasswordInformation object
+    with the new ID.
     """
     if not password_information.data_is_encrypted:
         password_information.encrypt_data()
@@ -181,10 +185,10 @@ def insert_password_information(
         """,
         (
             password_information.description,
-            pickle.dumps(password_information.username),
+            pickle.dumps(password_information.details.username),
             pickle.dumps(password_information.passwords),
-            pickle.dumps(password_information.categories),
-            pickle.dumps(password_information.note),
+            pickle.dumps(password_information.details.categories),
+            pickle.dumps(password_information.details.note),
             password_information.user.username,
             pickle.dumps(password_information.metadata),
         ),

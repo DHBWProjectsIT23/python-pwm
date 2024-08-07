@@ -1,21 +1,21 @@
 import curses
 import sqlite3
+from curses.textpad import Textbox
+from typing import Any
+from typing import TYPE_CHECKING
+
 from src.controller.user import validate_login_hashed
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
 from src.tui.popup import create_centered_popup
 from src.tui.window import Window
-from curses.textpad import Textbox
-
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from _curses import _CursesWindow
 
     CursesWindow = _CursesWindow
 else:
-    from typing import Any
 
     CursesWindow = Any
 
@@ -32,7 +32,7 @@ class Prompt:
         self.user = user
         self.cursor = cursor
         self.title = ""
-        self.prompt = Prompt.create_prompt_with_padding(parent, size)
+        self.prompt_window = Prompt.create_prompt_with_padding(parent, size)
 
     def run(self) -> Any:
         raise NotImplementedError("This is an interface")
@@ -40,26 +40,30 @@ class Prompt:
     def _create_textbox(
         self, size: tuple[int, int], position: tuple[int, int]
     ) -> tuple[Textbox, CursesWindow]:
-        textbox_window = self.prompt().derwin(*size, *position)
+        textbox_window = self.prompt_window().derwin(*size, *position)
         textbox = Textbox(textbox_window)
-        self.prompt().refresh()
+        self.prompt_window().refresh()
         return textbox, textbox_window
 
     def _write_error(self, msg: str, title: str) -> None:
-        self.prompt().box()
-        self.prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
-        self.prompt.writeBottomCenterText(msg, attr=curses.color_pair(2))
-        self.prompt().refresh()
+        self.prompt_window().box()
+        self.prompt_window().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
+        self.prompt_window.write_bottom_center_text(msg, attr=curses.color_pair(2))
+        self.prompt_window().refresh()
 
     def _reset_prompt(self, title: str) -> None:
-        self.prompt().clear()
-        self.prompt().box()
-        self.prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
-        self.prompt().refresh()
+        self.prompt_window().clear()
+        self.prompt_window().box()
+        self.prompt_window().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
+        self.prompt_window().refresh()
 
     def _confirm_password(self) -> bool:
-        self.prompt().addstr(2, 2, "Confirm Password to Continue", curses.A_UNDERLINE)
-        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+        self.prompt_window().addstr(
+            2, 2, "Confirm Password to Continue", curses.A_UNDERLINE
+        )
+        self.prompt_window.write_bottom_center_text(
+            "- ↩ Confirm - ^E Cancel -", (-1, 0)
+        )
         password_textbox, password_window = self._create_textbox((1, 32), (4, 2))
         validator = InputValidator()
 

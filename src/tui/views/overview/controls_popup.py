@@ -1,7 +1,8 @@
 import curses
+
 from src.tui.keys import Keys
-from src.tui.views.overview.prompt import Prompt
 from src.tui.panel import Panel
+from src.tui.views.overview.prompt import Prompt
 
 
 class ControlsPopup:
@@ -17,7 +18,7 @@ class ControlsPopup:
     def run(self) -> None:
         self.popup().box()
         self.popup().addstr(0, 0, "Controls", curses.A_BOLD | curses.color_pair(3))
-        self.popup.writeBottomCenterText("- ESC Dismiss -")
+        self.popup.write_bottom_center_text("- ESC Dismiss -")
 
         for i, (key, value) in enumerate(self.controls.items()):
             self.popup().addstr(i + 2, 2, key)
@@ -28,6 +29,9 @@ class ControlsPopup:
         while True:
             key_input = self.popup().getch()
             if key_input == Keys.ESCAPE:
-                self.popup().clear()
-                self.popup().refresh()
+                self.break_out()
                 break
+
+    def break_out(self) -> None:
+        self.popup().clear()
+        self.popup().refresh()

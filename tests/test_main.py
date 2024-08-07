@@ -1,6 +1,5 @@
 # pylint: disable=C
 import unittest
-import main
 
 
 class TestMain(unittest.TestCase):

@@ -1,7 +1,8 @@
 import curses
+
+from src.tui.panel import Panel
 from src.tui.views.overview.prompt import Prompt
 from src.tui.window import Window
-from src.tui.panel import Panel
 
 SELECT_CONTROL_STR = """
 - ↩ Continue - ↑↓ Select Option -
@@ -12,7 +13,7 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
     prompt = Prompt.create_prompt_with_padding(parent)
     _select_generate(prompt)
     _deselect_own(prompt)
-    prompt.writeBottomCenterText(SELECT_CONTROL_STR, (-1, 0))
+    prompt.write_bottom_center_text(SELECT_CONTROL_STR, (-1, 0))
     prompt().box()
     prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
 
@@ -48,16 +49,16 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
 
 
 def _select_generate(prompt: Window) -> None:
-    prompt.writeCenteredText(" Generate Secure Password ", (-2, 0), curses.A_REVERSE)
+    prompt.write_centered_text(" Generate Secure Password ", (-2, 0), curses.A_REVERSE)
 
 
 def _select_own(prompt: Window) -> None:
-    prompt.writeCenteredText(" Enter Own Password ", (0, 0), curses.A_REVERSE)
+    prompt.write_centered_text(" Enter Own Password ", (0, 0), curses.A_REVERSE)
 
 
 def _deselect_generate(prompt: Window) -> None:
-    prompt.writeCenteredText(" Generate Secure Password ", (-2, 0))
+    prompt.write_centered_text(" Generate Secure Password ", (-2, 0))
 
 
 def _deselect_own(prompt: Window) -> None:
-    prompt.writeCenteredText(" Enter Own Password ", (0, 0))
+    prompt.write_centered_text(" Enter Own Password ", (0, 0))

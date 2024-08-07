@@ -2,10 +2,10 @@ import curses
 import sys
 
 from src.tui.keys import Keys
-
-from ..window import Window
-from ..util import print_centered_logo
-from ..popup import create_centered_popup, create_popup
+from src.tui.popup import create_centered_popup
+from src.tui.popup import create_popup
+from src.tui.util import print_centered_logo
+from src.tui.window import Window
 
 MENU_WINDOW_SIZE: tuple[int, int] = (7, 27)
 MENU_ITEM_SIZE: tuple[int, int] = (1, 25)
@@ -32,8 +32,8 @@ def show_start(window: Window) -> int:
 
     selected_option: int = 1
     while True:
-        input: int = window().getch()
-        match input:
+        input_key: int = window().getch()
+        match input_key:
             case Keys.UP:
                 hover_item(login_window, login_str)
                 unhover_item(register_window, register_str)
@@ -44,7 +44,7 @@ def show_start(window: Window) -> int:
                 selected_option = 2
             case Keys.ENTER:
                 return selected_option
-            case Keys.Q | Keys.q:
+            case Keys.Q | Keys.Q_LOWER:
                 sys.exit(1)
 
 
@@ -52,34 +52,34 @@ def init_menu_option(parent: Window, text: str, position: tuple[int, int]) -> Wi
     item_window = create_popup(
         parent, position[0], position[1], MENU_ITEM_SIZE[0], MENU_ITEM_SIZE[1]
     )
-    item_window.writeCenteredText(text, (0, 0))
+    item_window.write_centered_text(text, (0, 0))
     item_window().refresh()
     return item_window
 
 
 def hover_item(item_window: Window, item_text: str) -> None:
-    item_window.writeCenteredText(item_text, (0, 0), curses.A_REVERSE)
+    item_window.write_centered_text(item_text, (0, 0), curses.A_REVERSE)
     item_window().refresh()
 
 
 def unhover_item(item_window: Window, item_text: str) -> None:
-    item_window.writeCenteredText(item_text, (0, 0))
+    item_window.write_centered_text(item_text, (0, 0))
     item_window().refresh()
 
 
 def hover_register(register_window: Window, register_str: str) -> None:
-    register_window.writeCenteredText(register_str, (0, 0), curses.A_REVERSE)
+    register_window.write_centered_text(register_str, (0, 0), curses.A_REVERSE)
     register_window().refresh()
 
 
 def unhover_register(register_window: Window, register_str: str) -> None:
-    register_window.writeCenteredText(register_str, (0, 0))
+    register_window.write_centered_text(register_str, (0, 0))
     register_window().refresh()
 
 
 def print_controls(window: Window) -> None:
-    screen_height, screen_width = window.getSize()
-    _, width_center = window.getCenter()
+    screen_height, _ = window.get_size()
+    _, width_center = window.get_center()
 
     controls_str = "- ↑/↓ Navigate Menu - ↲ Select Option - q Quit -"
     window().addstr(

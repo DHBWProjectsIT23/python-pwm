@@ -2,9 +2,9 @@
 
 import unittest
 
-from src.model.user import User
-from src.model.password import Password
 from src.crypto.hashing import hash_sha256
+from src.model.password import Password
+from src.model.user import User
 
 
 class TestUser(unittest.TestCase):

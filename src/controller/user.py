@@ -1,5 +1,6 @@
 import sqlite3
 from typing import Optional
+
 from src.crypto.hashing import hash_sha256
 from src.model.password import Password
 from src.model.user import User
@@ -60,8 +61,8 @@ def validate_unique_user(cursor: sqlite3.Cursor, username: str) -> bool:
     """,
         (hash_sha256(username.encode()),),
     )
-    existing_users: int = cursor.fetchall()[0][0]
-    return existing_users == 0
+    result: list[tuple[int]] = cursor.fetchall()
+    return result[0][0] == 0
 
 
 def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
@@ -75,8 +76,8 @@ def retrieve_user_by_hash(cursor: sqlite3.Cursor, username_hash: bytes) -> User:
     Returns:
         User: The User object corresponding to the hashed username.
 
-    Raises:
-        ValueError: If no user or multiple users are found with the given hashed username.
+    Raises: ValueError: If no user or multiple users are found with the given
+    hashed username.
     """
     cursor.execute("SELECT * FROM users WHERE username=?", (username_hash,))
     user: list[tuple[bytes, Password]] = cursor.fetchall()
@@ -147,9 +148,9 @@ def insert_user(cursor: sqlite3.Cursor, user: User) -> User:
         """,
         (user.username, user.password),
     )
-    user: list[tuple[bytes, Password]] = cursor.fetchall()
+    inserted_user: list[tuple[bytes, Password]] = cursor.fetchall()
 
-    if len(user) == 0:
+    if len(inserted_user) == 0:
         raise ValueError("Failed to insert user")
 
-    return User(user[0][0], user[0][1])
+    return User(inserted_user[0][0], inserted_user[0][1])
