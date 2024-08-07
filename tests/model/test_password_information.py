@@ -39,12 +39,12 @@ class TestPasswordInformation(unittest.TestCase):
         info.add_password(Password("test2"))
         for password in info.passwords:
             self.assertFalse(password.is_encrypted)
-            self.assertTrue(isinstance(password.metadata, Metadata))
+        self.assertTrue(isinstance(info.metadata, Metadata))
 
         info.encrypt("FakeKey")
         for password in info.passwords:
             self.assertTrue(password.is_encrypted)
-            self.assertTrue(isinstance(password.metadata, EncryptedMetadata))
+        self.assertTrue(isinstance(info.metadata, EncryptedMetadata))
 
     def test_decrypt(self):
         info, pw, user = create_test_info()
@@ -53,12 +53,12 @@ class TestPasswordInformation(unittest.TestCase):
         info.encrypt("FakeKey")
         for password in info.passwords:
             self.assertTrue(password.is_encrypted)
-            self.assertTrue(isinstance(password.metadata, EncryptedMetadata))
+        self.assertTrue(isinstance(info.metadata, EncryptedMetadata))
 
         info.decrypt("FakeKey")
         for password in info.passwords:
             self.assertFalse(password.is_encrypted)
-            self.assertTrue(isinstance(password.metadata, Metadata))
+        self.assertTrue(isinstance(info.metadata, Metadata))
 
 
 
