@@ -39,8 +39,10 @@ class ImportExportMenu:
 
     def refresh(self) -> None:
         if self.choice == 1:
+            self.down_action()
             self.up_action()
         elif self.choice == 2:
+            self.up_action()
             self.down_action()
         else:
             raise ValueError("Invalid menu choice")

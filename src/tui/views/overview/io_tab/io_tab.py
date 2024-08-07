@@ -3,6 +3,8 @@ import sqlite3
 from src.tui.keys import Keys
 from src.tui.panel import Panel
 from src.model.user import User
+from src.tui.util import generate_control_str
+from src.tui.views.overview.controls_popup import ControlsPopup
 from src.tui.views.overview.io_tab.export_popup import ExportPopup
 from src.tui.views.overview.io_tab.import_export_menu import ImportExportMenu
 from src.tui.views.overview.io_tab.import_popup import ImportPopup
@@ -34,6 +36,7 @@ class IoTab(TabInterface):
         self.user = user
         self.connection = connection
         self.cursor = self.connection.cursor()
+        self.controls = CONTROLS
 
     async def proccess_input(self, input_key: int) -> None:
         match input_key:
@@ -43,6 +46,9 @@ class IoTab(TabInterface):
                 self.menu.down_action()
             case Keys.ENTER:
                 self._handle_enter_input()
+            case Keys.QUESTION_MARK:
+                ControlsPopup(self.tab, self.controls).run()
+                self.refresh()
 
     def _handle_enter_input(self) -> None:
         if self.menu.get_choice() == 1:
@@ -58,12 +64,22 @@ class IoTab(TabInterface):
 
         self.refresh()
 
-    def show(self):
+    def _display_controls(self) -> None:
+        controls_str = generate_control_str(self.controls)
+        try:
+            self.tab.writeBottomCenterText(controls_str, (-1, 0))
+        except ValueError:
+            self.tab.writeBottomCenterText("- ? Show Keybinds -", (-1, 0))
+        finally:
+            self.tab().refresh()
+
+    def show(self) -> None:
         self.tab.show()
 
-    def hide(self):
+    def hide(self) -> None:
         self.tab.hide()
 
-    def refresh(self):
-        self.tab().refresh()
+    def refresh(self) -> None:
         self.menu.refresh()
+        self._display_controls()
+        self.tab().refresh()

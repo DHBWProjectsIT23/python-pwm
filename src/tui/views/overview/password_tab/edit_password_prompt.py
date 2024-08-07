@@ -2,6 +2,7 @@ import sqlite3
 from typing import Optional
 
 from src.controller.password import validate_unique_password
+from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.password_information import PasswordInformation
 from src.model.user import User
 from src.tui.panel import Panel
@@ -16,57 +17,78 @@ class PasswordEditor(PasswordCreator):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
         super().__init__(parent, user, cursor)
 
-    def run(self, password_information: PasswordInformation) -> PasswordInformation:
+    def run(
+        self, password_information: PasswordInformation
+    ) -> Optional[PasswordInformation]:
         if password_information is None:
             raise ValueError("PasswordInformation must be provided for editing")
 
         self.prompt = self.create_prompt_with_padding(self.parent)
         title = "Edit Password"
 
-        initial_error = ""
-        while True:
-            description = self._enter_description(
-                initial_error,
-                password_information.description.decode(),
-                title=title + " 2/2",
+        try:
+            initial_error = ""
+            while True:
+                description = self._enter_description(
+                    initial_error,
+                    password_information.description.decode(),
+                    title=title + " 2/2",
+                )
+                initial_username = (
+                    password_information.username.decode()
+                    if password_information.username
+                    else ""
+                )
+                username = self._enter_username(initial_username, title=title + " 3/3")
+                old_username = (
+                    password_information.username.decode()
+                    if password_information.username
+                    else None
+                )
+                if (
+                    description.encode() == password_information.description
+                    and username == old_username
+                ):
+                    break
+
+                if validate_unique_password(
+                    self.cursor, description, username, self.user
+                ):
+                    password_information.description = description.encode()
+                    password_information.username = (
+                        username.encode() if username else None
+                    )
+                    password_information.modify()
+                    break
+                initial_error = "Identical combination already exists"
+
+            categories = [
+                category.decode() for category in password_information.categories
+            ]
+            updated_categories = self._enter_categories(
+                categories, title=title + " 5/5"
             )
-            initial_username = (
-                password_information.username.decode()
-                if password_information.username
-                else ""
-            )
-            username = self._enter_username(initial_username, title=title + " 3/3")
-            old_username = (
-                password_information.username.encode()
-                if password_information.username
+            if updated_categories != categories:
+                password_information.categories = [
+                    category.encode() for category in updated_categories
+                ]
+                password_information.modify()
+
+            old_note = (
+                password_information.note.decode()
+                if password_information.note
                 else None
             )
-            if (
-                description.encode() == password_information.description
-                and username == old_username
-            ):
-                break
-
-            if validate_unique_password(self.cursor, description, username, self.user):
-                password_information.description = description.encode()
-                password_information.username = username.encode()
+            updated_note = self._enter_note(old_note, title=title + " 6/6")
+            note_bytes = updated_note.encode() if updated_note else None
+            if note_bytes != password_information.note:
+                password_information.note = note_bytes
                 password_information.modify()
-                break
-            initial_error = "Identical combination already exists"
 
-        categories = [category.decode() for category in password_information.categories]
-        updated_categories = self._enter_categories(categories, title=title + " 5/5")
-        if updated_categories != categories:
-            password_information.categories = [
-                category.encode() for category in updated_categories
-            ]
-            password_information.modify()
-
-        updated_note = self._enter_note(password_information.note, title=title + " 6/6")
-        note_bytes = updated_note.encode() if updated_note else None
-        if note_bytes != password_information.note:
-            password_information.note = note_bytes
-            password_information.modify()
+        except ExitFromTextBoxException:
+            self.prompt().clear()
+            self.prompt().refresh()
+            return None
 
         self.prompt().clear()
         self.prompt().refresh()

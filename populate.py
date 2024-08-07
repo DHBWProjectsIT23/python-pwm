@@ -7,19 +7,21 @@ path = os.path.dirname(os.path.abspath(__file__))
 sourcePath = os.path.join(path, "src")
 sys.path.insert(0, sourcePath)
 
-from src.controller.connection import DB_PATH, connect_to_db
+from src.controller.connection import connect_to_db
 from src.controller.password import insert_password_information
 from src.controller.user import insert_user
 from src.crypto.hashing import hash_sha256
 from src.model.password import Password, adapt_password, convert_password
 from src.model.password_information import PasswordInformation
 from src.model.user import User
+from dotenv import load_dotenv
 
 
 def main() -> None:
+    load_dotenv()
     sqlite3.register_converter("password", convert_password)
     sqlite3.register_adapter(Password, adapt_password)
-    with connect_to_db(DB_PATH) as connection:
+    with connect_to_db() as connection:
         cursor = connection.cursor()
         add_test_users(cursor)
         i = 0

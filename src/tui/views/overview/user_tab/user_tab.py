@@ -18,12 +18,12 @@ from src.tui.views.overview.user_tab.update_password_prompt import (
 )
 from src.tui.views.overview.user_tab.update_username_prompt import UpdateUsernamePrompt
 from src.tui.util import generate_control_str, percentage_of
+from src.tui.views.overview.controls_popup import ControlsPopup
 
 CONTROLS: dict["str", "str"] = {
-    "u/U": "Change Username",
-    "p/P": "Change Password",
-    "e/E": "Change Email",
-    "d/D": "Delete User",
+    "u": "Change Username",
+    "p": "Change Password",
+    "d": "Delete User",
 }
 
 
@@ -47,9 +47,7 @@ class UserTab(TabInterface):
         self.cursor = connection.cursor()
         self.controls = CONTROLS
 
-        self._display_user_info()
-
-        self.tab().refresh()
+        self.refresh()
 
     async def process_input(self, input_key: int) -> None:
         match input_key:
@@ -57,6 +55,9 @@ class UserTab(TabInterface):
                 self._handle_update_pw_input()
             case Keys.U | Keys.u:
                 self._handle_update_uname_input()
+            case Keys.QUESTION_MARK:
+                ControlsPopup(self.tab, self.controls).run()
+                self.refresh()
 
     def _handle_update_uname_input(self) -> None:
         new_username = UpdateUsernamePrompt(self.tab, self.cursor, self.user).run()
@@ -125,21 +126,20 @@ class UserTab(TabInterface):
                 curses.A_ITALIC | curses.color_pair(2),
             )
 
-        addstr(4, 2, "Email:", attr)
-        addstr(4, data_inset, f"{ self.user.email}")
-
-        addstr(6, 2, "No. of Passwords:", attr)
+        addstr(4, 2, "No. of Passwords:", attr)
         addstr(
-            6,
+            4,
             data_inset,
             f"{len(retrieve_password_information(self.cursor, self.user))}",
         )
         info_display().refresh()
 
     def _display_controls(self) -> None:
-        control_str = generate_control_str(self.controls)
-
-        self.tab
+        controls_str = generate_control_str(self.controls)
+        try:
+            self.tab.writeBottomCenterText(controls_str, (-1, 0))
+        except ValueError:
+            self.tab.writeBottomCenterText("- ? Show Keybinds -", (-1, 0))
 
     def show(self) -> None:
         self.tab.show()
@@ -148,4 +148,6 @@ class UserTab(TabInterface):
         self.tab.hide()
 
     def refresh(self) -> None:
-        pass
+        self._display_user_info()
+        self._display_controls()
+        self.tab().refresh()

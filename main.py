@@ -1,6 +1,7 @@
 import sys
 import os
 import sqlite3
+from dotenv import load_dotenv
 from curses import wrapper
 
 # Add the src directory to the Python path
@@ -21,6 +22,7 @@ from src.cli import cli
 if __name__ == "__main__":
     sqlite3.register_converter("password", convert_password)
     sqlite3.register_adapter(Password, adapt_password)
+    load_dotenv()
     if len(sys.argv) > 1:
         cli.main()
     else:

@@ -1,4 +1,8 @@
 import curses
+import sqlite3
+from src.controller.user import validate_login_hashed
+from src.model.user import User
+from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
 from src.tui.popup import create_centered_popup
 from src.tui.window import Window
@@ -17,8 +21,17 @@ else:
 
 
 class Prompt:
-    def __init__(self, parent: Panel, size: tuple[int, int] = (10, 57)) -> None:
+    def __init__(
+        self,
+        parent: Panel,
+        user: User,
+        cursor: sqlite3.Cursor,
+        size: tuple[int, int] = (10, 57),
+    ) -> None:
         self.parent = parent
+        self.user = user
+        self.cursor = cursor
+        self.title = ""
         self.prompt = Prompt.create_prompt_with_padding(parent, size)
 
     def run(self) -> Any:
@@ -43,6 +56,32 @@ class Prompt:
         self.prompt().box()
         self.prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
         self.prompt().refresh()
+
+    def _confirm_password(self) -> bool:
+        self.prompt().addstr(2, 2, "Confirm Password to Continue", curses.A_UNDERLINE)
+        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
+        password_textbox, password_window = self._create_textbox((1, 32), (4, 2))
+        validator = InputValidator()
+
+        attempts = 0
+        while True:
+            if attempts > 3:
+                return False
+
+            curses.curs_set(True)
+            password_textbox.edit(validator.password_with_exit)
+            curses.curs_set(False)
+            if validate_login_hashed(
+                self.cursor, self.user.username, validator.get_password_string()
+            ):
+                self._write_error("Wrong Password", self.title)
+                validator.reset_password()
+                password_window.clear()
+                password_window.refresh()
+                attempts += 1
+                continue
+
+            return True
 
     @staticmethod
     def create_prompt_with_padding(

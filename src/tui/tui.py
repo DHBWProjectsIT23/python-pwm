@@ -3,7 +3,7 @@ import sqlite3
 import time
 from typing import TYPE_CHECKING
 
-from src.controller.connection import DB_PATH, connect_to_db
+from src.controller.connection import connect_to_db
 from src.model.user import User
 
 from .util import init_tui
@@ -29,10 +29,10 @@ def main(stdscr: CursesWindow) -> None:
     then starts the asynchronous event loop to run the TUI interface.
 
     Args:
-        stdscr (CursesWindow): The standard curses window object used for drawing 
+        stdscr (CursesWindow): The standard curses window object used for drawing
                                the user interface.
     """
-    with connect_to_db(DB_PATH) as connection:
+    with connect_to_db() as connection:
         asyncio.run(run_tui(stdscr, connection, connection.cursor()))
 
 
@@ -47,9 +47,9 @@ async def run_tui(
     Args:
         stdscr (CursesWindow): The standard curses window object used for drawing
                                the user interface.
-        connection (sqlite3.Connection): The database connection used for data 
+        connection (sqlite3.Connection): The database connection used for data
                                          operations.
-        cursor (sqlite3.Cursor): The database cursor used for querying and 
+        cursor (sqlite3.Cursor): The database cursor used for querying and
                                  executing commands.
 
     Raises:
@@ -90,10 +90,10 @@ async def run_tui(
     #     raise ValueError("Unexpted choice")
 
     user = User.new("admin", "admin")
-    # user.set_clear_username("admin")
+    user.set_clear_username("admin")
     user.set_clear_password("admin")
     assert user.has_clear_password(), "Error during login"
-    # assert user.has_clear_username(), "Error during login"
+    assert user.has_clear_username(), "Error during login"
 
     # user = User.new("test", "test")
     # user.set_clear_password("test")

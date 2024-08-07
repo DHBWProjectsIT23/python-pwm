@@ -50,10 +50,10 @@ async def show_details(parent: Panel, password: PasswordInformation) -> None:
         raise EncryptionException("Metadata of password is still encrypted")
 
     addstr(y + 2, 1, "Created at:", curses.A_UNDERLINE)
-    addstr(f" {metadata.created_at.strftime("%H:%M on %d.%m.%Y")}")
+    addstr(f" {metadata.created_at.strftime('%H:%M on %d.%m.%Y')}")
 
     addstr(y + 4, 1, "Last Modified:", curses.A_UNDERLINE)
-    addstr(f" {metadata.last_modified.strftime("%H:%M on %d.%m.%Y")}")
+    addstr(f" {metadata.last_modified.strftime('%H:%M on %d.%m.%Y')}")
 
     occurences = await password.check_pwned_status()
     y, _ = popup().getyx()

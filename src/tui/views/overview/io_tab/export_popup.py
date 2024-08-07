@@ -15,13 +15,10 @@ from src.import_export.export_data import export_to_json
 
 class ExportPopup(Prompt):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
-        super().__init__(parent)
-        self.user = user
-        self.cursor = cursor
+        super().__init__(parent, user, cursor)
         self.title = "Export Passwords"
 
     def run(self) -> None:
-        self.prompt = self.create_prompt_with_padding(self.parent)
         self.prompt().clear()
         self.prompt().refresh()
         self._reset_prompt(self.title)
@@ -55,32 +52,3 @@ class ExportPopup(Prompt):
 
         self.prompt().clear()
         self.prompt().refresh()
-
-    def _confirm_password(self) -> bool:
-        self.prompt().addstr(
-            2, 2, "Confirm Masterpassword to Export:", curses.A_UNDERLINE
-        )
-        self.prompt.writeBottomCenterText("- ↩ Confirm - ^E Cancel -", (-1, 0))
-        password_textbox, password_window = self._create_textbox((1, 32), (4, 2))
-        validator = InputValidator()
-
-        attempts = 0
-        while True:
-            if attempts > 3:
-                return False
-
-            curses.curs_set(True)
-            password_textbox.edit(validator.password_with_exit)
-            curses.curs_set(False)
-            if (
-                hash_sha256(validator.get_password_string().encode())
-                != self.user.password.password
-            ):
-                self._write_error("Wrong Password", "Export Passwords")
-                validator.reset_password()
-                password_window.clear()
-                password_window.refresh()
-                attempts += 1
-                continue
-
-            return True

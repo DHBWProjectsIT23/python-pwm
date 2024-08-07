@@ -17,16 +17,13 @@ from src.tui.views.overview.prompt import Prompt
 from src.tui.window import Window
 
 CONTROL_E = 5
-MULTILINE_CTR_STR = "- ^G Continue -"
-SINGLELINE_CTR_STR = "- ↩ Continue -"
+MULTILINE_CTR_STR = "- ^G Continue - ^E Cancel -"
+SINGLELINE_CTR_STR = "- ↩ Continue - ^E Cancel -"
 
 
 class PasswordCreator(Prompt):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
-        super().__init__(parent)
-        self.user = user
-        self.cursor = cursor
-        self.prompt: Window = Window(parent())
+        super().__init__(parent, user, cursor)
 
     def run(self) -> Optional[PasswordInformation]:
         title = "New Password"
@@ -35,7 +32,8 @@ class PasswordCreator(Prompt):
         if choice == 1:
             password_str = generate_secure_password()
         elif choice == -1:
-            return self._break_out()
+            self._break_out()
+            return None
 
         try:
             initial_error = ""
@@ -53,7 +51,8 @@ class PasswordCreator(Prompt):
 
             password = self._enter_password(password_str, title=title + " 4/4")
             if password is None:
-                return self._break_out()
+                self._break_out()
+                return None
             categories = self._enter_categories(title=title + " 5/5")
             note = self._enter_note(title=title + " 6/6")
 
@@ -69,7 +68,8 @@ class PasswordCreator(Prompt):
             self.prompt().refresh()
             return password_information
         except ExitFromTextBoxException:
-            return self._break_out()
+            self._break_out()
+            return None
 
     def _enter_description(
         self, initial_error: str = "", initial_description: str = "", *, title: str
@@ -87,7 +87,7 @@ class PasswordCreator(Prompt):
         desc_textbox.do_command(CONTROL_E)
         while True:
             curses.curs_set(True)
-            desc_textbox.edit(InputValidator.no_spaces_with_exit)
+            desc_textbox.edit(InputValidator.with_exit)
             description = desc_textbox.gather().strip()
             curses.curs_set(False)
             if len(description) == 0:
@@ -147,7 +147,7 @@ class PasswordCreator(Prompt):
         category_textbox.do_command(CONTROL_E)
         while True:
             curses.curs_set(True)
-            category_textbox.edit(InputValidator.no_spaces_with_exit)
+            category_textbox.edit(InputValidator.with_exit)
             curses.curs_set(False)
             category_text = category_textbox.gather().strip().replace("\n", "")
 
@@ -175,7 +175,7 @@ class PasswordCreator(Prompt):
         if initial_note is not None:
             note_window.addstr(initial_note)
         curses.curs_set(True)
-        note_textbox.edit(InputValidator.no_spaces_with_exit)
+        note_textbox.edit(InputValidator.with_exit)
         curses.curs_set(False)
         note = note_textbox.gather().strip().replace("\n", "")
         return note if len(note) > 0 else None
@@ -184,4 +184,3 @@ class PasswordCreator(Prompt):
         curses.curs_set(False)
         self.prompt().clear()
         self.prompt().refresh()
-        return None

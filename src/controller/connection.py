@@ -1,9 +1,8 @@
 import sqlite3
+from src.config import db_path
 
-DB_PATH: str = "test.db"
 
-
-def connect_to_db(db_path: str) -> sqlite3.Connection:
+def connect_to_db() -> sqlite3.Connection:
     """
     Establishes a connection to the SQLite database and initializes the necessary tables.
 
@@ -13,7 +12,7 @@ def connect_to_db(db_path: str) -> sqlite3.Connection:
     Returns:
         sqlite3.Connection: The SQLite connection object.
     """
-    connection = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
+    connection = sqlite3.connect(db_path(), detect_types=sqlite3.PARSE_DECLTYPES)
     cursor = connection.cursor()
     initialize_tables(cursor)
 

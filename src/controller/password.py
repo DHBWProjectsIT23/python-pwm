@@ -87,8 +87,8 @@ def update_password_information(
             pickle.dumps(password_information.passwords),
             pickle.dumps(password_information.categories),
             pickle.dumps(password_information.note),
-            pickle.dumps(password_information.metadata),
             password_information.user.username,
+            pickle.dumps(password_information.metadata),
             password_information.id,
         ),
     )

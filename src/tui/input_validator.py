@@ -141,3 +141,9 @@ class InputValidator:
             return 0
 
         return ch
+
+    @staticmethod
+    def with_exit(ch: int) -> int:
+        if ch == 5:
+            raise ExitFromTextBoxException
+        return ch

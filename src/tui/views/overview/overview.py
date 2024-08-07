@@ -25,7 +25,7 @@ async def show_overview(
     screen_size = window.getSize()
     y_start = percentage_of(15, screen_size[0])
 
-    window_size = screen_size[0] - y_start - 2, screen_size[1] - 2
+    window_size = screen_size[0] - y_start - 1, screen_size[1] - 2
 
     passwords = retrieve_password_information(cursor, user)
 
