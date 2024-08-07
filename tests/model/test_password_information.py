@@ -17,7 +17,7 @@ class TestPasswordInformation(unittest.TestCase):
         info, _, _ = create_test_info()
         note = "This password is a test"
         info.set_note(note)
-        self.assertEqual(info.details.note, note)
+        self.assertEqual(info.details.note, note.encode())
 
     def test_category_maximum(self):
         info, _, _ = create_test_info()
