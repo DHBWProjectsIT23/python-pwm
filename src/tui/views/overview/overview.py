@@ -12,16 +12,10 @@ from src.model.user import User
 from src.controller.password import (
     retrieve_password_information,
 )
-from src.tui.util import percentage_of
+from src.tui.util import generate_control_str, percentage_of
 from src.tui.views.overview.user_tab.user_tab import UserTab
 
-CONTROL_STR: str = """
-- ⇆ Change Tab - q Quit -
-""".strip()
-PASS_CONTROL_STR: str = """
-- ↑↓ Navigate Passwords - r Reveal Password - ↩ Show More Information - ? All Keybinds -
-""".strip()
-# n - New Password - c Checl - C Check all
+CONTROLS: dict[str, str] = {"⇆": "Change Tab", "q": "Quit"}
 
 
 async def show_overview(
@@ -43,12 +37,12 @@ async def show_overview(
 
     top_window, tabbar = init_top_window(window, screen_size, tabs)
 
-    window.writeBottomCenterText(PASS_CONTROL_STR, (-1, 0))
-    window.writeBottomCenterText(CONTROL_STR)
+    window.writeBottomCenterText(generate_control_str(CONTROLS))
 
     window().refresh()
+    password_tab.refresh()
 
-    tabbar.next_tab()
+    # tabbar.next_tab()
 
     while True:
         input_key: int = window().getch()

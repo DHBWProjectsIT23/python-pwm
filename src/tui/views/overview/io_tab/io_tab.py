@@ -9,6 +9,12 @@ from src.tui.views.overview.io_tab.import_popup import ImportPopup
 from src.tui.views.overview.tab_interface import TabInterface
 
 
+CONTROLS: dict["str", "str"] = {
+    "↑↓": "Navigate Menu",
+    "↩": "Select Option",
+}
+
+
 class IoTab(TabInterface):
     def __init__(
         self,
@@ -29,7 +35,7 @@ class IoTab(TabInterface):
         self.connection = connection
         self.cursor = self.connection.cursor()
 
-    async def proccess_input(self, input_key: int):
+    async def proccess_input(self, input_key: int) -> None:
         match input_key:
             case Keys.UP:
                 self.menu.up_action()

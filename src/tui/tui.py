@@ -65,10 +65,10 @@ async def run_tui(
     #     raise ValueError("Unexpted choice")
 
     user = User.new("admin", "admin")
-    user.set_clear_username("admin")
+    # user.set_clear_username("admin")
     user.set_clear_password("admin")
     assert user.has_clear_password(), "Error during login"
-    assert user.has_clear_username(), "Error during login"
+    # assert user.has_clear_username(), "Error during login"
 
     # user = User.new("test", "test")
     # user.set_clear_password("test")

@@ -10,6 +10,7 @@ class User:
     def __init__(self, hashed_username: bytes, password: Password):
         self.username = hashed_username
         self.password = password
+        self.email = "placeholder@mail.com"
         self._clear_password: Optional[str] = None
         self._clear_username: Optional[str] = None
         if not password.is_master:

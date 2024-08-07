@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from src.tui.window import Window
+
 if TYPE_CHECKING:
     from curses.panel import _Curses_Panel
     from _curses import _CursesWindow
@@ -13,15 +15,13 @@ else:
     CursesWindow = Any
 
 
-class Panel:
+class Panel(Window):
     def __init__(self, panel: CursesPanel) -> None:
+        super().__init__(panel.window())
         self.panel = panel
 
-    def __call__(self) -> CursesWindow:
-        return self.panel.window()
-
     def getSize(self) -> tuple[int, int]:
-        return self.panel.window().getmaxyx()
+        return self.window.getmaxyx()
 
     def show(self) -> None:
         self.panel.show()

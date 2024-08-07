@@ -35,7 +35,7 @@ class PasswordCreator(Prompt):
         if choice == 1:
             password_str = generate_secure_password()
         elif choice == -1:
-            return None
+            return self._break_out()
 
         try:
             initial_error = ""
@@ -52,6 +52,8 @@ class PasswordCreator(Prompt):
                 initial_error = "Identical combination already exists"
 
             password = self._enter_password(password_str, title=title + " 4/4")
+            if password is None:
+                return self._break_out()
             categories = self._enter_categories(title=title + " 5/5")
             note = self._enter_note(title=title + " 6/6")
 
@@ -67,10 +69,7 @@ class PasswordCreator(Prompt):
             self.prompt().refresh()
             return password_information
         except ExitFromTextBoxException:
-            curses.curs_set(False)
-            self.prompt().clear()
-            self.prompt().refresh()
-            return None
+            return self._break_out()
 
     def _enter_description(
         self, initial_error: str = "", initial_description: str = "", *, title: str
@@ -88,7 +87,7 @@ class PasswordCreator(Prompt):
         desc_textbox.do_command(CONTROL_E)
         while True:
             curses.curs_set(True)
-            desc_textbox.edit(InputValidator.password_with_exit)
+            desc_textbox.edit(InputValidator.no_spaces_with_exit)
             description = desc_textbox.gather().strip()
             curses.curs_set(False)
             if len(description) == 0:
@@ -112,15 +111,19 @@ class PasswordCreator(Prompt):
         username_textbox, _ = self._create_textbox((1, 32), (4, 2))
         username_textbox.do_command(CONTROL_E)
         curses.curs_set(True)
-        username_textbox.edit(InputValidator.password_with_exit)
+        username_textbox.edit(InputValidator.no_spaces_with_exit)
         curses.curs_set(False)
-        username: Optional[str] = username_textbox.gather().strip()
+        username = username_textbox.gather().strip()
         return username if len(username) > 0 else None
 
-    def _enter_password(self, password: str, *, title: str) -> Password:
-        return Password(
-            add_password_prompt.show_password_input(self.prompt, None, password, title)
+    def _enter_password(self, password: str, *, title: str) -> Optional[Password]:
+        password_str = add_password_prompt.show_password_input(
+            self.prompt, None, password, title
         )
+        if password_str is None:
+            return None
+
+        return Password(password_str)
 
     def _enter_categories(
         self, initial_categories: list[str] = [], *, title: str
@@ -144,7 +147,7 @@ class PasswordCreator(Prompt):
         category_textbox.do_command(CONTROL_E)
         while True:
             curses.curs_set(True)
-            category_textbox.edit(InputValidator.password_with_exit)
+            category_textbox.edit(InputValidator.no_spaces_with_exit)
             curses.curs_set(False)
             category_text = category_textbox.gather().strip().replace("\n", "")
 
@@ -172,7 +175,13 @@ class PasswordCreator(Prompt):
         if initial_note is not None:
             note_window.addstr(initial_note)
         curses.curs_set(True)
-        note_textbox.edit(InputValidator.password_with_exit)
+        note_textbox.edit(InputValidator.no_spaces_with_exit)
         curses.curs_set(False)
         note = note_textbox.gather().strip().replace("\n", "")
         return note if len(note) > 0 else None
+
+    def _break_out(self) -> None:
+        curses.curs_set(False)
+        self.prompt().clear()
+        self.prompt().refresh()
+        return None

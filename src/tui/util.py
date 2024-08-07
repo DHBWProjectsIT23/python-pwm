@@ -66,3 +66,11 @@ def pad_with(text: str, length: int, padding: str = " ") -> str:
     return text + (length - len(text)) * padding
 
 
+def generate_control_str(controls: dict[str, str]) -> str:
+    control_str = ""
+    for key, value in controls.items():
+        control_str += f"- {key} {value} "
+
+    control_str += "-"
+
+    return control_str

@@ -23,6 +23,18 @@ from src.controller.password import (
 )
 
 
+CONTROLS: dict["str", "str"] = {
+    "↑↓": "Navigate Passwords",
+    "↩": "Show Details",
+    "e/E": "Edit Details",
+    "a/A": "Add Password",
+    "c": "Check if Password has been leaked",
+    "C": "Check all Passwords",
+    "n/N": "Create new Password",
+    "r/R": "Reveal selected Password",
+}
+
+
 class PasswordTab(TabInterface):
     def __init__(
         self,
@@ -51,6 +63,7 @@ class PasswordTab(TabInterface):
         self.user = user
         self.connection = connection
         self.cursor = self.connection.cursor()
+        self.controls = CONTROLS
 
     def _init_table_headings(self) -> None:
         desc_width, uname_width, pass_width, _ = PasswordList.calculate_columns(

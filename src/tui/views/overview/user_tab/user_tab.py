@@ -1,6 +1,5 @@
 import curses
 import sqlite3
-from src.controller import connection
 from src.controller.password import (
     retrieve_password_information,
     update_password_information,
@@ -10,6 +9,7 @@ from src.crypto.hashing import hash_sha256
 from src.model import password_information
 from src.tui.keys import Keys
 from src.tui.panel import Panel
+from src.tui.popup import create_centered_popup
 from src.tui.views.overview.tab_interface import TabInterface
 from src.model.user import User
 from src.model.password import Password
@@ -17,6 +17,14 @@ from src.tui.views.overview.user_tab.update_password_prompt import (
     show_update_password_prompt,
 )
 from src.tui.views.overview.user_tab.update_username_prompt import UpdateUsernamePrompt
+from src.tui.util import generate_control_str, percentage_of
+
+CONTROLS: dict["str", "str"] = {
+    "u/U": "Change Username",
+    "p/P": "Change Password",
+    "e/E": "Change Email",
+    "d/D": "Delete User",
+}
 
 
 class UserTab(TabInterface):
@@ -34,16 +42,12 @@ class UserTab(TabInterface):
         )
         self.tab().box()
 
-        attr = curses.A_BOLD | curses.A_UNDERLINE
-        addstr = self.tab().addstr
-
-        addstr(2, 2, "Username:", attr)
-
-        addstr(4, 2, "Email:", attr)
-
         self.user = user
         self.connection = connection
         self.cursor = connection.cursor()
+        self.controls = CONTROLS
+
+        self._display_user_info()
 
         self.tab().refresh()
 
@@ -98,6 +102,44 @@ class UserTab(TabInterface):
 
         update_user(self.cursor, self.user)
         self.connection.commit()
+
+    def _display_user_info(self) -> None:
+        height = percentage_of(70, self.tab.getSize()[0])
+        width = percentage_of(70, self.tab.getSize()[1])
+
+        info_display = create_centered_popup(self.tab, height, width)
+
+        data_inset = 20
+
+        attr = curses.A_BOLD | curses.A_UNDERLINE
+        addstr = info_display().addstr
+
+        addstr(2, 2, "Username:", attr)
+        try:
+            addstr(2, data_inset, f"{self.user.get_clear_username()}")
+        except ValueError:
+            addstr(
+                2,
+                data_inset,
+                "Failed to load username",
+                curses.A_ITALIC | curses.color_pair(2),
+            )
+
+        addstr(4, 2, "Email:", attr)
+        addstr(4, data_inset, f"{ self.user.email}")
+
+        addstr(6, 2, "No. of Passwords:", attr)
+        addstr(
+            6,
+            data_inset,
+            f"{len(retrieve_password_information(self.cursor, self.user))}",
+        )
+        info_display().refresh()
+
+    def _display_controls(self) -> None:
+        control_str = generate_control_str(self.controls)
+
+        self.tab
 
     def show(self) -> None:
         self.tab.show()
