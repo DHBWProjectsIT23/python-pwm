@@ -58,7 +58,7 @@ class Password:
 
     def _encrypt_password(self) -> None:
         """
-        Performs the actual decryption of the password.
+        Performs the actual encryption of the password.
         """
         self.password_bytes = dummy_encrypt_fernet(self.password_bytes)
 
