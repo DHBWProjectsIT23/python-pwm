@@ -7,13 +7,13 @@ from src.exceptions.encryption_exception import EncryptionException
 class TestPassword(unittest.TestCase):
     def setUp(self):
         self.password = Password("test_password")
-        self.key = b"encryption_key"
+        self.user_password = "FakePassword"
 
     def test_encrypt_decrypt(self):
-        self.password.encrypt(self.key)
+        self.password.encrypt(self.user_password)
         self.assertTrue(self.password.is_encrypted)
         encrypted_password = self.password()
-        self.password.decrypt(self.key)
+        self.password.decrypt(self.user_password)
         self.assertFalse(self.password.is_encrypted)
         self.assertNotEqual(encrypted_password, self.password())
 
@@ -26,20 +26,20 @@ class TestPassword(unittest.TestCase):
     def test_encrypt_master_password(self):
         self.password.make_master()
         with self.assertRaises(EncryptionException):
-            self.password.encrypt(self.key)
+            self.password.encrypt(self.user_password)
 
     def test_decrypt_master_password(self):
         self.password.make_master()
         with self.assertRaises(EncryptionException):
-            self.password.decrypt(self.key)
+            self.password.decrypt(self.user_password)
 
     def test_adapt_password(self):
-        self.password.encrypt(self.key)
+        self.password.encrypt(self.user_password)
         serialized_password = adapt_password(self.password)
         self.assertIsInstance(serialized_password, bytes)
 
     def test_convert_password(self):
-        self.password.encrypt(self.key)
+        self.password.encrypt(self.user_password)
         serialized_password = adapt_password(self.password)
         deserialized_password = convert_password(serialized_password)
         self.assertIsInstance(deserialized_password, Password)
