@@ -97,7 +97,6 @@ class EncryptedMetadata:
         Returns:
             Metadata: An instance of Metadata with the decrypted data.
         """
-        _ = key
         metadata = Metadata()
         metadata.created_at = pickle.loads(decrypt_fernet(self.created_at, key))
         metadata.last_modified = pickle.loads(decrypt_fernet(self.modified_at, key))

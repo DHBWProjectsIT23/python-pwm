@@ -52,6 +52,7 @@ async def show_overview(
     tabbar.refresh()
 
     while True:
+        curses.curs_set(False)
         window().timeout(1000)
         input_key: int = window().getch()
         window().timeout(-1)

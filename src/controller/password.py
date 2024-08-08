@@ -129,7 +129,7 @@ def validate_unique_password(
     )
     results: list[tuple[bytes, bytes, bytes]] = cursor.fetchall()
     for result in results:
-        salt: bytes = pickle.loads(result[0])
+        salt: bytes = pickle.loads(result[2])
         key, _ = scrypt_derive(user.get_clear_password().encode(), salt)
         desc: bytes = decrypt_fernet(result[0], key)
         uname: Optional[bytes] = pickle.loads(result[1])

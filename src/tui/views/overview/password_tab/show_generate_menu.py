@@ -1,11 +1,12 @@
 import curses
 
+from src.tui.keys import Keys
 from src.tui.panel import Panel
 from src.tui.views.overview.components.prompt import Prompt
 from src.tui.window import Window
 
 SELECT_CONTROL_STR = """
-- ↩ Continue - ↑↓ Select Option -
+- ↩ Continue - ↑↓ Select Option - ^E Cancel -
 """.strip()
 
 
@@ -33,16 +34,9 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
                 _select_own(prompt)
                 prompt().refresh()
                 choice = 2
-            case 27:
-                prompt().nodelay(True)
-                n = prompt().getch()
-                prompt().nodelay(False)
-                if n == -1:
-                    prompt().clear()
-                    prompt().refresh()
-                    choice = -1
-                    break
-            case 10:
+            case 5:
+                return -1, prompt
+            case Keys.ENTER:
                 break
 
     return choice, prompt

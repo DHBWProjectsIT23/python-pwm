@@ -26,25 +26,25 @@ def main() -> None:
     with connect_to_db() as connection:
         cursor = connection.cursor()
         add_test_users(cursor)
-        for i in range(5):
-            add_test_passwords(cursor, User.new("test", "test"), i)
+        for i in range(7):
+            add_test_passwords(cursor, User.new("Test", "TestUser2103"), i)
         connection.commit()
 
 
 def add_test_users(cursor: sqlite3.Cursor) -> None:
-    admin_password = Password("admin")
-    admin_user = User(hash_sha256(b"admin"), admin_password)
+    admin_password = Password("AdminUser2103")
+    admin_user = User(hash_sha256(b"Admin"), admin_password)
 
     insert_user(cursor, admin_user)
 
-    test_password = Password("test")
-    test_user = User(hash_sha256(b"test"), test_password)
+    test_password = Password("TestUser2103")
+    test_user = User(hash_sha256(b"Test"), test_password)
 
     insert_user(cursor, test_user)
 
 
 def add_test_passwords(cursor: sqlite3.Cursor, user: User, index: int) -> None:
-    user.set_clear_password("test")
+    user.set_clear_password("TestUser2103")
     test_password_1 = Password(f"test_password_1_{index}")
     test_password_information_1 = PasswordInformation(
         user, test_password_1, f"www.github{index}.com", "simon@test.com"

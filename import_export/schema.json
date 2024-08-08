@@ -1,18 +1,18 @@
 [
   {
     "description": "Description",
-    "username": "username or empty",
+    "username": "Optional Key: Username",
     "password": {
       "current_password": "Password"
       "old_passwords": [
-        "ThisArrayCanBeEmpty", "OldPassword1", "OldPassword2", "OldPassword3"
+        "OptionalKey", "OldPassword1", "OldPassword2", "OldPassword3"
       ]
     }
     "categories": [
-      "ThisArrayCanBeEmpty", "category 1", "category 2"
+      "OptionalKey", "category 1", "category 2"
     ],
-    "note": "A Note about the password, this can be empty"
-    "created_at": "1722942779.377356"
-    "las_modified": "1722942779.377356"
+    "note": "Optional Key - A Note about the password, this can be empty"
+    "created_at": "Optional Key - Unix timestamp"
+    "las_modified": "Optional Key - Unix timestamp"
   }
 ]

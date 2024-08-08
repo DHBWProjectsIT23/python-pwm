@@ -93,13 +93,13 @@ class UserTab(TabInterface):
         new_password = Password(new_password_str)
         new_password.make_master()
         self.user.password = new_password
+        self.user.set_clear_password(new_password_str)
 
         for pw_info in password_infos:
             pw_info.user = self.user
             update_password_information(self.cursor, pw_info)
 
         update_user(self.cursor, self.user)
-        self.user.set_clear_password(new_password_str)
         self.connection.commit()
 
     def _handle_delete_user_input(self) -> None:

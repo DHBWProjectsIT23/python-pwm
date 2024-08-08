@@ -154,5 +154,5 @@ for _ in range(50):
 print(json.dumps(entries, indent=2))
 
 # Save to file
-with open("../import_export/import_generated.json", "w") as f:
+with open("import_generated.json", "w") as f:
     json.dump(entries, f, indent=2)

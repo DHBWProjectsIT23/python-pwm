@@ -1,0 +1,655 @@
+[
+  {
+    "description": "eBay",
+    "password": {
+      "current_password": "password123"
+    },
+    "username": "",
+    "created_at": 1693225830.0,
+    "last_modified": 1693225881.0
+  },
+  {
+    "description": "Instagram",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "eveUser",
+    "note": "Instagram"
+  },
+  {
+    "description": "Pinterest",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "",
+    "categories": []
+  },
+  {
+    "description": "Asana",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "",
+    "categories": [
+      "entertainment",
+      "travel",
+      "social",
+      "education"
+    ],
+    "note": "Canva",
+    "created_at": 1628449523.0,
+    "last_modified": 1628449980.0
+  },
+  {
+    "description": "Twitter",
+    "password": {
+      "current_password": "securePassword"
+    },
+    "username": "johnDoe",
+    "categories": [
+      "social",
+      "education",
+      "health",
+      "personal",
+      "travel"
+    ],
+    "note": "Twitch",
+    "created_at": 1676155389.0,
+    "last_modified": 1676155884.0
+  },
+  {
+    "description": "Square",
+    "password": {
+      "current_password": "adminPass"
+    },
+    "username": "",
+    "created_at": 1638867872.0,
+    "last_modified": 1638868120.0
+  },
+  {
+    "description": "Canva",
+    "password": {
+      "current_password": "test_password_2",
+      "old_passwords": [
+        "samplePassword",
+        "userPass2021",
+        "mySecretPass",
+        "securePassword"
+      ]
+    },
+    "username": "simonTest",
+    "note": "Quora"
+  },
+  {
+    "description": "Jira",
+    "password": {
+      "current_password": "adminPass",
+      "old_passwords": [
+        "randomPass",
+        "mySecretPass"
+      ]
+    },
+    "username": "",
+    "categories": [
+      "entertainment",
+      "misc",
+      "finance",
+      "social"
+    ],
+    "note": "Stripe",
+    "created_at": 1709372879.0,
+    "last_modified": 1709373710.0
+  },
+  {
+    "description": "Lyft",
+    "password": {
+      "current_password": "qwerty12345",
+      "old_passwords": [
+        "randomPass",
+        "password123",
+        "securePassword"
+      ]
+    },
+    "username": "charlieDev",
+    "note": "Zoom"
+  },
+  {
+    "description": "Uber",
+    "password": {
+      "current_password": "test_password_2",
+      "old_passwords": []
+    },
+    "username": "",
+    "categories": [
+      "personal",
+      "travel",
+      "misc"
+    ],
+    "note": "LinkedIn",
+    "created_at": 1584201083.0,
+    "last_modified": 1584201265.0
+  },
+  {
+    "description": "LinkedIn",
+    "password": {
+      "current_password": "test_password_2",
+      "old_passwords": [
+        "adminPass",
+        "test_password_2",
+        "test_password_1",
+        "qwerty12345",
+        "userPass2021"
+      ]
+    },
+    "username": "charlieDev"
+  },
+  {
+    "description": "Dropbox",
+    "password": {
+      "current_password": "userPass2021",
+      "old_passwords": [
+        "securePassword",
+        "qwerty12345",
+        "password123"
+      ]
+    },
+    "username": "",
+    "categories": [
+      "social",
+      "education",
+      "shopping",
+      "entertainment"
+    ],
+    "note": "Kickstarter"
+  },
+  {
+    "description": "Twitter",
+    "password": {
+      "current_password": "qwerty12345",
+      "old_passwords": [
+        "test_password_2",
+        "securePassword",
+        "test_password_1"
+      ]
+    },
+    "username": ""
+  },
+  {
+    "description": "Duolingo",
+    "password": {
+      "current_password": "securePassword"
+    },
+    "username": "",
+    "categories": [
+      "personal",
+      "misc"
+    ],
+    "note": "Stripe"
+  },
+  {
+    "description": "Netflix",
+    "password": {
+      "current_password": "randomPass",
+      "old_passwords": []
+    },
+    "username": "malloryQ"
+  },
+  {
+    "description": "Slack",
+    "password": {
+      "current_password": "password123",
+      "old_passwords": []
+    },
+    "username": "bobTest",
+    "note": "Canva",
+    "created_at": 1645859506.0,
+    "last_modified": 1645860291.0
+  },
+  {
+    "description": "Mailchimp",
+    "password": {
+      "current_password": "test_password_2"
+    },
+    "username": "",
+    "categories": [
+      "health",
+      "social",
+      "work",
+      "travel"
+    ],
+    "note": "Instagram",
+    "created_at": 1660705684.0,
+    "last_modified": 1660705714.0
+  },
+  {
+    "description": "Quora",
+    "password": {
+      "current_password": "userPass2021",
+      "old_passwords": [
+        "samplePassword",
+        "securePassword",
+        "test_password_1"
+      ]
+    },
+    "username": "bobTest",
+    "categories": [],
+    "note": "eBay",
+    "created_at": 1683395542.0,
+    "last_modified": 1683396233.0
+  },
+  {
+    "description": "Patreon",
+    "password": {
+      "current_password": "samplePassword"
+    },
+    "username": "",
+    "categories": [
+      "personal",
+      "social",
+      "misc",
+      "travel",
+      "finance"
+    ]
+  },
+  {
+    "description": "Stripe",
+    "password": {
+      "current_password": "adminPass",
+      "old_passwords": [
+        "randomPass",
+        "mySecretPass",
+        "password123",
+        "test_password_1"
+      ]
+    },
+    "username": "trudyExample",
+    "categories": [
+      "social",
+      "entertainment"
+    ],
+    "note": "Instagram",
+    "created_at": 1621124889.0,
+    "last_modified": 1621125720.0
+  },
+  {
+    "description": "Netflix",
+    "password": {
+      "current_password": "password123"
+    },
+    "username": "",
+    "categories": [
+      "misc",
+      "personal"
+    ],
+    "created_at": 1688221185.0,
+    "last_modified": 1688221917.0
+  },
+  {
+    "description": "Google",
+    "password": {
+      "current_password": "adminPass"
+    },
+    "username": "",
+    "note": "Zoom",
+    "created_at": 1675742190.0,
+    "last_modified": 1675742540.0
+  },
+  {
+    "description": "GitLab",
+    "password": {
+      "current_password": "userPass2021",
+      "old_passwords": [
+        "samplePassword",
+        "adminPass",
+        "test_password_2"
+      ]
+    },
+    "username": "",
+    "note": "Salesforce",
+    "created_at": 1583902177.0,
+    "last_modified": 1583902639.0
+  },
+  {
+    "description": "Quora",
+    "password": {
+      "current_password": "randomPass",
+      "old_passwords": [
+        "mySecretPass",
+        "samplePassword",
+        "test_password_1",
+        "adminPass"
+      ]
+    },
+    "username": "peggyDemo",
+    "categories": [
+      "education",
+      "shopping",
+      "misc"
+    ]
+  },
+  {
+    "description": "eBay",
+    "password": {
+      "current_password": "mySecretPass",
+      "old_passwords": [
+        "userPass2021",
+        "securePassword",
+        "adminPass"
+      ]
+    },
+    "username": "bobTest",
+    "note": "TikTok",
+    "created_at": 1613639689.0,
+    "last_modified": 1613640103.0
+  },
+  {
+    "description": "Zoom",
+    "password": {
+      "current_password": "test_password_2"
+    },
+    "username": "peggyDemo",
+    "created_at": 1686072905.0,
+    "last_modified": 1686073753.0
+  },
+  {
+    "description": "Skillshare",
+    "password": {
+      "current_password": "password123",
+      "old_passwords": [
+        "securePassword"
+      ]
+    },
+    "username": "victorVal"
+  },
+  {
+    "description": "Hootsuite",
+    "password": {
+      "current_password": "password123",
+      "old_passwords": [
+        "test_password_1",
+        "samplePassword",
+        "securePassword",
+        "mySecretPass"
+      ]
+    },
+    "username": "peggyDemo",
+    "created_at": 1598284917.0,
+    "last_modified": 1598285709.0
+  },
+  {
+    "description": "Skillshare",
+    "password": {
+      "current_password": "mySecretPass"
+    },
+    "username": ""
+  },
+  {
+    "description": "Reddit",
+    "password": {
+      "current_password": "test_password_1",
+      "old_passwords": []
+    },
+    "username": "peggyDemo",
+    "categories": [
+      "travel",
+      "health"
+    ]
+  },
+  {
+    "description": "Quora",
+    "password": {
+      "current_password": "securePassword",
+      "old_passwords": [
+        "qwerty12345",
+        "mySecretPass",
+        "test_password_2",
+        "adminPass"
+      ]
+    },
+    "username": "johnDoe",
+    "note": "Google",
+    "created_at": 1597795948.0,
+    "last_modified": 1597796904.0
+  },
+  {
+    "description": "WhatsApp",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "",
+    "categories": [
+      "social",
+      "finance"
+    ]
+  },
+  {
+    "description": "LinkedIn",
+    "password": {
+      "current_password": "samplePassword",
+      "old_passwords": [
+        "adminPass",
+        "test_password_2",
+        "password123",
+        "randomPass",
+        "securePassword"
+      ]
+    },
+    "username": "victorVal",
+    "note": "Yelp",
+    "created_at": 1658415941.0,
+    "last_modified": 1658416126.0
+  },
+  {
+    "description": "Spotify",
+    "password": {
+      "current_password": "password123"
+    },
+    "username": "",
+    "note": "Patreon",
+    "created_at": 1669940108.0,
+    "last_modified": 1669940731.0
+  },
+  {
+    "description": "YouTube",
+    "password": {
+      "current_password": "qwerty12345"
+    },
+    "username": "trudyExample",
+    "categories": [
+      "education",
+      "entertainment",
+      "finance",
+      "travel",
+      "shopping"
+    ],
+    "created_at": 1678429144.0,
+    "last_modified": 1678429719.0
+  },
+  {
+    "description": "Medium",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "alice123",
+    "categories": [
+      "education"
+    ],
+    "note": "Medium"
+  },
+  {
+    "description": "Spotify",
+    "password": {
+      "current_password": "adminPass"
+    },
+    "username": "bobTest",
+    "categories": [
+      "entertainment"
+    ],
+    "note": "Hootsuite"
+  },
+  {
+    "description": "LinkedIn",
+    "password": {
+      "current_password": "randomPass",
+      "old_passwords": [
+        "test_password_1"
+      ]
+    },
+    "username": "",
+    "categories": [
+      "work"
+    ],
+    "note": "WhatsApp"
+  },
+  {
+    "description": "Spotify",
+    "password": {
+      "current_password": "userPass2021"
+    },
+    "username": "victorVal",
+    "categories": [],
+    "created_at": 1715655683.0,
+    "last_modified": 1715656354.0
+  },
+  {
+    "description": "Quora",
+    "password": {
+      "current_password": "userPass2021",
+      "old_passwords": [
+        "samplePassword"
+      ]
+    },
+    "username": "victorVal",
+    "categories": [],
+    "created_at": 1697485929.0,
+    "last_modified": 1697486101.0
+  },
+  {
+    "description": "Lyft",
+    "password": {
+      "current_password": "userPass2021"
+    },
+    "username": "peggyDemo",
+    "note": "Udemy",
+    "created_at": 1690196825.0,
+    "last_modified": 1690197090.0
+  },
+  {
+    "description": "PayPal",
+    "password": {
+      "current_password": "password123"
+    },
+    "username": "simonTest",
+    "created_at": 1578108635.0,
+    "last_modified": 1578108974.0
+  },
+  {
+    "description": "Airbnb",
+    "password": {
+      "current_password": "qwerty12345"
+    },
+    "username": "victorVal",
+    "note": "WordPress"
+  },
+  {
+    "description": "Snapchat",
+    "password": {
+      "current_password": "adminPass",
+      "old_passwords": [
+        "password123",
+        "test_password_2"
+      ]
+    },
+    "username": "",
+    "categories": [
+      "entertainment",
+      "finance",
+      "personal",
+      "education",
+      "social"
+    ]
+  },
+  {
+    "description": "PayPal",
+    "password": {
+      "current_password": "adminPass",
+      "old_passwords": [
+        "mySecretPass",
+        "randomPass",
+        "securePassword"
+      ]
+    },
+    "username": "",
+    "created_at": 1612058061.0,
+    "last_modified": 1612058445.0
+  },
+  {
+    "description": "Square",
+    "password": {
+      "current_password": "randomPass"
+    },
+    "username": "alice123",
+    "categories": [
+      "shopping",
+      "finance",
+      "education",
+      "social",
+      "misc"
+    ],
+    "created_at": 1683392967.0,
+    "last_modified": 1683393596.0
+  },
+  {
+    "description": "Kickstarter",
+    "password": {
+      "current_password": "securePassword"
+    },
+    "username": "",
+    "categories": [
+      "social",
+      "entertainment",
+      "health"
+    ],
+    "note": "Uber",
+    "created_at": 1611062122.0,
+    "last_modified": 1611063032.0
+  },
+  {
+    "description": "Zoom",
+    "password": {
+      "current_password": "samplePassword"
+    },
+    "username": "",
+    "categories": [
+      "personal",
+      "work",
+      "education",
+      "shopping",
+      "entertainment"
+    ],
+    "note": "Instagram"
+  },
+  {
+    "description": "Netflix",
+    "password": {
+      "current_password": "randomPass"
+    },
+    "username": "charlieDev",
+    "note": "Twitch",
+    "created_at": 1593744805.0,
+    "last_modified": 1593745409.0
+  },
+  {
+    "description": "Quora",
+    "password": {
+      "current_password": "samplePassword",
+      "old_passwords": [
+        "test_password_2"
+      ]
+    },
+    "username": "",
+    "note": "Dropbox",
+    "created_at": 1620495760.0,
+    "last_modified": 1620496424.0
+  }
+]

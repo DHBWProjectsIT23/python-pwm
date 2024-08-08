@@ -24,7 +24,7 @@ SINGLELINE_CTR_STR = "- ↩ Continue - ^E Cancel -"
 class PasswordCreationPrompt(Prompt):
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
         super().__init__(parent, user, cursor)
-        self.prompt = show_select_generated_prompt(self.parent, "New Password")[1]
+        self.prompt = Prompt.create_prompt_with_padding(parent)
         self.tile = "New Password"
 
     def run(self) -> Optional[PasswordInformation]:

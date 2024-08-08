@@ -1,3 +1,4 @@
+import curses
 import sys
 
 from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
@@ -29,7 +30,7 @@ class InputValidator:
         if ch == Keys.ENTER:
             return Keys.BELL
 
-        if ch in (Keys.BACKSPACE, Keys.DELETE):
+        if ch == curses.KEY_BACKSPACE:
             if len(self.password_arr) > 0:
                 self.password_arr.pop()
             return Keys.BACKSPACE
@@ -66,7 +67,7 @@ class InputValidator:
         if ch == Keys.ENTER:
             return Keys.BELL
 
-        if ch in (Keys.BACKSPACE, Keys.DELETE):
+        if ch == curses.KEY_BACKSPACE:
             if len(self.password_arr) > 0:
                 self.password_arr.pop()
             return Keys.BACKSPACE
