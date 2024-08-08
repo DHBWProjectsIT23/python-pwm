@@ -5,15 +5,15 @@ from cryptography.hazmat.primitives import padding
 
 def encrypt_aes(data: str, key: bytes) -> bytes:
     """
-        Encrypts the data using the provided key.
+    Encrypts the data using the provided key.
 
-        Args:
-            data (str): The data to be decrypted.
-            key (bytes): The encryption key.
+    Args:
+        data (str): The data to be decrypted.
+        key (bytes): The encryption key.
     """
-    iv = b'\xce:\x9f\x07\xd89\xb1p \xfc\xc3\xe0KbKx'
-    padder = padding.PKCS7(128).padder()
-    padded_message = padder.update(data.encode()) + padder.finalize()
+    iv = b"\xce:\x9f\x07\xd89\xb1p \xfc\xc3\xe0KbKx"
+    padder: padding.PaddingContext = padding.PKCS7(128).padder()
+    padded_message: bytes = padder.update(data.encode()) + padder.finalize()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(padded_message) + encryptor.finalize()
@@ -22,11 +22,11 @@ def encrypt_aes(data: str, key: bytes) -> bytes:
 
 def decrypt_aes(ciphertext: bytes, key: bytes) -> bytes:
     """
-        Decrypts the data using the provided key.
+    Decrypts the data using the provided key.
 
-        Args:
-            ciphertext (bytes): The encrypted data to be decrypted
-            key (bytes): The key used for the encryption:
+    Args:
+        ciphertext (bytes): The encrypted data to be decrypted
+        key (bytes): The key used for the encryption:
     """
     iv = ciphertext[:16]
     ciphertext = ciphertext[16:]
