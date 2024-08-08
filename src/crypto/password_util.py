@@ -40,10 +40,22 @@ def validate_password_safety(pw: str) -> int:
     Returns:
         int: A safety rating for the password on a scale from 1 to 5,
              where 1 is unsafe and 5 is very safe.
-
-    Notes:
-        - A rating of 3 or higher is considered acceptable.
-        - The function currently returns a fixed safety rating of 3.
     """
-    _ = len(pw)
-    return 3
+    safetypoints = 0
+    special_chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    if len(pw) > 16:
+        safetypoints += 1
+    
+    if any(char.islower() for char in pw):
+        safetypoints += 1
+
+    if any(char.isupper() for char in pw):
+        safetypoints += 1
+
+    if any(char.isdigit() for char in pw):
+        safetypoints += 1
+
+    if any(char in special_chars for char in pw):
+        safetypoints += 1
+
+    return safetypoints

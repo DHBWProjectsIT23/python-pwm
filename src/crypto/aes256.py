@@ -11,7 +11,7 @@ def encrypt_aes(data: str, key: bytes) -> bytes:
         data (str): The data to be decrypted.
         key (bytes): The encryption key.
     """
-    iv = b"\xce:\x9f\x07\xd89\xb1p \xfc\xc3\xe0KbKx"
+    iv = os.urandom(16)
     padder: padding.PaddingContext = padding.PKCS7(128).padder()
     padded_message: bytes = padder.update(data.encode()) + padder.finalize()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
