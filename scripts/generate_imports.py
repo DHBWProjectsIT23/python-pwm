@@ -100,6 +100,12 @@ CATEGORIES = [
 
 # Helper functions
 def random_timestamp():
+    """
+    Generate a random timestamp between January 1, 2020 and the current date.
+
+    Returns:
+        datetime: A datetime object representing a random point in time.
+    """
     start = datetime(2020, 1, 1)
     end = datetime.now()
     return start + timedelta(
@@ -108,6 +114,15 @@ def random_timestamp():
 
 
 def generate_unique_entry(existing_entries):
+    """
+    Generate a unique entry for a password record.
+
+    Args:
+        existing_entries (set): A set of tuples representing existing entries to ensure uniqueness.
+
+    Returns:
+        dict: A dictionary containing details for the new unique entry.
+    """
     while True:
         entry = {
             "description": random.choice(DESCRIPTIONS),

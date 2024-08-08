@@ -2,13 +2,24 @@ class EncryptionException(Exception):
     """
     Exception raised for errors related to encryption operations.
 
-    Args: message (str, optional): An optional error message. Defaults to
-    "Encryption Exception".
+    This exception can be used to indicate issues that occur during encryption
+    or decryption processes.
+
+    Args:
+        message (str, optional): An optional error message. Defaults to
+        "Encryption Exception".
 
     Attributes:
         message (str): The error message associated with the exception.
     """
 
     def __init__(self, message: str = "Encryption Exception") -> None:
+        """
+        Initializes the EncryptionException with an optional error message.
+
+        Args:
+            message (str, optional): An optional error message. Defaults to
+            "Encryption Exception".
+        """
         self.message = message
         super().__init__(message)

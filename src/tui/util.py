@@ -17,7 +17,7 @@ else:
 
 def init_tui(stdscr: CursesWindow) -> Window:
     """
-    Initializes the terminal user interface (TUI) by setting up curses
+    Initializes the terminal user interface (TUI) by configuring the curses
     environment and returning a Window instance.
 
     Args:
@@ -25,7 +25,7 @@ def init_tui(stdscr: CursesWindow) -> Window:
                                initializing the TUI.
 
     Returns:
-        Window: A Window object that represents the initialized TUI window.
+        Window: A Window object representing the initialized TUI window.
     """
     stdscr.clear()
     curses.noecho()
@@ -62,7 +62,8 @@ def print_centered_logo(window: Window, offset: tuple[int, int]) -> None:
     Args:
         window (Window): The Window object where the logo and caption will
                          be printed.
-        offset (tuple[int, int]): The (y, x) offset for positioning the logo.
+        offset (tuple[int, int]): The (y, x) offset for positioning the logo
+                                  on the window.
     """
     logo: str = (
         """
@@ -131,6 +132,15 @@ def pad_with(text: str, length: int, padding: str = " ") -> str:
 
 
 def generate_control_str(controls: dict[str, str]) -> str:
+    """
+    Generates a formatted string representing control keys and their actions.
+
+    Args:
+        controls (dict[str, str]): A dictionary mapping control key names to their descriptions.
+
+    Returns:
+        str: The formatted control string.
+    """
     control_str = ""
     for key, value in controls.items():
         control_str += f"- {key} {value} "
@@ -141,6 +151,17 @@ def generate_control_str(controls: dict[str, str]) -> str:
 
 
 def validate_size(window: Window) -> bool:
+    """
+    Validates the size of the terminal window and ensures it meets the minimum
+    size requirements. If the size is too small, it continuously displays a
+    warning message until the terminal size is acceptable.
+
+    Args:
+        window (Window): The Window object used to get the terminal size and display messages.
+
+    Returns:
+        bool: True if the terminal size is sufficient, otherwise False.
+    """
     height, width = window.get_size()
     to_small = False
     if height < config.MIN_SIZE[0] or width < config.MIN_SIZE[1]:

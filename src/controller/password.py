@@ -14,14 +14,14 @@ def retrieve_password_information(
     cursor: sqlite3.Cursor, user: User
 ) -> list[PasswordInformation]:
     """
-    Retrieves password information for a given user from the database.
+    Retrieves all password information for a given user from the database.
 
     Args:
-        cursor (sqlite3.Cursor): The SQLite cursor object.
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL queries.
         user (User): The user whose password information is to be retrieved.
 
-    Returns: list[PasswordInformation]: A list of PasswordInformation objects
-    for the given user.
+    Returns:
+        List[PasswordInformation]: A list of `PasswordInformation` objects for the specified user.
     """
     cursor.execute(
         """
@@ -63,14 +63,11 @@ def update_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     """
-    Updates existing password information in the database.
+    Updates the details of an existing password entry in the database.
 
-    Args: cursor (sqlite3.Cursor): The SQLite cursor object.
-    password_information (PasswordInformation): The updated
-    PasswordInformation object.
-
-    Returns:
-        None
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL commands.
+        password_information (PasswordInformation): The updated `PasswordInformation` object.
     """
     if not password_information.data_is_encrypted:
         password_information.encrypt_data()
@@ -108,17 +105,16 @@ def validate_unique_password(
     cursor: sqlite3.Cursor, description: str, username: Optional[str], user: User
 ) -> bool:
     """
-    Validates that a password with the given description and username is
-    unique for the user.
+    Checks if a password with the specified description and username is unique for the given user.
 
     Args:
-        cursor (sqlite3.Cursor): The SQLite cursor object.
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL queries.
         description (str): The description of the password.
-        username (Optional[str]): The username associated with the password.
+        username (Optional[str]): The username associated with the password (can be None).
         user (User): The user who owns the password information.
 
     Returns:
-        bool: True if the password is unique, False otherwise.
+        bool: True if the password description and username are unique, False otherwise.
     """
     cursor.execute(
         """
@@ -146,6 +142,13 @@ def validate_unique_password(
 def delete_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
+    """
+    Deletes a specific password entry from the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL commands.
+        password_information (PasswordInformation): The `PasswordInformation` object to be deleted.
+    """
     cursor.execute(
         """
         DELETE FROM passwords WHERE id=?
@@ -155,6 +158,13 @@ def delete_password_information(
 
 
 def delete_password_information_of_user(cursor: sqlite3.Cursor, user: User) -> None:
+    """
+    Deletes all password entries associated with a specific user from the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL commands.
+        user (User): The user whose password information is to be deleted.
+    """
     cursor.execute(
         """
         DELETE FROM passwords WHERE user=?
@@ -167,14 +177,14 @@ def insert_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> PasswordInformation:
     """
-    Inserts new password information into the database.
+    Inserts a new password entry into the database.
 
-    Args: cursor (sqlite3.Cursor): The SQLite cursor object.
-    password_information (PasswordInformation): The PasswordInformation
-    object to insert.
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL commands.
+        password_information (PasswordInformation): The `PasswordInformation` object to be inserted.
 
-    Returns: PasswordInformation: The inserted PasswordInformation object
-    with the new ID.
+    Returns:
+        PasswordInformation: The inserted `PasswordInformation` object with the new ID.
     """
     if not password_information.data_is_encrypted:
         password_information.encrypt_data()

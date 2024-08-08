@@ -6,10 +6,14 @@ from src.config import db_path
 def connect_to_db() -> sqlite3.Connection:
     """
     Establishes a connection to the SQLite database and initializes the
-    necessary tables.
+    necessary tables if they do not already exist.
+
+    The connection is configured to parse declared types (e.g., custom types)
+    and initializes the database schema by calling `initialize_tables`.
 
     Returns:
-        sqlite3.Connection: The SQLite connection object.
+        sqlite3.Connection: The SQLite connection object, which can be used
+                             to interact with the database.
     """
     connection = sqlite3.connect(db_path(), detect_types=sqlite3.PARSE_DECLTYPES)
     cursor = connection.cursor()
@@ -23,11 +27,16 @@ def initialize_tables(cursor: sqlite3.Cursor) -> None:
     Initializes the necessary tables in the SQLite database if they do not
     already exist.
 
+    This function creates the `passwords` and `users` tables, ensuring that
+    the database schema is set up for storing password and user information.
+
     Args:
-        cursor (sqlite3.Cursor): The SQLite cursor object.
+        cursor (sqlite3.Cursor): The SQLite cursor object used for executing
+                                 SQL commands.
 
     Returns:
-        None
+        None: This function does not return any value. It modifies the database
+              schema directly.
     """
     cursor.execute(
         """

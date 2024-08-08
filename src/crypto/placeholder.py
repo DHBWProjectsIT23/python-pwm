@@ -4,11 +4,29 @@ KEY = b"NsnezLc_TNwg9XFD3roUsS-Wd9jbGKRln7-kGtCw2nM="
 
 
 def dummy_encrypt_fernet(data: bytes) -> bytes:
+    """
+    Encrypts the given data using the Fernet symmetric encryption.
+
+    Args:
+        data (bytes): The data to be encrypted.
+
+    Returns:
+        bytes: The encrypted data, including the encryption metadata.
+    """
     f = Fernet(KEY)
     return f.encrypt(data)
 
 
 def dummy_decrypt_fernet(data: bytes) -> bytes:
+    """
+    Decrypts the given encrypted data using the Fernet symmetric encryption.
+
+    Args:
+        data (bytes): The encrypted data to be decrypted.
+
+    Returns:
+        bytes: The decrypted data.
+    """
     f = Fernet(KEY)
     return f.decrypt(data)
 

@@ -7,14 +7,14 @@ def generate_secure_password() -> str:
     Generates a secure random password that meets complexity requirements.
 
     The password generated will:
-    - Be 12 characters long.
+    - Be exactly 12 characters long.
     - Include at least one lowercase letter.
     - Include at least one uppercase letter.
     - Include at least three digits.
     - Include at least one special character (punctuation).
 
     Returns:
-        str: A randomly generated secure password.
+        str: A randomly generated secure password that adheres to the complexity requirements.
     """
     alphabet = string.ascii_letters + string.digits + string.punctuation
     while True:
@@ -34,12 +34,18 @@ def validate_password_safety(pw: str) -> int:
     """
     Evaluates the safety of a given password based on its complexity.
 
+    The password safety is rated on a scale from 1 to 5:
+    - 1: Very weak
+    - 2: Weak
+    - 3: Average
+    - 4: Strong
+    - 5: Very strong
+
     Args:
         pw (str): The password to be evaluated.
 
     Returns:
-        int: A safety rating for the password on a scale from 1 to 5,
-             where 1 is unsafe and 5 is very safe.
+        int: A safety rating for the password based on its length and character composition.
     """
     safetypoints = 0
     special_chars = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""

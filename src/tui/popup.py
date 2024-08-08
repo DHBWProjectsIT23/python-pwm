@@ -12,8 +12,7 @@ def create_centered_popup(
         parent (Window | Panel): The parent window or panel to center the popup on.
         height (int): The height of the popup window.
         width (int): The width of the popup window.
-        offset (tuple[int, int], optional): Offset to apply to the
-        centered position (y_offset, x_offset). Defaults to (0, 0).
+        offset (tuple[int, int], optional): Offset to apply to the centered position (y_offset, x_offset). Defaults to (0, 0).
 
     Returns:
         Window: A Window object representing the centered popup.
@@ -31,7 +30,7 @@ def create_popup(
     Create a popup window at a specified location within the parent window or panel.
 
     Args:
-        window (Window | Panel): The parent window or panel to create the popup in.
+        window (Window | Panel): The parent window or panel in which to create the popup.
         y (int): The y-coordinate (row) of the top-left corner of the popup window.
         x (int): The x-coordinate (column) of the top-left corner of the popup window.
         height (int): The height of the popup window.

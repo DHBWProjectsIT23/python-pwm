@@ -7,10 +7,14 @@ from cryptography.exceptions import InvalidKey
 
 def scrypt_derive(pw: bytes, salt: Optional[bytes] = None) -> tuple[bytes, bytes]:
     """
-    Derives password with Scrypt in preperation for AES-Encryption.
+    Derives a key from the given password using the Scrypt key derivation function.
 
     Args:
         pw (bytes): The password to be derived.
+        salt (Optional[bytes]): The salt to use for key derivation. If not provided, a new salt will be generated.
+
+    Returns:
+        tuple[bytes, bytes]: A tuple containing the derived key and the salt used.
     """
     if salt is None:
         salt = os.urandom(16)
@@ -20,12 +24,15 @@ def scrypt_derive(pw: bytes, salt: Optional[bytes] = None) -> tuple[bytes, bytes
 
 def scrypt_verify(pw: bytes, derived_key: bytes, salt: bytes) -> bool:
     """
-    Checks if a given password was used to generate the given key.
+    Verifies if the given password matches the derived key using the Scrypt key derivation function.
 
     Args:
-        pw (bytes): the password that should be checked
-        derived_key (bytes): The derived key.
-        salt (bytes): The salt used for derivation.
+        pw (bytes): The password to check.
+        derived_key (bytes): The derived key to compare against.
+        salt (bytes): The salt used during key derivation.
+
+    Returns:
+        bool: True if the password matches the derived key, False otherwise.
     """
     kdf = Scrypt(salt, 32, 2**14, 8, 1)
     try:

@@ -21,14 +21,14 @@ class PasswordInformation:
     """
     A class to store and manage information related to a password.
 
-    Attributes: user (User): The user associated with this password
-    information. passwords (list[Password]): A list of passwords related to
-    this information. description (bytes): A description of the password
-    information. details (PasswordDetails): Details about the password
-    information. metadata (Metadata | EncryptedMetadata): Metadata about the
-    password information. data_is_encrypted (bool): Flag indicating whether
-    the data is encrypted. id (Optional[int]): An optional identifier for the
-    password information.
+    Attributes:
+        user (User): The user associated with this password information.
+        passwords (list[Password]): A list of passwords related to this information.
+        description (bytes): A description of the password information.
+        details (PasswordDetails): Details about the password information.
+        metadata (Metadata | EncryptedMetadata): Metadata about the password information.
+        data_is_encrypted (bool): Flag indicating whether the data is encrypted.
+        id (Optional[int]): An optional identifier for the password information.
     """
 
     def __init__(
@@ -45,8 +45,7 @@ class PasswordInformation:
             user (User): The user associated with this password information.
             password (Password): The initial password.
             description (str): A description of the password information.
-            username (Optional[str]): The username associated with the password,
-            if any.
+            username (Optional[str]): The username associated with the password, if any.
         """
         self.passwords: list[Password] = [password]
         username_bytes: Optional[bytes] = (
@@ -66,8 +65,8 @@ class PasswordInformation:
         Args:
             note (str): The note to be added.
 
-        Raises: EncryptionException: If data is encrypted, updating the note
-        is not allowed.
+        Raises:
+            EncryptionException: If data is encrypted, updating the note is not allowed.
         """
         if self.data_is_encrypted:
             raise EncryptionException("Can't add note while encrypted")
@@ -81,8 +80,8 @@ class PasswordInformation:
         Args:
             password (Password): The password to be added.
 
-        Raises: EncryptionException: If data is encrypted, adding a password
-        is not allowed.
+        Raises:
+            EncryptionException: If data is encrypted, adding a password is not allowed.
         """
         if self.data_is_encrypted:
             raise EncryptionException("Can't add password while encrypted")
@@ -97,10 +96,8 @@ class PasswordInformation:
             category (str): The category to be added.
 
         Raises:
-            EncryptionException: If data is encrypted, adding a category is not
-            allowed.
-            ValueError: If the maximum number of categories is reached or if the
-            category already exists.
+            EncryptionException: If data is encrypted, adding a category is not allowed.
+            ValueError: If the maximum number of categories is reached or if the category already exists.
         """
         if self.data_is_encrypted:
             raise EncryptionException("Can't add category while encrypted")
@@ -119,10 +116,8 @@ class PasswordInformation:
             categories (Iterable[str]): An iterable of categories to be added.
 
         Raises:
-            EncryptionException: If data is encrypted, adding categories is not
-            allowed.
-            ValueError: If the total number of categories exceeds the limit or
-            if any category already exists.
+            EncryptionException: If data is encrypted, adding categories is not allowed.
+            ValueError: If the total number of categories exceeds the limit or if any category already exists.
         """
         if self.data_is_encrypted:
             raise EncryptionException("Can't add categories while encrypted")
@@ -170,11 +165,10 @@ class PasswordInformation:
         Decrypts the data using the provided key.
 
         Args:
-            key (Optional[str]): The decryption key. If not provided, the user's
-            clear password is used.
+            user_password (Optional[str]): The decryption key. If not provided, the user's clear password is used.
 
         Raises:
-            EncryptionException: If metadata is not encrypted.
+            EncryptionException: If metadata is not encrypted or if salt is missing.
         """
         if self._salt is None:
             raise EncryptionException("No Salt found")
@@ -195,8 +189,7 @@ class PasswordInformation:
         Encrypts the passwords using the provided key.
 
         Args:
-            key (Optional[str]): The encryption key. If not provided, the user's
-            clear password is used.
+            user_password (Optional[str]): The encryption key. If not provided, the user's clear password is used.
         """
         if user_password is None:
             user_password = self.user.get_clear_password()
@@ -209,8 +202,7 @@ class PasswordInformation:
         Decrypts the passwords using the provided key.
 
         Args:
-            key (Optional[str]): The decryption key. If not provided, the user's
-            clear password is used.
+            user_password (Optional[str]): The decryption key. If not provided, the user's clear password is used.
         """
         if user_password is None:
             user_password = self.user.get_clear_password()
@@ -219,18 +211,25 @@ class PasswordInformation:
             password.decrypt(user_password)
 
     def get_salt(self) -> bytes:
+        """
+        Retrieves the salt used for encryption.
+
+        Returns:
+            bytes: The salt used for encryption.
+
+        Raises:
+            ValueError: If the salt is not found.
+        """
         if self._salt is None:
             raise ValueError("Salt not found")
         return self._salt
 
     async def check_pwned_status(self, *, user_password: Optional[str] = None) -> int:
         """
-        Checks if the latest password has been compromised in a known data
-        breach.
+        Checks if the latest password has been compromised in a known data breach.
 
         Args:
-            key (Optional[str]): The decryption key. If not provided, the user's
-            clear password is used.
+            user_password (Optional[str]): The decryption key. If not provided, the user's clear password is used.
 
         Returns:
             int: The number of times the password has been found in a breach.
@@ -248,12 +247,10 @@ class PasswordInformation:
         Converts the PasswordInformation instance to a dictionary.
 
         Returns:
-            PasswordInformationDict: A dictionary representation of the
-            PasswordInformation instance.
+            PasswordInformationDict: A dictionary representation of the PasswordInformation instance.
 
         Raises:
-            EncryptionException: If metadata is encrypted, decryption is
-            required before conversion.
+            EncryptionException: If metadata is encrypted, decryption is required before conversion.
         """
         if self.data_is_encrypted:
             self.decrypt_data()
@@ -285,13 +282,11 @@ class PasswordInformation:
         Creates a PasswordInformation instance from a dictionary.
 
         Args:
-            data (PasswordInformationDict): The dictionary containing password
-            information.
+            data (PasswordInformationDict): The dictionary containing password information.
             user (User): The user associated with this password information.
 
         Returns:
-            PasswordInformation: An instance of PasswordInformation initialized
-            with the data from the dictionary.
+            PasswordInformation: An instance of PasswordInformation initialized with the data from the dictionary.
         """
         # Required Data
         description = data["description"]
@@ -334,6 +329,18 @@ class PasswordInformation:
         passwords: list[Password],
         user: User,
     ) -> PasswordInformation:
+        """
+        Creates a PasswordInformation instance from database values.
+
+        Args:
+            salt (bytes): The salt used for encryption.
+            details (tuple[bytes, Optional[bytes], list[bytes], Optional[bytes]]): The details about the password information.
+            passwords (list[Password]): The list of passwords.
+            user (User): The user associated with this password information.
+
+        Returns:
+            PasswordInformation: An instance of PasswordInformation initialized with the database values.
+        """
         password_information = cls(user, passwords[0], "")
         password_information._salt = salt
         password_information.details.description = details[0]
@@ -348,6 +355,16 @@ class PasswordInformation:
     def create_password_filter(
         search_string: str,
     ) -> Callable[[PasswordInformation], bool]:
+        """
+        Creates a filter function to check if a PasswordInformation instance matches the search criteria.
+
+        Args:
+            search_string (str): The search string to filter by.
+
+        Returns:
+            Callable[[PasswordInformation], bool]: A function that takes a PasswordInformation instance and returns
+            True if it matches the search criteria, otherwise False.
+        """
         def filter_passwords(password: PasswordInformation) -> bool:
             if password.data_is_encrypted:
                 raise EncryptionException("Data needs to be decrypted for searching")
@@ -362,6 +379,15 @@ class PasswordInformation:
 
 
 class PasswordDetails:
+    """
+    A class to store details related to a password.
+
+    Attributes:
+        description (bytes): A description of the password details.
+        username (Optional[bytes]): The username associated with the password.
+        categories (list[bytes]): A list of categories for the password.
+        note (Optional[bytes]): An optional note associated with the password.
+    """
     def __init__(
         self,
         description: bytes,
@@ -369,12 +395,27 @@ class PasswordDetails:
         categories: list[bytes],
         note: Optional[bytes],
     ):
+        """
+        Initializes PasswordDetails with given details.
+
+        Args:
+            description (bytes): A description of the password details.
+            username (Optional[bytes]): The username associated with the password.
+            categories (list[bytes]): A list of categories for the password.
+            note (Optional[bytes]): An optional note associated with the password.
+        """
         self.description = description
         self.username = username
         self.categories = categories
         self.note = note
 
     def encrypt(self, key: bytes) -> None:
+        """
+        Encrypts the password details using the provided key.
+
+        Args:
+            key (bytes): The encryption key.
+        """
         _ = key
         self.description = encrypt_fernet(self.description, key)
         if self.username is not None:
@@ -388,6 +429,12 @@ class PasswordDetails:
         ]
 
     def decrypt(self, key: bytes) -> None:
+        """
+        Decrypts the password details using the provided key.
+
+        Args:
+            key (bytes): The decryption key.
+        """
         _ = key
         self.description = decrypt_fernet(self.description, key)
         if self.username is not None:

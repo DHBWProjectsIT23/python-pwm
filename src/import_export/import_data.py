@@ -25,7 +25,7 @@ def import_json(target_file: str, user: User) -> list[PasswordInformation]:
         user (User): The user associated with the imported password information.
 
     Returns:
-        list[PasswordInformation]: A list of PasswordInformation objects created
+        List[PasswordInformation]: A list of PasswordInformation objects created
         from the JSON data.
 
     Raises:
@@ -48,7 +48,7 @@ def verify_required_key(data_list: list[PasswordInformationDict]) -> None:
     JSON data.
 
     Args:
-        data_list (list[PasswordInformationDict]): The list of dictionaries
+        data_list (List[PasswordInformationDict]): The list of dictionaries
         representing password information.
 
     Raises:
@@ -75,7 +75,7 @@ def check_invalid_keys(data_list: list[PasswordInformationDict]) -> None:
     allowed keys.
 
     Args:
-        data_list (list[PasswordInformationDict]): The list of dictionaries
+        data_list (List[PasswordInformationDict]): The list of dictionaries
         representing password information.
 
     Raises:

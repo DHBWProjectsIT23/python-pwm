@@ -15,6 +15,22 @@ from src.tui.window import Window
 def show_registration(
     window: Window, connection: sqlite3.Connection, cursor: sqlite3.Cursor
 ) -> User:
+    """
+    Displays the registration screen, handles user input for username, password,
+    and password confirmation. Validates the input and creates a new user if
+    the registration is successful.
+
+    Args:
+        window (Window): The Window object used for displaying the registration screen.
+        connection (sqlite3.Connection): The database connection used for inserting the new user.
+        cursor (sqlite3.Cursor): The database cursor for executing queries.
+
+    Returns:
+        User: The User object representing the newly registered user.
+
+    Raises:
+        ValueError: If there is an error while inserting the user into the database.
+    """
     print_centered_logo(window, (-9, 0))
 
     input_window = init_input_window(window)
@@ -83,6 +99,21 @@ def show_registration(
 def _finalize_user(
     connection: sqlite3.Connection, password_str: str, username: str
 ) -> User:
+    """
+    Finalizes the user registration by inserting the new user into the database
+    and returning the User object. 
+
+    Args:
+        connection (sqlite3.Connection): The database connection used for inserting the new user.
+        password_str (str): The user's password.
+        username (str): The user's username.
+
+    Returns:
+        User: The User object representing the newly registered user.
+
+    Raises:
+        ValueError: If there is an error while inserting the user into the database.
+    """
     inserted_user = insert_user(connection.cursor(), User.new(username, password_str))
     connection.commit()
     if not isinstance(inserted_user, User):
@@ -93,17 +124,43 @@ def _finalize_user(
 
 
 def _refresh_all(*args: Window) -> None:
+    """
+    Refreshes all provided Window objects.
+
+    Args:
+        *args (Window): The Window objects to be refreshed.
+    """
     for window in args:
         window().refresh()
 
 
 def _create_textbox(input_window: Window, position: int) -> tuple[Textbox, Window]:
+    """
+    Creates a Textbox and its associated Window object at the specified position.
+
+    Args:
+        input_window (Window): The parent Window object used to create the new Textbox window.
+        position (int): The y-coordinate position of the new Textbox within the parent window.
+
+    Returns:
+        tuple[Textbox, Window]: A tuple containing the created Textbox and its Window object.
+    """
     username_window = Window(input_window().derwin(1, 32, position, 20))
     username_textbox = Textbox(username_window())
     return username_textbox, username_window
 
 
 def init_input_window(parent: Window) -> Window:
+    """
+    Initializes and creates the input window for the registration screen, centered
+    on the parent window.
+
+    Args:
+        parent (Window): The parent Window object used to center the input window.
+
+    Returns:
+        Window: A Window object representing the centered input window.
+    """
     input_window: Window = create_centered_popup(parent, 9, 57, (1, 0))
     input_window().box()
     input_window().addstr(0, 0, "Registration", curses.A_BOLD)
@@ -116,12 +173,24 @@ def init_input_window(parent: Window) -> Window:
 
 
 def clear_border(input_window: Window) -> None:
+    """
+    Clears and redraws the border of the input window, including the title.
+
+    Args:
+        input_window (Window): The Window object whose border is to be cleared and redrawn.
+    """
     input_window().box()
     input_window().addstr(0, 0, "Registration", curses.A_BOLD)
     input_window().refresh()
 
 
 def show_successful_register(input_window: Window) -> None:
+    """
+    Displays a message indicating that the registration was successful.
+
+    Args:
+        input_window (Window): The Window object where the success message will be shown.
+    """
     register_success_message = " Registration successful! "
     input_window.write_bottom_center_text(
         register_success_message,
@@ -132,6 +201,13 @@ def show_successful_register(input_window: Window) -> None:
 def show_failed_registration(
     input_window: Window, register_failed_message: str
 ) -> None:
+    """
+    Displays a message indicating that the registration failed due to the given reason.
+
+    Args:
+        input_window (Window): The Window object where the failure message will be shown.
+        register_failed_message (str): The message to display indicating why registration failed.
+    """
     input_window.write_bottom_center_text(
         register_failed_message,
         attr=curses.color_pair(2),

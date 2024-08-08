@@ -13,12 +13,16 @@ def _convert_to_dict(
     Converts a list of PasswordInformation objects to a list of dictionaries.
 
     Args:
-        password_informations (list[PasswordInformation]): The list of
-        PasswordInformation objects to convert.
+        password_informations (List[PasswordInformation]): The list of PasswordInformation
+        objects to convert.
 
     Returns:
-        list[PasswordInformationDict]: A list of dictionaries representing the
+        List[PasswordInformationDict]: A list of dictionaries representing the
         PasswordInformation objects.
+
+    Notes:
+        Each PasswordInformation object is converted to a dictionary using its
+        `to_dict` method. The resulting list of dictionaries can be serialized to JSON format.
     """
     return [pw_info.to_dict() for pw_info in password_informations]
 
@@ -31,17 +35,21 @@ def export_to_json(
     Exports a list of PasswordInformation objects to a JSON file.
 
     Args:
-        password_informations (list[PasswordInformation]): The list of
-        PasswordInformation objects to export.
+        password_informations (List[PasswordInformation]): The list of PasswordInformation
+        objects to export.
         target_file (Optional[str], optional): The path of the target JSON file.
-        If None, a default filename with
-        the current timestamp will be used. Defaults to None.
+        If None, a default filename with the current timestamp will be used. Defaults to None.
 
     Returns:
         str: The path of the exported JSON file.
 
-    Notes: - If target_file is not provided, the filename will include a
-    placeholder for the current timestamp.
+    Raises:
+        IOError: If an error occurs while writing to the file.
+
+    Notes:
+        - If `target_file` is not provided, the filename will include a placeholder
+          for the current timestamp (e.g., `export_ddmmyyHHMM.json`).
+        - The file will be written with UTF-8 encoding.
     """
     dicts = _convert_to_dict(password_informations)
     if target_file is None:

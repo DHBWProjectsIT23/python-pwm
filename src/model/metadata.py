@@ -12,10 +12,8 @@ class Metadata:
     A class representing metadata for an object.
 
     Attributes:
-        created_at (datetime.datetime): The timestamp when the metadata was
-            created.
-        last_modified (datetime.datetime): The timestamp when the metadata was
-            last modified.
+        created_at (datetime.datetime): The timestamp when the metadata was created.
+        last_modified (datetime.datetime): The timestamp when the metadata was last modified.
     """
 
     def __init__(self) -> None:
@@ -39,8 +37,8 @@ class Metadata:
         Args:
             key (bytes): The encryption key.
 
-        Returns: EncryptedMetadata: An instance of EncryptedMetadata
-        containing the encrypted metadata.
+        Returns:
+            EncryptedMetadata: An instance of EncryptedMetadata containing the encrypted metadata.
         """
         return EncryptedMetadata(self, key)
 
@@ -49,18 +47,18 @@ class EncryptedMetadata:
     """
     A class representing encrypted metadata.
 
-    Attributes: created_at (bytes): The encrypted timestamp of when the
-    metadata was created. modified_at (bytes): The encrypted timestamp of
-    when the metadata was last modified.
+    Attributes:
+        created_at (bytes): The encrypted timestamp of when the metadata was created.
+        modified_at (bytes): The encrypted timestamp of when the metadata was last modified.
     """
 
     def __init__(self, metadata: Metadata, key: bytes) -> None:
         """
-        Initializes EncryptedMetadata by encrypting the provided Metadata
-        using the provided key.
+        Initializes EncryptedMetadata by encrypting the provided Metadata using the provided key.
 
         Args:
             metadata (Metadata): The Metadata instance to be encrypted.
+            key (bytes): The encryption key.
         """
         self.created_at: bytes = encrypt_fernet(pickle.dumps(metadata.created_at), key)
         self.modified_at: bytes = encrypt_fernet(
@@ -72,8 +70,7 @@ class EncryptedMetadata:
         Prevents access to the encrypted metadata.
 
         Raises:
-            TypeError: Always raises an exception since encrypted metadata
-            should not be accessed directly.
+            TypeError: Always raises an exception since encrypted metadata should not be accessed directly.
         """
         raise TypeError("Can't access encrypted Metadata")
 
@@ -82,8 +79,7 @@ class EncryptedMetadata:
         Prevents modification of the encrypted metadata.
 
         Raises:
-            TypeError: Always raises an exception since encrypted metadata
-            should not be modified directly.
+            TypeError: Always raises an exception since encrypted metadata should not be modified directly.
         """
         raise TypeError("Can't modify encrypted Metadata")
 

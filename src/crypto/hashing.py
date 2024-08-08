@@ -6,7 +6,7 @@ def hash_sha256(data: bytes) -> bytes:
     Generates a SHA-256 hash of the given data.
 
     Args:
-        data (bytes): The data to be hashed.
+        data (bytes): The data to be hashed. Must be non-empty.
 
     Returns:
         bytes: The SHA-256 hash of the input data.
@@ -24,7 +24,7 @@ def hash_sha1(data: bytes) -> bytes:
     Generates a SHA-1 hash of the given data.
 
     Args:
-        data (bytes): The data to be hashed.
+        data (bytes): The data to be hashed. Must be non-empty.
 
     Returns:
         bytes: The SHA-1 hash of the input data.

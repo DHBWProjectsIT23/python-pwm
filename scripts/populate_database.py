@@ -20,6 +20,13 @@ from dotenv import load_dotenv
 
 
 def main() -> None:
+    """
+    Main function to set up the database with test data.
+
+    This function loads environment variables, sets up custom converters
+    for SQLite, establishes a database connection, and populates the
+    database with test users and passwords.
+    """
     load_dotenv()
     sqlite3.register_converter("password", convert_password)
     sqlite3.register_adapter(Password, adapt_password)
@@ -32,6 +39,12 @@ def main() -> None:
 
 
 def add_test_users(cursor: sqlite3.Cursor) -> None:
+    """
+    Adds test users to the database.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor used to execute SQL commands.
+    """
     admin_password = Password("AdminUser2103")
     admin_user = User(hash_sha256(b"Admin"), admin_password)
 
@@ -44,6 +57,14 @@ def add_test_users(cursor: sqlite3.Cursor) -> None:
 
 
 def add_test_passwords(cursor: sqlite3.Cursor, user: User, index: int) -> None:
+    """
+    Adds test password information to the database for a given user.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor used to execute SQL commands.
+        user (User): The user object associated with the passwords.
+        index (int): An index value used to create unique password entries.
+    """
     user.set_clear_password("TestUser2103")
     test_password_1 = Password(f"test_password_1_{index}")
     test_password_information_1 = PasswordInformation(

@@ -12,6 +12,20 @@ from ..window import Window
 
 
 def show_login(window: Window, cursor: sqlite3.Cursor) -> User:
+    """
+    Displays the login screen, handles user input for username and password,
+    and validates the login credentials.
+
+    Args:
+        window (Window): The Window object used for displaying the login screen.
+        cursor (sqlite3.Cursor): The database cursor for executing queries.
+
+    Returns:
+        User: The User object associated with the successfully logged-in user.
+
+    Raises:
+        ValueError: If the login attempt fails or the username/password validation fails.
+    """
     print_centered_logo(window, (-9, 0))
 
     input_window = init_input_window(window)
@@ -55,6 +69,16 @@ def show_login(window: Window, cursor: sqlite3.Cursor) -> User:
 
 
 def init_input_window(parent: Window) -> Window:
+    """
+    Initializes and creates the input window for the login screen, centered
+    on the parent window.
+
+    Args:
+        parent (Window): The parent Window object used to center the input window.
+
+    Returns:
+        Window: A Window object representing the centered input window.
+    """
     input_window: Window = create_centered_popup(parent, 7, 57)
     input_window().box()
     input_window().addstr(0, 0, "Login", curses.A_BOLD)
@@ -66,6 +90,12 @@ def init_input_window(parent: Window) -> Window:
 
 
 def show_successful_login(input_window: Window) -> None:
+    """
+    Displays a message indicating that the login was successful.
+
+    Args:
+        input_window (Window): The Window object where the success message will be shown.
+    """
     login_success_message = " Login successful! "
     input_window.write_bottom_center_text(
         login_success_message,
@@ -75,6 +105,13 @@ def show_successful_login(input_window: Window) -> None:
 
 
 def show_failed_login(input_window: Window) -> None:
+    """
+    Displays a message indicating that the login attempt failed due to
+    incorrect username or password.
+
+    Args:
+        input_window (Window): The Window object where the failure message will be shown.
+    """
     wrong_password_or_username = " Wrong username or password "
     input_window.write_bottom_center_text(
         wrong_password_or_username,

@@ -8,6 +8,16 @@ from src.model.password import Password
 
 
 class User:
+    """
+    A class representing a user with a hashed username and a password.
+
+    Attributes:
+        username (bytes): The hashed username of the user.
+        password (Password): The Password instance associated with the user.
+        iv (bytes): Initialization vector used for encryption.
+        _clear_password (Optional[str]): The plaintext password of the user, if set.
+        _clear_username (Optional[str]): The plaintext username of the user, if set.
+    """
     def __init__(
         self,
         hashed_username: bytes,
@@ -21,7 +31,7 @@ class User:
             password (Password): The Password instance for the user.
 
         Raises:
-            ValueError: If the password is not a master password.
+            ValueError: If the provided password is not a master password.
         """
         self.username = hashed_username
         self.password = password
@@ -33,22 +43,22 @@ class User:
 
     def set_clear_password(self, password: str) -> None:
         """
-        Sets the clear (plaintext) password for the user.
+        Sets the plaintext password for the user.
 
         Args:
-            password (str): The clear password to set.
+            password (str): The plaintext password to set.
         """
         self._clear_password = password
 
     def get_clear_password(self) -> str:
         """
-        Retrieves the clear (plaintext) password for the user.
+        Retrieves the plaintext password for the user.
 
         Returns:
-            str: The clear password.
+            str: The plaintext password.
 
         Raises:
-            ValueError: If the clear password has not been set.
+            ValueError: If the plaintext password has not been set.
         """
         if self._clear_password is None:
             raise ValueError("Clear password not set")
@@ -57,22 +67,22 @@ class User:
 
     def set_clear_username(self, username: str) -> None:
         """
-        Sets the clear (plaintext) username for the user.
+        Sets the plaintext username for the user.
 
         Args:
-            username (str): The clear username to set.
+            username (str): The plaintext username to set.
         """
         self._clear_username = username
 
     def get_clear_username(self) -> str:
         """
-        Retrieves the clear (plaintext) username for the user.
+        Retrieves the plaintext username for the user.
 
         Returns:
-            str: The clear username.
+            str: The plaintext username.
 
         Raises:
-            ValueError: If the clear username has not been set.
+            ValueError: If the plaintext username has not been set.
         """
         if self._clear_username is None:
             raise ValueError("Clear password not set")
@@ -81,19 +91,19 @@ class User:
 
     def has_clear_password(self) -> bool:
         """
-        Checks if the clear (plaintext) password has been set.
+        Checks if the plaintext password has been set.
 
         Returns:
-            bool: True if the clear password is set, False otherwise.
+            bool: True if the plaintext password is set, False otherwise.
         """
         return self._clear_password is not None
 
     def has_clear_username(self) -> bool:
         """
-        Checks if the clear (plaintext) username has been set.
+        Checks if the plaintext username has been set.
 
         Returns:
-            bool: True if the clear username is set, False otherwise.
+            bool: True if the plaintext username is set, False otherwise.
         """
         return self._clear_username is not None
 
@@ -103,8 +113,8 @@ class User:
         Creates a new User instance with the given username and password.
 
         Args:
-            username (str): The clear username of the user.
-            password (str): The clear password of the user.
+            username (str): The plaintext username of the user.
+            password (str): The plaintext password of the user.
 
         Returns:
             User: The newly created User instance.

@@ -19,11 +19,20 @@ class Panel(Window):
     """
     Initialize the Panel with a curses panel object.
 
+    This class extends the Window class to provide functionality for managing
+    panels in a curses-based application.
+
     Args:
-        panel (CursesPanel): The curses panel object.
+        panel (CursesPanel): The curses panel object to associate with this Panel.
     """
 
     def __init__(self, panel: CursesPanel) -> None:
+        """
+        Initialize the Panel instance with a curses panel object.
+
+        Args:
+            panel (CursesPanel): The curses panel object to associate with this Panel.
+        """
         super().__init__(panel.window())
         self.panel = panel
 

@@ -5,14 +5,19 @@ from src.crypto.hashing import hash_sha1
 
 async def check_password(password: bytes) -> int:
     """
-    Checks the given password against the Pwned Passwords API to determine if
-    it has been compromised.
+    Checks if the given password has been exposed in data breaches using the Pwned Passwords API.
+
+    This function queries the Pwned Passwords API to determine if the given password (hashed with SHA-1) 
+    has been found in data breaches and returns the number of occurrences.
 
     Args:
-        password (bytes): The password to check, provided as a bytes object.
+        password (bytes): The password to check, provided as a bytes object. The password will be hashed using SHA-1.
 
     Returns:
-        int: The number of times the password has been found in data breaches.
+        int: The number of times the password has been found in data breaches. Returns 0 if the password is not found.
+
+    Raises:
+        requests.RequestException: If the request to the Pwned Passwords API fails.
     """
 
     password_hash = hash_sha1(password).hex()

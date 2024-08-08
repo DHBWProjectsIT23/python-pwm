@@ -11,14 +11,18 @@ from src.model.user import User
 
 async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
     """
-    Executes the CLI operations for managing users and passwords.
+    Executes the CLI operations for managing and retrieving user and password data.
+
+    This asynchronous function performs various operations, such as retrieving password information
+    for a specific user and filtering the results based on a criterion. It demonstrates how to interact
+    with the SQLite database using the provided connection and cursor.
 
     Args:
-        connection (sqlite3.Connection): The SQLite connection object.
-        cursor (sqlite3.Cursor): The SQLite cursor object.
+        connection (sqlite3.Connection): The SQLite connection object used to interact with the database.
+        cursor (sqlite3.Cursor): The SQLite cursor object used for executing SQL queries.
 
     Returns:
-        None
+        None: This function does not return any value. It prints the results of the operations to the console.
     """
     # username = "admin"
     # password = "admin"
@@ -47,7 +51,8 @@ def main() -> None:
     """
     The main entry point for running the CLI application.
 
-    Establishes a connection to the database and runs the CLI operations.
+    This function sets up the database connection and invokes the CLI operations defined in `run_cli`.
+    It demonstrates how to initialize the application and manage the database connection lifecycle.
 
     Returns:
         None

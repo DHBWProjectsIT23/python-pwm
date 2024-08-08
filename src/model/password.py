@@ -9,6 +9,21 @@ from src.exceptions.encryption_exception import EncryptionException
 
 
 class Password:
+    """
+    Represents a password with functionality for encryption and decryption.
+
+    The `Password` class handles the storage and management of passwords, 
+    including operations such as encryption, decryption, and hashing. 
+    It supports encryption using AES-256 and hashing using SHA-256. 
+    The class distinguishes between encrypted passwords, plaintext passwords, 
+    and master passwords, providing appropriate methods to handle each type.
+
+    Attributes:
+        is_encrypted (bool): Indicates if the password is currently encrypted.
+        password_bytes (bytes): The password stored in bytes format.
+        salt (Optional[bytes]): The salt used for encryption, if any.
+        is_master (bool): Indicates if the password is a master password.
+    """
     def __init__(self, password: str):
         """
         Initializes a new Password instance.

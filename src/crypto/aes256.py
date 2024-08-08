@@ -8,11 +8,15 @@ from cryptography.hazmat.primitives.ciphers import modes
 
 def encrypt_aes(data: bytes, key: bytes) -> bytes:
     """
-    Encrypts the data using the provided key.
+    Encrypts the given data using AES encryption with the provided key.
 
     Args:
-        data (str): The data to be decrypted.
-        key (bytes): The encryption key.
+        data (bytes): The data to be encrypted. Must be in bytes format.
+        key (bytes): The 16, 24, or 32-byte encryption key for AES.
+
+    Returns:
+        bytes: The encrypted data, including the initialization vector (IV) 
+               prepended to the ciphertext.
     """
     iv = os.urandom(16)
     padder: padding.PaddingContext = padding.PKCS7(128).padder()
@@ -25,11 +29,15 @@ def encrypt_aes(data: bytes, key: bytes) -> bytes:
 
 def decrypt_aes(ciphertext: bytes, key: bytes) -> bytes:
     """
-    Decrypts the data using the provided key.
+    Decrypts the given AES-encrypted data using the provided key.
 
     Args:
-        ciphertext (bytes): The encrypted data to be decrypted
-        key (bytes): The key used for the encryption:
+        ciphertext (bytes): The encrypted data, including the initialization vector (IV)
+                            prepended to the ciphertext.
+        key (bytes): The 16, 24, or 32-byte decryption key for AES.
+
+    Returns:
+        bytes: The decrypted data in bytes format.
     """
     iv = ciphertext[:16]
     ciphertext = ciphertext[16:]

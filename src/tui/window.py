@@ -11,13 +11,25 @@ else:
 
 
 class Window:
+    """
+    Represents a window in the terminal user interface using the curses library.
+
+    This class provides methods for interacting with and manipulating a 
+    curses window object, including querying its size, writing centered text, 
+    and more. It wraps a curses window object and provides higher-level 
+    functionality for text display and positioning.
+
+    Args:
+        curses_window (CursesWindow): The curses window object to be wrapped by
+                                       this Window class.
+    """
     def __init__(self, curses_window: CursesWindow) -> None:
         """
         Initializes a Window object with a given curses window.
 
         Args:
-            curses_window (CursesWindow): The curses window object to be wrapped by
-                                   this Window class.
+            curses_window (CursesWindow): The curses window object to be wrapped
+                                           by this Window class.
         """
         self.curses_window = curses_window
 

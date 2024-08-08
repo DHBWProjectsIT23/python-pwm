@@ -6,6 +6,13 @@ from src.tui.keys import Keys
 
 
 class InputValidator:
+    """
+    A class to validate and process user input, particularly for password fields.
+
+    Attributes:
+        password_arr (list[str]): A list to store characters of the current password.
+    """
+
     def __init__(self) -> None:
         """
         Initializes an InputValidator instance with an empty list for password characters.
@@ -22,10 +29,11 @@ class InputValidator:
         Returns:
             int: The processed character code or a special key code.
 
-        If `ch` is Enter, returns the bell code.
-        If `ch` is Backspace or Delete, removes the last character from the password.
-        If `ch` is a printable character, adds it to the password and returns the star code.
-        If `ch` is Space, returns null.
+        Handles:
+            - Enter: Returns the bell code.
+            - Backspace: Removes the last character from the password and returns the backspace code.
+            - Space: Returns null.
+            - Printable characters: Adds the character to the password and returns the star code.
         """
         if ch == Keys.ENTER:
             return Keys.BELL
@@ -55,11 +63,12 @@ class InputValidator:
         Returns:
             int: The processed character code or a special key code.
 
-        If `ch` is Ctrl+E (exit), raises an ExitFromTextBoxException.
-        If `ch` is Enter, returns the bell code.
-        If `ch` is Backspace or Delete, removes the last character from the password.
-        If `ch` is Space, returns null.
-        If `ch` is a printable character, adds it to the password and returns the star code.
+        Handles:
+            - Ctrl+E: Raises an ExitFromTextBoxException.
+            - Enter: Returns the bell code.
+            - Backspace: Removes the last character from the password and returns the backspace code.
+            - Space: Returns null.
+            - Printable characters: Adds the character to the password and returns the star code.
         """
         if ch == 5:
             raise ExitFromTextBoxException
@@ -99,17 +108,18 @@ class InputValidator:
 
     @staticmethod
     def no_spaces(ch: int) -> int:
-        """
-        Processes input to ignore spaces and exit on specific key codes.
+        """"
+        Processes input to ignore spaces and handle specific key codes.
 
         Args:
             ch (int): The character code of the input.
 
         Returns:
-            int: The processed character code or exit code.
+            int: The processed character code or an exit code.
 
-        If `ch` is Ctrl+L (exit), exits the program.
-        If `ch` is Space, returns 0.
+        Handles:
+            - Ctrl+L: Exits the program.
+            - Space: Returns 0.
         """
         if ch == 12:
             sys.exit(1)
@@ -121,7 +131,7 @@ class InputValidator:
     @staticmethod
     def no_spaces_with_exit(ch: int) -> int:
         """
-        Processes input to ignore spaces and exit on specific key codes, with an exit exception.
+        Processes input to ignore spaces and handle specific key codes, with an exit exception.
 
         Args:
             ch (int): The character code of the input.
@@ -129,9 +139,10 @@ class InputValidator:
         Returns:
             int: The processed character code or special exit code.
 
-        If `ch` is Ctrl+E (exit), raises an ExitFromTextBoxException.
-        If `ch` is Ctrl+L (exit), exits the program.
-        If `ch` is Space, returns 0.
+        Handles:
+            - Ctrl+E: Raises an ExitFromTextBoxException.
+            - Ctrl+L: Exits the program.
+            - Space: Returns 0.
         """
         if ch == 5:
             raise ExitFromTextBoxException
@@ -144,6 +155,18 @@ class InputValidator:
 
     @staticmethod
     def with_exit(ch: int) -> int:
+        """
+        Processes input to handle specific exit key codes.
+
+        Args:
+            ch (int): The character code of the input.
+
+        Returns:
+            int: The processed character code or raises an exit exception.
+
+        Handles:
+            - Ctrl+E: Raises an ExitFromTextBoxException.
+        """
         if ch == 5:
             raise ExitFromTextBoxException
         return ch
