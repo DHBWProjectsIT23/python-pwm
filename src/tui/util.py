@@ -1,6 +1,8 @@
 import curses
+import time
 from typing import TYPE_CHECKING
 
+from src import config
 from .window import Window
 
 if TYPE_CHECKING:
@@ -75,9 +77,7 @@ def print_centered_logo(window: Window, offset: tuple[int, int]) -> None:
 
     window.write_centered_multiline_text(logo, offset, curses.color_pair(5))
     window.write_centered_text(
-        logo_caption,
-        (-5, 0),
-        curses.color_pair(5) | curses.A_BOLD | curses.A_REVERSE
+        logo_caption, (-5, 0), curses.color_pair(5) | curses.A_BOLD | curses.A_REVERSE
     )
     window().refresh()
 
@@ -138,3 +138,22 @@ def generate_control_str(controls: dict[str, str]) -> str:
     control_str += "-"
 
     return control_str
+
+
+def validate_size(window: Window) -> bool:
+    height, width = window.get_size()
+    to_small = False
+    if height < config.MIN_SIZE[0] or width < config.MIN_SIZE[1]:
+        to_small = True
+    while to_small:
+        # height_2, width_2 = window.getSize()
+        # if height_2 != height or width_2 != width:
+        height, width = window.get_size()
+        window().clear()
+        window.write_centered_text(f"Your terminal size {width}x{height} is too small")
+        window().refresh()
+        if height >= config.MIN_SIZE[0] and width >= config.MIN_SIZE[1]:
+            return True
+
+        time.sleep(0.1)
+    return False

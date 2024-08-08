@@ -3,8 +3,8 @@ from __future__ import annotations
 import datetime
 import pickle
 
-from src.crypto.placeholder import dummy_decrypt_fernet
-from src.crypto.placeholder import dummy_encrypt_fernet
+from src.crypto.fernet import decrypt_fernet
+from src.crypto.fernet import encrypt_fernet
 
 
 class Metadata:
@@ -42,8 +42,7 @@ class Metadata:
         Returns: EncryptedMetadata: An instance of EncryptedMetadata
         containing the encrypted metadata.
         """
-        _ = key
-        return EncryptedMetadata(self)
+        return EncryptedMetadata(self, key)
 
 
 class EncryptedMetadata:
@@ -55,7 +54,7 @@ class EncryptedMetadata:
     when the metadata was last modified.
     """
 
-    def __init__(self, metadata: Metadata) -> None:
+    def __init__(self, metadata: Metadata, key: bytes) -> None:
         """
         Initializes EncryptedMetadata by encrypting the provided Metadata
         using the provided key.
@@ -63,9 +62,9 @@ class EncryptedMetadata:
         Args:
             metadata (Metadata): The Metadata instance to be encrypted.
         """
-        self.created_at: bytes = dummy_encrypt_fernet(pickle.dumps(metadata.created_at))
-        self.modified_at: bytes = dummy_encrypt_fernet(
-            pickle.dumps(metadata.last_modified)
+        self.created_at: bytes = encrypt_fernet(pickle.dumps(metadata.created_at), key)
+        self.modified_at: bytes = encrypt_fernet(
+            pickle.dumps(metadata.last_modified), key
         )
 
     def access(self) -> None:
@@ -100,6 +99,6 @@ class EncryptedMetadata:
         """
         _ = key
         metadata = Metadata()
-        metadata.created_at = pickle.loads(dummy_decrypt_fernet(self.created_at))
-        metadata.last_modified = pickle.loads(dummy_decrypt_fernet(self.modified_at))
+        metadata.created_at = pickle.loads(decrypt_fernet(self.created_at, key))
+        metadata.last_modified = pickle.loads(decrypt_fernet(self.modified_at, key))
         return metadata

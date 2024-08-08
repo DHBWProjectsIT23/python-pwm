@@ -3,10 +3,10 @@ import sqlite3
 from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.views.overview.components.controls_popup import ControlsPrompt
+from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.views.overview.io_tab.export_prompt import ExportPrompt
 from src.tui.views.overview.io_tab.import_export_menu import ImportExportMenu
 from src.tui.views.overview.io_tab.import_prompt import ImportPrompt
-from src.tui.views.overview.components.tab_interface import TabInterface
 
 CONTROLS: dict["str", "str"] = {
     "↑↓": "Navigate Menu",
@@ -25,7 +25,6 @@ class IoTab(TabInterface):
         super().__init__(window_size, y_start, CONTROLS)
         self.tab().box()
         self.menu = ImportExportMenu(self.tab)
-        self.tab().refresh()
         self.user = user
         self.connection = connection
         self.cursor = self.connection.cursor()

@@ -17,8 +17,7 @@ from src.tui.views.overview.user_tab.delete_user_prompt import DeleteUserPrompt
 from src.tui.views.overview.user_tab.update_password_prompt import (
     show_update_password_prompt,
 )
-from src.tui.views.overview.user_tab.update_username_prompt import \
-    UpdateUsernamePrompt
+from src.tui.views.overview.user_tab.update_username_prompt import UpdateUsernamePrompt
 
 CONTROLS: dict["str", "str"] = {
     "u": "Change Username",
@@ -29,11 +28,11 @@ CONTROLS: dict["str", "str"] = {
 
 class UserTab(TabInterface):
     def __init__(
-            self,
-            window_size: tuple[int, int],
-            y_start: int,
-            user: User,
-            connection: sqlite3.Connection,
+        self,
+        window_size: tuple[int, int],
+        y_start: int,
+        user: User,
+        connection: sqlite3.Connection,
     ):
         super().__init__(window_size, y_start, CONTROLS)
         self.tab().box()
@@ -58,9 +57,7 @@ class UserTab(TabInterface):
                 self.refresh()
 
     def _handle_update_uname_input(self) -> None:
-        new_username = UpdateUsernamePrompt(self.tab,
-                                            self.cursor,
-                                            self.user).run()
+        new_username = UpdateUsernamePrompt(self.tab, self.cursor, self.user).run()
         if new_username is None:
             return
 

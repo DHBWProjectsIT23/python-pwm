@@ -1,8 +1,10 @@
 import pickle
+from typing import Optional
 
+from src.crypto.aes256 import decrypt_aes
+from src.crypto.aes256 import encrypt_aes
 from src.crypto.hashing import hash_sha256
-from src.crypto.placeholder import dummy_decrypt_fernet
-from src.crypto.placeholder import dummy_encrypt_fernet
+from src.crypto.key_derivation import scrypt_derive
 from src.exceptions.encryption_exception import EncryptionException
 
 
@@ -16,9 +18,10 @@ class Password:
         """
         self.is_encrypted: bool = False
         self.password_bytes: bytes = password.encode()
+        self.salt: Optional[bytes] = None
         self.is_master = False
 
-    def encrypt(self, key: bytes) -> None:
+    def encrypt(self, password: str) -> None:
         """
         Encrypts the password using the provided key.
 
@@ -29,15 +32,14 @@ class Password:
             EncryptionException: If the password is a master password or is
             already encrypted.
         """
-        _ = key
         if self.is_master:
             raise EncryptionException("Master password can't be encrypted")
         if self.is_encrypted:
             return
         self.is_encrypted = True
-        self._encrypt_password()
+        self._encrypt_password(password)
 
-    def decrypt(self, key: bytes) -> None:
+    def decrypt(self, password: str) -> None:
         """
         Decrypts the password using the provided key.
 
@@ -48,25 +50,29 @@ class Password:
             EncryptionException: If the password is a master password or is not
             encrypted.
         """
-        _ = key
         if self.is_master:
             raise EncryptionException("Master password can't be decrypted")
         if not self.is_encrypted:
             return
         self.is_encrypted = False
-        self._decrypt_password()
+        self._decrypt_password(password)
 
-    def _encrypt_password(self) -> None:
+    def _encrypt_password(self, password: str) -> None:
         """
         Performs the actual encryption of the password.
         """
-        self.password_bytes = dummy_encrypt_fernet(self.password_bytes)
+        key, self.salt = scrypt_derive(password.encode())
+        self.password_bytes = encrypt_aes(self.password_bytes, key)
 
-    def _decrypt_password(self) -> None:
+    def _decrypt_password(self, password: str) -> None:
         """
         Performs the actual decryption of the password.
         """
-        self.password_bytes = dummy_decrypt_fernet(self.password_bytes)
+        if self.salt is None:
+            raise EncryptionException("No Salt found")
+        key, _ = scrypt_derive(password.encode(), self.salt)
+        self.salt = None
+        self.password_bytes = decrypt_aes(self.password_bytes, key)
 
     def make_master(self) -> None:
         """

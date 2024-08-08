@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Optional
 
 from src.crypto.hashing import hash_sha256
@@ -8,9 +9,9 @@ from src.model.password import Password
 
 class User:
     def __init__(
-            self,
-            hashed_username: bytes,
-            password: Password,
+        self,
+        hashed_username: bytes,
+        password: Password,
     ):
         """
         Initializes a new User instance.
@@ -24,6 +25,7 @@ class User:
         """
         self.username = hashed_username
         self.password = password
+        self.iv = os.urandom(16)
         self._clear_password: Optional[str] = None
         self._clear_username: Optional[str] = None
         if not password.is_master:

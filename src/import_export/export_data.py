@@ -7,7 +7,7 @@ from src.model.password_information import PasswordInformation
 
 
 def _convert_to_dict(
-        password_informations: list[PasswordInformation],
+    password_informations: list[PasswordInformation],
 ) -> list[PasswordInformationDict]:
     """
     Converts a list of PasswordInformation objects to a list of dictionaries.
@@ -24,8 +24,8 @@ def _convert_to_dict(
 
 
 def export_to_json(
-        password_informations: list[PasswordInformation],
-        target_file: Optional[str] = None,
+    password_informations: list[PasswordInformation],
+    target_file: Optional[str] = None,
 ) -> str:
     """
     Exports a list of PasswordInformation objects to a JSON file.

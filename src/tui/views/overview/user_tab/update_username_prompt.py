@@ -14,10 +14,7 @@ from src.tui.views.overview.components.prompt import Prompt
 
 
 class UpdateUsernamePrompt(Prompt):
-    def __init__(self,
-                 parent: Panel,
-                 cursor: sqlite3.Cursor,
-                 user: User) -> None:
+    def __init__(self, parent: Panel, cursor: sqlite3.Cursor, user: User) -> None:
         super().__init__(parent, user, cursor)
         self.title = "Update Username"
         self.prompt = self.create_prompt_with_padding(self.parent)
@@ -42,9 +39,7 @@ class UpdateUsernamePrompt(Prompt):
             return None
 
         self._reset_prompt(self.title)
-        self.prompt.write_centered_text("Username changed",
-                                        (-1, 0),
-                                        curses.A_BOLD)
+        self.prompt.write_centered_text("Username changed", (-1, 0), curses.A_BOLD)
         self.prompt.write_bottom_center_text("- ↩ Continue -", (-1, 0))
 
         self.break_out()
@@ -57,8 +52,7 @@ class UpdateUsernamePrompt(Prompt):
     def _enter_new_username(self) -> str:
         self._reset_prompt(self.title)
         self.prompt().addstr(2, 2, "New Username:", curses.A_UNDERLINE)
-        self.prompt.write_bottom_center_text("- ↩ Confirm - ^E Cancel -",
-                                             (-1, 0))
+        self.prompt.write_bottom_center_text("- ↩ Confirm - ^E Cancel -", (-1, 0))
         username_textbox, _ = self._create_textbox((1, 32), (4, 2))
 
         while True:
@@ -70,8 +64,7 @@ class UpdateUsernamePrompt(Prompt):
                 self._write_error("Username must be different", self.title)
                 continue
             if len(username) < 4:
-                self._write_error("Username must have 4 or more characters",
-                                  self.title)
+                self._write_error("Username must have 4 or more characters", self.title)
                 continue
             if not validate_unique_user(self.cursor, username):
                 self._write_error("Username is already taken", self.title)

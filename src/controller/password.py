@@ -11,7 +11,7 @@ from src.model.user import User
 
 
 def retrieve_password_information(
-        cursor: sqlite3.Cursor, user: User
+    cursor: sqlite3.Cursor, user: User
 ) -> list[PasswordInformation]:
     """
     Retrieves password information for a given user from the database.
@@ -25,12 +25,12 @@ def retrieve_password_information(
     """
     cursor.execute(
         """
-        SELECT id, description, username, passwords, categories, note, metadata
+        SELECT id, description, username, passwords, categories, note, metadata, salt
         FROM passwords WHERE user=?
         """,
         (user.username,),
     )
-    results: list[tuple[int, bytes, bytes, bytes, bytes, bytes, bytes]] = (
+    results: list[tuple[int, bytes, bytes, bytes, bytes, bytes, bytes, bytes]] = (
         cursor.fetchall()
     )
 
@@ -43,10 +43,11 @@ def retrieve_password_information(
         categories: list[bytes] = pickle.loads(result[4])
         note: Optional[bytes] = pickle.loads(result[5])
         metadata: EncryptedMetadata = pickle.loads(result[6])
+        salt: bytes = pickle.loads(result[7])
 
         pw_info = PasswordInformation.from_db(
-            description,
-            (username, categories, note),
+            salt,
+            (description, username, categories, note),
             passwords,
             user,
         )
@@ -59,7 +60,7 @@ def retrieve_password_information(
 
 
 def update_password_information(
-        cursor: sqlite3.Cursor, password_information: PasswordInformation
+    cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     """
     Updates existing password information in the database.
@@ -85,27 +86,26 @@ def update_password_information(
             categories = ?,
             note = ?,
             user = ?,
-            metadata = ?
+            metadata = ?,
+            salt = ?
         WHERE id = ?
         """,
         (
-            password_information.description,
+            password_information.details.description,
             pickle.dumps(password_information.details.username),
             pickle.dumps(password_information.passwords),
             pickle.dumps(password_information.details.categories),
             pickle.dumps(password_information.details.note),
             password_information.user.username,
             pickle.dumps(password_information.metadata),
+            pickle.dumps(password_information.get_salt()),
             password_information.id,
         ),
     )
 
 
 def validate_unique_password(
-        cursor: sqlite3.Cursor,
-        description: str,
-        username: Optional[str],
-        user: User
+    cursor: sqlite3.Cursor, description: str, username: Optional[str], user: User
 ) -> bool:
     """
     Validates that a password with the given description and username is
@@ -143,7 +143,7 @@ def validate_unique_password(
 
 
 def delete_password_information(
-        cursor: sqlite3.Cursor, password_information: PasswordInformation
+    cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
     cursor.execute(
         """
@@ -153,8 +153,7 @@ def delete_password_information(
     )
 
 
-def delete_password_information_of_user(cursor: sqlite3.Cursor,
-                                        user: User) -> None:
+def delete_password_information_of_user(cursor: sqlite3.Cursor, user: User) -> None:
     cursor.execute(
         """
         DELETE FROM passwords WHERE user=?
@@ -164,7 +163,7 @@ def delete_password_information_of_user(cursor: sqlite3.Cursor,
 
 
 def insert_password_information(
-        cursor: sqlite3.Cursor, password_information: PasswordInformation
+    cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> PasswordInformation:
     """
     Inserts new password information into the database.
@@ -184,18 +183,19 @@ def insert_password_information(
     cursor.execute(
         """
         INSERT INTO passwords(
-            description, username, passwords, categories, note, user, metadata
-        ) VALUES(?, ?, ?, ?, ?, ?, ?)
+            description, username, passwords, categories, note, user, metadata, salt
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
         """,
         (
-            password_information.description,
+            password_information.details.description,
             pickle.dumps(password_information.details.username),
             pickle.dumps(password_information.passwords),
             pickle.dumps(password_information.details.categories),
             pickle.dumps(password_information.details.note),
             password_information.user.username,
             pickle.dumps(password_information.metadata),
+            pickle.dumps(password_information.get_salt()),
         ),
     )
     result: list[tuple[int]] = cursor.fetchall()

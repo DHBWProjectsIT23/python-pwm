@@ -11,7 +11,7 @@ from src.tui.views.overview.components.prompt import Prompt
 
 class IoPrompt(Prompt):
     def __init__(
-            self, parent: Panel, user: User, cursor: sqlite3.Cursor, title: str
+        self, parent: Panel, user: User, cursor: sqlite3.Cursor, title: str
     ) -> None:
         super().__init__(parent, user, cursor)
         self.title = title

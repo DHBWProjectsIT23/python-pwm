@@ -11,11 +11,11 @@ from src.tui.views.overview.components.prompt import Prompt
 
 class DeletePasswordPrompt(Prompt):
     def __init__(
-            self,
-            parent: Panel,
-            user: User,
-            password: PasswordInformation,
-            cursor: sqlite3.Cursor,
+        self,
+        parent: Panel,
+        user: User,
+        password: PasswordInformation,
+        cursor: sqlite3.Cursor,
     ) -> None:
         super().__init__(parent, user, cursor)
         self.title = "Delete Password"

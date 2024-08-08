@@ -1,10 +1,10 @@
 import asyncio
 import sqlite3
-import time
 from typing import TYPE_CHECKING
 
 from src.controller.connection import connect_to_db
 from .util import init_tui
+from .util import validate_size
 from .views.login import show_login
 from .views.overview.overview import show_overview
 from .views.registration import show_registration
@@ -35,9 +35,7 @@ def main(stdscr: CursesWindow) -> None:
 
 
 async def run_tui(
-        stdscr: CursesWindow,
-        connection: sqlite3.Connection,
-        cursor: sqlite3.Cursor
+    stdscr: CursesWindow, connection: sqlite3.Connection, cursor: sqlite3.Cursor
 ) -> None:
     """
     Runs the terminal user interface (TUI) in an asynchronous context. Handles
@@ -58,25 +56,7 @@ async def run_tui(
     """
     window: Window = init_tui(stdscr)
 
-    height, width = window.get_size()
-    window().refresh()
-
-    to_small = False
-    if height < 30 or width < 80:
-        to_small = True
-
-    while to_small:
-        # height_2, width_2 = window.getSize()
-        # if height_2 != height or width_2 != width:
-        height, width = window.get_size()
-        window().clear()
-        window.write_centered_text(f"Your terminal size {width}x{height} is too small")
-        window().refresh()
-        if height >= 30 and width >= 80:
-            to_small = False
-
-        time.sleep(0.1)
-
+    validate_size(window)
     window().clear()
 
     choice = show_start(window)
@@ -98,7 +78,7 @@ async def run_tui(
     # user = User.new("test", "test")
     # user.set_clear_password("test")
 
-    window().clear()
-    await show_overview(window, connection, user)
-
-    window().clear()
+    current_tab = 0
+    while True:
+        window().clear()
+        current_tab = await show_overview(window, connection, user, current_tab)

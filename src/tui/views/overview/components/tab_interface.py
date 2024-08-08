@@ -1,7 +1,9 @@
 import curses
 
+from src.tui.keys import Keys
 from src.tui.panel import Panel
 from src.tui.util import generate_control_str
+from src.tui.views.overview.components.prompt import Prompt
 
 INTERFACE_MSG = "This is an Interface"
 
@@ -37,3 +39,19 @@ class TabInterface:
             self.tab.write_bottom_center_text("- ? Show Keybinds -", (-1, 0))
         finally:
             self.tab().refresh()
+
+    def _display_error(self, msg: str) -> None:
+        length = len(msg)
+        popup = Prompt.create_prompt_with_padding(self.tab, (6, length + 4))
+        popup().box()
+        popup().addstr(0, 0, "Error", curses.A_BOLD | curses.color_pair(2))
+        popup.write_bottom_center_text("- ESC Dismiss -", (-1, 0))
+        popup.write_centered_text(msg, (-1, 0), curses.A_BOLD)
+        popup().refresh()
+
+        while True:
+            input_key = popup().getch()
+            if input_key == Keys.ESCAPE:
+                popup().clear()
+                popup().refresh()
+                return

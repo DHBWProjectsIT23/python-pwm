@@ -7,6 +7,7 @@ from src.controller.user import validate_unique_user
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.popup import create_centered_popup
+from src.crypto.password_util import validate_password_safety
 from src.tui.util import print_centered_logo
 from src.tui.window import Window
 
@@ -72,7 +73,9 @@ def show_registration(
             confirm_window().clear()
             continue
 
-        # TODO: Validate Password Strength
+        if validate_password_safety(password_str) < 3:
+            show_failed_registration(input_window, "Password is too weak")
+            continue
 
         return _finalize_user(connection, password_str, username)
 
@@ -120,11 +123,8 @@ def clear_border(input_window: Window) -> None:
 
 def show_successful_register(input_window: Window) -> None:
     register_success_message = " Registration successful! "
-    input_window().addstr(
-        6,
-        (35 // 2) - (len(register_success_message) // 2),
+    input_window.write_bottom_center_text(
         register_success_message,
-        curses.color_pair(3),
     )
     input_window().refresh()
 
@@ -132,10 +132,8 @@ def show_successful_register(input_window: Window) -> None:
 def show_failed_registration(
     input_window: Window, register_failed_message: str
 ) -> None:
-    input_window().addstr(
-        8,
-        (input_window.get_size()[1] // 2) - (len(register_failed_message) // 2),
+    input_window.write_bottom_center_text(
         register_failed_message,
-        curses.color_pair(2),
+        attr=curses.color_pair(2),
     )
     input_window().refresh()

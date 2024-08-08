@@ -8,8 +8,8 @@ from src.exceptions.exit_from_textbox_exception import ExitFromTextBoxException
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.panel import Panel
-from src.tui.views.overview.password_tab.add_password_prompt import write_error
 from src.tui.views.overview.components.prompt import Prompt
+from src.tui.views.overview.password_tab.add_password_prompt import write_error
 
 CONTROL_STR = " - ↩ Continue - "
 
@@ -68,7 +68,6 @@ def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
             write_error("Password must be different to before", prompt, title=title)
             continue
 
-        # TODO: Validate security
         if validate_password_safety(password) < 3:
             write_error("Password is too weak", prompt, title=title)
             continue

@@ -11,13 +11,13 @@ class HistoryPopup(SimplePrompt):
         height = len(self.password.passwords[-10:]) + 7
         self.password.decrypt_passwords()
         width = (
-                max(
-                    (
-                        len(password.password_bytes.decode())
-                        for password in self.password.passwords
-                    )
+            max(
+                (
+                    len(password.password_bytes.decode())
+                    for password in self.password.passwords
                 )
-                + 10
+            )
+            + 10
         )
         super().__init__(parent, (height, width))
 

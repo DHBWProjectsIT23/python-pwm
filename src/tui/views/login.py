@@ -67,21 +67,17 @@ def init_input_window(parent: Window) -> Window:
 
 def show_successful_login(input_window: Window) -> None:
     login_success_message = " Login successful! "
-    input_window().addstr(
-        6,
-        (35 // 2) - (len(login_success_message) // 2),
+    input_window.write_bottom_center_text(
         login_success_message,
-        curses.color_pair(3),
+        attr=curses.color_pair(3),
     )
     input_window().refresh()
 
 
 def show_failed_login(input_window: Window) -> None:
     wrong_password_or_username = " Wrong username or password "
-    input_window().addstr(
-        6,
-        (35 // 2) - (len(wrong_password_or_username) // 2),
+    input_window.write_bottom_center_text(
         wrong_password_or_username,
-        curses.color_pair(2),
+        attr=curses.color_pair(2),
     )
     input_window().refresh()

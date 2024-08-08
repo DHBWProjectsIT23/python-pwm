@@ -1,11 +1,13 @@
-# type : ignore
+# pylint: disable=C
+# type: ignore
 import os
 import sqlite3
 import sys
 
 path = os.path.dirname(os.path.abspath(__file__))
-sourcePath = os.path.join(path, "src")
-sys.path.insert(0, sourcePath)
+sourcePath = os.path.join(path, "..")
+sourcePath = os.path.abspath(sourcePath)
+sys.path.append(sourcePath)
 
 from src.controller.connection import connect_to_db
 from src.controller.password import insert_password_information
@@ -24,10 +26,8 @@ def main() -> None:
     with connect_to_db() as connection:
         cursor = connection.cursor()
         add_test_users(cursor)
-        i = 0
-        while i < 10:
-            add_test_passwords(cursor, User.new("test", "test"))
-            i += 1
+        for i in range(5):
+            add_test_passwords(cursor, User.new("test", "test"), i)
         connection.commit()
 
 
@@ -43,27 +43,27 @@ def add_test_users(cursor: sqlite3.Cursor) -> None:
     insert_user(cursor, test_user)
 
 
-def add_test_passwords(cursor: sqlite3.Cursor, user: User) -> None:
+def add_test_passwords(cursor: sqlite3.Cursor, user: User, index: int) -> None:
     user.set_clear_password("test")
-    test_password_1 = Password("test_password_1")
+    test_password_1 = Password(f"test_password_1_{index}")
     test_password_information_1 = PasswordInformation(
-        user, test_password_1, "www.github.com", "simon@test.com"
+        user, test_password_1, f"www.github{index}.com", "simon@test.com"
     )
-    test_password_2 = Password("test_password_2")
+    test_password_2 = Password(f"test_password_2_{index}")
     test_password_information_2 = PasswordInformation(
-        user, test_password_2, "Linux PC", "simonTest"
+        user, test_password_2, f"Linux PC {index}", "simonTest"
     )
-    test_password_3 = Password("test_password_3")
+    test_password_3 = Password(f"test_password_3_{index}")
     test_password_information_3 = PasswordInformation(
-        user, test_password_3, "Test Password", "test@test.com"
+        user, test_password_3, f"Test Password {index}", "test@test.com"
     )
-    test_password_4 = Password("test_password_4")
+    test_password_4 = Password(f"test_password_4_{index}")
     test_password_information_4 = PasswordInformation(
-        user, test_password_4, "www.youtube.com", "tmp@test.de"
+        user, test_password_4, f"www.youtube{index}.com", "tmp@test.de"
     )
-    test_password_5 = Password("test_password_5")
+    test_password_5 = Password(f"test_password_5_{index}")
     test_password_information_5 = PasswordInformation(
-        user, test_password_5, "www.gmail.com", "test@gmail.com"
+        user, test_password_5, f"www.gmail{index}.com", "test@gmail.com"
     )
 
     insert_password_information(cursor, test_password_information_1)

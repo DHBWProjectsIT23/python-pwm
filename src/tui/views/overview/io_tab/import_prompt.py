@@ -15,10 +15,7 @@ from src.tui.views.overview.io_tab.io_prompt import IoPrompt
 
 
 class ImportPrompt(IoPrompt):
-    def __init__(self,
-                 parent: Panel,
-                 user: User,
-                 cursor: sqlite3.Cursor) -> None:
+    def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
         super().__init__(parent, user, cursor, "Import Passwords")
 
     def run(self) -> list[PasswordInformation]:
@@ -62,10 +59,7 @@ class ImportPrompt(IoPrompt):
                 else None
             )
             if not validate_unique_password(
-                    self.cursor,
-                    password.description.decode(),
-                    username,
-                    self.user
+                self.cursor, password.details.description.decode(), username, self.user
             ):
                 self.prompt_window.write_centered_text(
                     "File contains passwords that are/would be duplicate",
@@ -79,8 +73,7 @@ class ImportPrompt(IoPrompt):
 
         if len(passwords) > 0:
             self._reset_prompt(self.title)
-            self.prompt_window.write_bottom_center_text("- ↩ Continue -",
-                                                        (-1, 0))
+            self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
             self.prompt_window.write_centered_text(
                 f"Imported {len(passwords)} passwords",
                 (-1, 0),

@@ -3,10 +3,7 @@ from .window import Window
 
 
 def create_centered_popup(
-        parent: Window | Panel,
-        height: int,
-        width: int,
-        offset: tuple[int, int] = (0, 0)
+    parent: Window | Panel, height: int, width: int, offset: tuple[int, int] = (0, 0)
 ) -> Window:
     """
     Create a popup window centered on the parent window or panel with an optional offset.
@@ -28,7 +25,7 @@ def create_centered_popup(
 
 
 def create_popup(
-        window: Window | Panel, y: int, x: int, height: int, width: int
+    window: Window | Panel, y: int, x: int, height: int, width: int
 ) -> Window:
     """
     Create a popup window at a specified location within the parent window or panel.

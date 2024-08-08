@@ -6,8 +6,9 @@ from typing import Iterable
 from typing import Optional
 
 from src.api.pawned import check_password
-from src.crypto.placeholder import dummy_decrypt_fernet
-from src.crypto.placeholder import dummy_encrypt_fernet
+from src.crypto.fernet import decrypt_fernet
+from src.crypto.fernet import encrypt_fernet
+from src.crypto.key_derivation import scrypt_derive
 from src.exceptions.encryption_exception import EncryptionException
 from src.import_export.password_dict import PasswordInformationDict
 from src.model.metadata import EncryptedMetadata
@@ -31,11 +32,11 @@ class PasswordInformation:
     """
 
     def __init__(
-            self,
-            user: User,
-            password: Password,
-            description: str,
-            username: Optional[str] = None,
+        self,
+        user: User,
+        password: Password,
+        description: str,
+        username: Optional[str] = None,
     ):
         """
         Initializes PasswordInformation with given details.
@@ -48,13 +49,13 @@ class PasswordInformation:
             if any.
         """
         self.passwords: list[Password] = [password]
-        self.description: bytes = description.encode()
         username_bytes: Optional[bytes] = (
             username.encode() if username is not None else None
         )
-        self.details = PasswordDetails(username_bytes, [], None)
+        self.details = PasswordDetails(description.encode(), username_bytes, [], None)
         self.user: User = user
         self.metadata: Metadata | EncryptedMetadata = Metadata()
+        self._salt: Optional[bytes]
         self.data_is_encrypted = False
         self.id: Optional[int] = None
 
@@ -131,8 +132,7 @@ class PasswordInformation:
             if category.encode() in self.details.categories:
                 raise ValueError("Category already exists")
 
-        self.details.categories.extend([category.encode() for category in
-                                        categories])
+        self.details.categories.extend([category.encode() for category in categories])
         self.metadata.modify()
 
     def modify(self) -> None:
@@ -141,7 +141,7 @@ class PasswordInformation:
         """
         self.metadata.modify()
 
-    def encrypt_data(self, *, key: Optional[str] = None) -> None:
+    def encrypt_data(self, *, user_password: Optional[str] = None) -> None:
         """
         Encrypts the data using the provided key.
 
@@ -152,24 +152,20 @@ class PasswordInformation:
         Raises:
             EncryptionException: If metadata is already encrypted.
         """
-        key_bytes = b""
-        if key is None:
-            key_bytes = self.user.get_clear_password().encode()
-        else:
-            key_bytes = key.encode()
-
-        self.description = dummy_encrypt_fernet(self.description)
+        if user_password is None:
+            user_password = self.user.get_clear_password()
 
         if isinstance(self.metadata, EncryptedMetadata):
             raise EncryptionException("Metadata is already encrypted")
 
-        self.metadata = self.metadata.encrypt(key_bytes)
+        key, self._salt = scrypt_derive(user_password.encode())
 
-        self.details.encrypt(key_bytes)
+        self.metadata = self.metadata.encrypt(key)
+        self.details.encrypt(key)
 
         self.data_is_encrypted = True
 
-    def decrypt_data(self, *, key: Optional[str] = None) -> None:
+    def decrypt_data(self, *, user_password: Optional[str] = None) -> None:
         """
         Decrypts the data using the provided key.
 
@@ -180,24 +176,21 @@ class PasswordInformation:
         Raises:
             EncryptionException: If metadata is not encrypted.
         """
-        key_bytes = b""
-        if key is None:
-            key_bytes = self.user.get_clear_password().encode()
-        else:
-            key_bytes = key.encode()
-
-        self.description = dummy_decrypt_fernet(self.description)
-
+        if self._salt is None:
+            raise EncryptionException("No Salt found")
+        if user_password is None:
+            user_password = self.user.get_clear_password()
         if isinstance(self.metadata, Metadata):
             raise EncryptionException("Metadata is not encrypted")
 
-        self.metadata = self.metadata.decrypt(key_bytes)
+        key, _ = scrypt_derive(user_password.encode(), self._salt)
 
-        self.details.decrypt(key_bytes)
+        self.metadata = self.metadata.decrypt(key)
+        self.details.decrypt(key)
 
         self.data_is_encrypted = False
 
-    def encrypt_passwords(self, *, key: Optional[str] = None) -> None:
+    def encrypt_passwords(self, *, user_password: Optional[str] = None) -> None:
         """
         Encrypts the passwords using the provided key.
 
@@ -205,16 +198,13 @@ class PasswordInformation:
             key (Optional[str]): The encryption key. If not provided, the user's
             clear password is used.
         """
-        key_bytes = b""
-        if key is None:
-            key_bytes = self.user.get_clear_password().encode()
-        else:
-            key_bytes = key.encode()
+        if user_password is None:
+            user_password = self.user.get_clear_password()
 
         for password in self.passwords:
-            password.encrypt(key_bytes)
+            password.encrypt(user_password)
 
-    def decrypt_passwords(self, *, key: Optional[str] = None) -> None:
+    def decrypt_passwords(self, *, user_password: Optional[str] = None) -> None:
         """
         Decrypts the passwords using the provided key.
 
@@ -222,13 +212,18 @@ class PasswordInformation:
             key (Optional[str]): The decryption key. If not provided, the user's
             clear password is used.
         """
-        if key is None:
-            key = self.user.get_clear_password()
+        if user_password is None:
+            user_password = self.user.get_clear_password()
 
         for password in self.passwords:
-            password.decrypt(key.encode())
+            password.decrypt(user_password)
 
-    async def check_pwned_status(self, *, key: Optional[str] = None) -> int:
+    def get_salt(self) -> bytes:
+        if self._salt is None:
+            raise ValueError("Salt not found")
+        return self._salt
+
+    async def check_pwned_status(self, *, user_password: Optional[str] = None) -> int:
         """
         Checks if the latest password has been compromised in a known data
         breach.
@@ -240,12 +235,12 @@ class PasswordInformation:
         Returns:
             int: The number of times the password has been found in a breach.
         """
-        if key is None:
-            key = self.user.get_clear_password()
+        if user_password is None:
+            user_password = self.user.get_clear_password()
 
         latest_password = self.passwords[-1]
         if latest_password.is_encrypted:
-            latest_password.decrypt(key.encode())
+            latest_password.decrypt(user_password)
         return await check_password(latest_password.password_bytes)
 
     def to_dict(self) -> PasswordInformationDict:
@@ -265,21 +260,18 @@ class PasswordInformation:
         self.decrypt_passwords()
 
         if not isinstance(self.metadata, Metadata):
-            raise EncryptionException(
-                "Can't convert to dict if metadata is encrypted")
+            raise EncryptionException("Can't convert to dict if metadata is encrypted")
 
         return {
-            "description": self.description.decode(),
+            "description": self.details.description.decode(),
             "username": self.details.username.decode() if self.details.username else "",
             "password": {
                 "current_password": self.passwords[-1].password_bytes.decode(),
                 "old_passwords": [
-                    password.password_bytes.decode() for password in
-                    self.passwords[:-1]
+                    password.password_bytes.decode() for password in self.passwords[:-1]
                 ],
             },
-            "categories": [category.decode() for category in
-                           self.details.categories],
+            "categories": [category.decode() for category in self.details.categories],
             "note": self.details.note.decode() if self.details.note else "",
             "created_at": self.metadata.created_at.timestamp(),
             "last_modified": self.metadata.last_modified.timestamp(),
@@ -287,7 +279,7 @@ class PasswordInformation:
 
     @classmethod
     def from_dict(
-            cls, data: PasswordInformationDict, user: User
+        cls, data: PasswordInformationDict, user: User
     ) -> PasswordInformation:
         """
         Creates a PasswordInformation instance from a dictionary.
@@ -307,11 +299,8 @@ class PasswordInformation:
         passwords = data["password"].get("old_passwords", [])
         passwords.append(current_password)
 
-        password_information = cls(user,
-                                   Password("WILL_BE_CHANGED"),
-                                   description)
-        password_information.passwords = [Password(password) for password in
-                                          passwords]
+        password_information = cls(user, Password("WILL_BE_CHANGED"), description)
+        password_information.passwords = [Password(password) for password in passwords]
 
         # Optional Data
         metadata = Metadata()
@@ -339,30 +328,30 @@ class PasswordInformation:
 
     @classmethod
     def from_db(
-            cls,
-            description: bytes,
-            details: tuple[Optional[bytes], list[bytes], Optional[bytes]],
-            passwords: list[Password],
-            user: User,
+        cls,
+        salt: bytes,
+        details: tuple[bytes, Optional[bytes], list[bytes], Optional[bytes]],
+        passwords: list[Password],
+        user: User,
     ) -> PasswordInformation:
         password_information = cls(user, passwords[0], "")
-        password_information.description = description
-        password_information.details.username = details[0]
+        password_information._salt = salt
+        password_information.details.description = details[0]
+        password_information.details.username = details[1]
         password_information.passwords = passwords
-        password_information.details.categories = details[1]
-        password_information.details.note = details[2]
+        password_information.details.categories = details[2]
+        password_information.details.note = details[3]
         password_information.data_is_encrypted = True
         return password_information
 
     @staticmethod
     def create_password_filter(
-            search_string: str,
+        search_string: str,
     ) -> Callable[[PasswordInformation], bool]:
         def filter_passwords(password: PasswordInformation) -> bool:
             if password.data_is_encrypted:
-                raise EncryptionException(
-                    "Data needs to be decrypted for searching")
-            if search_string.lower() in password.description.decode().lower():
+                raise EncryptionException("Data needs to be decrypted for searching")
+            if search_string.lower() in password.details.description.decode().lower():
                 return True
             for category in password.details.categories:
                 if search_string.lower() in category.decode().lower():
@@ -374,35 +363,39 @@ class PasswordInformation:
 
 class PasswordDetails:
     def __init__(
-            self,
-            username: Optional[bytes],
-            categories: list[bytes],
-            note: Optional[bytes]
+        self,
+        description: bytes,
+        username: Optional[bytes],
+        categories: list[bytes],
+        note: Optional[bytes],
     ):
+        self.description = description
         self.username = username
         self.categories = categories
         self.note = note
 
     def encrypt(self, key: bytes) -> None:
         _ = key
+        self.description = encrypt_fernet(self.description, key)
         if self.username is not None:
-            self.username = dummy_encrypt_fernet(self.username)
+            self.username = encrypt_fernet(self.username, key)
 
         if self.note is not None:
-            self.note = dummy_encrypt_fernet(self.note)
+            self.note = encrypt_fernet(self.note, key)
 
         self.categories = [
-            dummy_encrypt_fernet(category) for category in self.categories
+            encrypt_fernet(category, key) for category in self.categories
         ]
 
     def decrypt(self, key: bytes) -> None:
         _ = key
+        self.description = decrypt_fernet(self.description, key)
         if self.username is not None:
-            self.username = dummy_decrypt_fernet(self.username)
+            self.username = decrypt_fernet(self.username, key)
 
         if self.note is not None:
-            self.note = dummy_decrypt_fernet(self.note)
+            self.note = decrypt_fernet(self.note, key)
 
         self.categories = [
-            dummy_decrypt_fernet(category) for category in self.categories
+            decrypt_fernet(category, key) for category in self.categories
         ]

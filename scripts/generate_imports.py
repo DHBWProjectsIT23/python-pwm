@@ -1,3 +1,5 @@
+# pylint: disable=C
+# type: ignore
 import json
 import random
 from datetime import datetime
@@ -152,5 +154,5 @@ for _ in range(50):
 print(json.dumps(entries, indent=2))
 
 # Save to file
-with open("generated_entries.json", "w") as f:
+with open("../import_export/import_generated.json", "w") as f:
     json.dump(entries, f, indent=2)

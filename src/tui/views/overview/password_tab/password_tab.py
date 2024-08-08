@@ -2,6 +2,8 @@ import curses
 import sqlite3
 from typing import Optional
 
+import requests
+
 from src.controller.password import insert_password_information
 from src.controller.password import retrieve_password_information
 from src.controller.password import update_password_information
@@ -11,6 +13,7 @@ from src.model.user import User
 from src.tui.keys import Keys
 from src.tui.popup import create_centered_popup
 from src.tui.views.overview.components.controls_popup import ControlsPrompt
+from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.views.overview.password_tab.add_password_prompt import (
     show_add_password_prompt,
 )
@@ -20,13 +23,11 @@ from src.tui.views.overview.password_tab.create_password_prompt import (
 from src.tui.views.overview.password_tab.delete_password_prompt import (
     DeletePasswordPrompt,
 )
-from src.tui.views.overview.password_tab.edit_password_prompt import \
-    PasswordEditPrompt
+from src.tui.views.overview.password_tab.edit_password_prompt import PasswordEditPrompt
 from src.tui.views.overview.password_tab.history_popup import HistoryPopup
 from src.tui.views.overview.password_tab.password_list import PasswordList
 from src.tui.views.overview.password_tab.search_prompt import SearchPrompt
 from src.tui.views.overview.password_tab.show_details import show_details
-from src.tui.views.overview.components.tab_interface import TabInterface
 from src.tui.window import Window
 
 CONTROLS: dict["str", "str"] = {
@@ -47,11 +48,11 @@ CONTROLS: dict["str", "str"] = {
 
 class PasswordTab(TabInterface):
     def __init__(
-            self,
-            window_size: tuple[int, int],
-            y_start: int,
-            user: User,
-            connection: sqlite3.Connection,
+        self,
+        window_size: tuple[int, int],
+        y_start: int,
+        user: User,
+        connection: sqlite3.Connection,
     ):
         super().__init__(window_size, y_start, CONTROLS)
 
@@ -68,14 +69,9 @@ class PasswordTab(TabInterface):
         self.tab().box()
 
         self.password_list = PasswordList(
-            self.list_window,
-            retrieve_password_information(self.cursor, self.user)
+            self.list_window, retrieve_password_information(self.cursor, self.user)
         )
         self._init_table_headings()
-
-        self.password_list.refresh()
-        self.reload_passwords()
-        self.refresh()
 
     def _init_table_headings(self) -> None:
         desc_width, uname_width, pass_width, _ = PasswordList.calculate_columns(
@@ -108,9 +104,22 @@ class PasswordTab(TabInterface):
                 HistoryPopup(self.tab, self.password_list.get_selected()).run()
                 self.refresh()
             case Keys.C_LOWER:
-                await self.password_list.check_selected()
+                try:
+                    await self.password_list.check_selected()
+                except requests.exceptions.ConnectionError:
+                    self._display_error(
+                        "An Error occured while trying to check the Status"
+                    )
+                    self.refresh()
             case Keys.C:
-                await self._handle_check_all_input()
+                try:
+                    await self._handle_check_all_input()
+                except ExceptionGroup:
+                    self._display_error(
+                        "An Error occured while trying to check the Status"
+                    )
+                    self.refresh()
+
             case Keys.D | Keys.D_LOWER:
                 self._handle_delete_password_input()
             case Keys.N | Keys.N_LOWER:
@@ -141,12 +150,9 @@ class PasswordTab(TabInterface):
         self.refresh()
 
     def _handle_new_input(self) -> None:
-        new_password = PasswordCreationPrompt(self.tab,
-                                              self.user,
-                                              self.cursor).run()
+        new_password = PasswordCreationPrompt(self.tab, self.user, self.cursor).run()
         if new_password is not None:
-            new_password = insert_password_information(self.cursor,
-                                                       new_password)
+            new_password = insert_password_information(self.cursor, new_password)
             self.connection.commit()
             new_password.decrypt_data()
             self.password_list.add_item(new_password)
@@ -182,10 +188,7 @@ class PasswordTab(TabInterface):
 
     def _handle_delete_password_input(self) -> None:
         password = self.password_list.get_selected()
-        deleted = DeletePasswordPrompt(self.tab,
-                                       self.user,
-                                       password,
-                                       self.cursor).run()
+        deleted = DeletePasswordPrompt(self.tab, self.user, password, self.cursor).run()
         if deleted:
             self.connection.commit()
             self.reload_passwords()
@@ -212,8 +215,7 @@ class PasswordTab(TabInterface):
         if search_string is not None:
             passwords = list(
                 filter(
-                    PasswordInformation.create_password_filter(search_string),
-                    passwords
+                    PasswordInformation.create_password_filter(search_string), passwords
                 )
             )
         self.password_list = PasswordList(self.list_window, passwords)

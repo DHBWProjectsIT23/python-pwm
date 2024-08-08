@@ -1,17 +1,20 @@
 import os
+from typing import Optional
 
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
-def scrypt_derive(pw: bytes, salt: bytes) -> bytes:
+
+def scrypt_derive(pw: bytes, salt: Optional[bytes] = None) -> tuple[bytes, bytes]:
     """
     Derives password with Scrypt in preperation for AES-Encryption.
 
     Args:
         pw (bytes): The password to be derived.
-        salt (bytes): The salt used for derivation.
     """
+    if salt is None:
+        salt = os.urandom(16)
     kdf = Scrypt(salt, 32, 2**14, 8, 1)
-    return kdf.derive(pw)
+    return kdf.derive(pw), salt
 
 
 def scrypt_verify(pw: bytes, derived_key: bytes, salt: bytes) -> bool:

@@ -12,8 +12,7 @@ def connect_to_db() -> sqlite3.Connection:
     Returns:
         sqlite3.Connection: The SQLite connection object.
     """
-    connection = sqlite3.connect(db_path(),
-                                 detect_types=sqlite3.PARSE_DECLTYPES)
+    connection = sqlite3.connect(db_path(), detect_types=sqlite3.PARSE_DECLTYPES)
     cursor = connection.cursor()
     initialize_tables(cursor)
 
@@ -42,6 +41,7 @@ def initialize_tables(cursor: sqlite3.Cursor) -> None:
         note BLOB,
         user BLOB NOT NULL,
         metadata BLOB NOT NULL,
+        salt BLOB NOT NULL,
         FOREIGN KEY(user) REFERENCES users(username)
     );
         """

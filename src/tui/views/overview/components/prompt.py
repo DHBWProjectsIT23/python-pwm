@@ -23,11 +23,11 @@ else:
 
 class Prompt:
     def __init__(
-            self,
-            parent: Panel,
-            user: User,
-            cursor: sqlite3.Cursor,
-            size: tuple[int, int] = (10, 57),
+        self,
+        parent: Panel,
+        user: User,
+        cursor: sqlite3.Cursor,
+        size: tuple[int, int] = (10, 57),
     ) -> None:
         self.parent = parent
         self.user = user
@@ -39,7 +39,7 @@ class Prompt:
         raise NotImplementedError("This is an interface")
 
     def _create_textbox(
-            self, size: tuple[int, int], position: tuple[int, int]
+        self, size: tuple[int, int], position: tuple[int, int]
     ) -> tuple[Textbox, CursesWindow]:
         textbox_window = self.prompt_window().derwin(*size, *position)
         textbox = Textbox(textbox_window)
@@ -48,21 +48,14 @@ class Prompt:
 
     def _write_error(self, msg: str, title: str) -> None:
         self.prompt_window().box()
-        self.prompt_window().addstr(0,
-                                    0,
-                                    title,
-                                    curses.A_BOLD | curses.color_pair(3))
-        self.prompt_window.write_bottom_center_text(msg,
-                                                    attr=curses.color_pair(2))
+        self.prompt_window().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
+        self.prompt_window.write_bottom_center_text(msg, attr=curses.color_pair(2))
         self.prompt_window().refresh()
 
     def _reset_prompt(self, title: str) -> None:
         self.prompt_window().clear()
         self.prompt_window().box()
-        self.prompt_window().addstr(0,
-                                    0,
-                                    title,
-                                    curses.A_BOLD | curses.color_pair(3))
+        self.prompt_window().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
         self.prompt_window().refresh()
 
     def _confirm_password(self) -> bool:
@@ -72,8 +65,7 @@ class Prompt:
         self.prompt_window.write_bottom_center_text(
             "- ↩ Confirm - ^E Cancel -", (-1, 0)
         )
-        password_textbox, password_window = self._create_textbox((1, 32),
-                                                                 (4, 2))
+        password_textbox, password_window = self._create_textbox((1, 32), (4, 2))
         validator = InputValidator()
 
         attempts = 0
@@ -85,9 +77,7 @@ class Prompt:
             password_textbox.edit(validator.password_with_exit)
             curses.curs_set(False)
             if not validate_login_hashed(
-                    self.cursor,
-                    self.user.username,
-                    validator.get_password_string()
+                self.cursor, self.user.username, validator.get_password_string()
             ):
                 self._write_error("Wrong Password", self.title)
                 validator.reset_password()
@@ -100,7 +90,7 @@ class Prompt:
 
     @staticmethod
     def create_prompt_with_padding(
-            parent: Panel, size: tuple[int, int] = (10, 57)
+        parent: Panel, size: tuple[int, int] = (10, 57)
     ) -> Window:
         padding = create_centered_popup(parent, size[0] + 2, size[1] + 2)
         padding().refresh()

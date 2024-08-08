@@ -3,6 +3,7 @@ import unittest
 from src.model.password import Password, adapt_password, convert_password
 from src.exceptions.encryption_exception import EncryptionException
 
+
 class TestPassword(unittest.TestCase):
     def setUp(self):
         self.password = Password("test_password")

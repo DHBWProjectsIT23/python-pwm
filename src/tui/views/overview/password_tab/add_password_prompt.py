@@ -19,7 +19,7 @@ CONTROL_STR = " - ↩ Continue - "
 
 
 def show_add_password_prompt(
-        parent: Panel, password_information: PasswordInformation
+    parent: Panel, password_information: PasswordInformation
 ) -> Optional[str]:
     choice, prompt = show_select_generated_prompt(parent, TITLE)
     if choice == 1:
@@ -32,9 +32,9 @@ def show_add_password_prompt(
 
 
 def show_with_generated(
-        prompt: Window,
-        password_information: PasswordInformation,
-        title: str = "",
+    prompt: Window,
+    password_information: PasswordInformation,
+    title: str = "",
 ) -> Optional[str]:
     return show_password_input(
         prompt, password_information, generate_secure_password(), title
@@ -42,10 +42,10 @@ def show_with_generated(
 
 
 def show_password_input(
-        prompt: Window,
-        password_information: PasswordInformation | None,
-        generated_password: str = "",
-        title: str = "",
+    prompt: Window,
+    password_information: PasswordInformation | None,
+    generated_password: str = "",
+    title: str = "",
 ) -> Optional[str]:
     prompt().clear()
     prompt().box()
@@ -55,13 +55,9 @@ def show_password_input(
     prompt().addstr(5, 2, "Confirm Password:", curses.A_UNDERLINE)
     prompt.write_bottom_center_text(CONTROL_STR, (-1, 0))
 
-    password_textbox, password_window = create_textbox(generated_password,
-                                                       3,
-                                                       prompt)
+    password_textbox, password_window = create_textbox(generated_password, 3, prompt)
 
-    confirm_textbox, confirm_window = create_textbox(generated_password,
-                                                     5,
-                                                     prompt)
+    confirm_textbox, confirm_window = create_textbox(generated_password, 5, prompt)
 
     while True:
         _refresh_all(prompt, confirm_window, password_window)
@@ -104,10 +100,7 @@ def show_password_input(
         return password
 
 
-def _validate_inputs(confirm: str,
-                     password: str,
-                     prompt: Window,
-                     title: str) -> bool:
+def _validate_inputs(confirm: str, password: str, prompt: Window, title: str) -> bool:
     if len(confirm) == 0:
         write_error("Field can't be empty", prompt, title)
         return False
@@ -123,7 +116,7 @@ def _refresh_all(*args: Window) -> None:
 
 
 def create_textbox(
-        generated_password: str, position: int, prompt: Window
+    generated_password: str, position: int, prompt: Window
 ) -> tuple[Textbox, Window]:
     password_window = Window(prompt().derwin(1, 32, position, 20))
     password_window().addstr(0, 0, generated_password)

@@ -9,8 +9,7 @@ SELECT_CONTROL_STR = """
 """.strip()
 
 
-def show_select_generated_prompt(parent: Panel, title: str) -> tuple[
-    int, Window]:
+def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window]:
     prompt = Prompt.create_prompt_with_padding(parent)
     _select_generate(prompt)
     _deselect_own(prompt)
@@ -50,9 +49,7 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[
 
 
 def _select_generate(prompt: Window) -> None:
-    prompt.write_centered_text(" Generate Secure Password ",
-                               (-2, 0),
-                               curses.A_REVERSE)
+    prompt.write_centered_text(" Generate Secure Password ", (-2, 0), curses.A_REVERSE)
 
 
 def _select_own(prompt: Window) -> None:

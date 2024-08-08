@@ -20,10 +20,10 @@ def generate_secure_password() -> str:
     while True:
         password = "".join(secrets.choice(alphabet) for _ in range(12))
         if (
-                any(c.islower() for c in password)
-                and any(c.isupper() for c in password)
-                and sum(c.isdigit() for c in password) >= 3
-                and any(c in string.punctuation for c in password)
+            any(c.islower() for c in password)
+            and any(c.isupper() for c in password)
+            and sum(c.isdigit() for c in password) >= 3
+            and any(c in string.punctuation for c in password)
         ):
             break
 
@@ -45,7 +45,7 @@ def validate_password_safety(pw: str) -> int:
     special_chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
     if len(pw) > 16:
         safetypoints += 1
-    
+
     if any(char.islower() for char in pw):
         safetypoints += 1
 

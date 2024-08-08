@@ -10,10 +10,7 @@ from src.tui.views.overview.components.prompt import Prompt
 
 
 class SearchPrompt(Prompt):
-    def __init__(self,
-                 parent: Panel,
-                 user: User,
-                 cursor: sqlite3.Cursor) -> None:
+    def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
         super().__init__(parent, user, cursor)
         self.title = "Search"
 

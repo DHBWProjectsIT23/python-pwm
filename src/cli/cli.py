@@ -9,8 +9,7 @@ from src.model.password_information import PasswordInformation
 from src.model.user import User
 
 
-async def run_cli(connection: sqlite3.Connection,
-                  cursor: sqlite3.Cursor) -> None:
+async def run_cli(connection: sqlite3.Connection, cursor: sqlite3.Cursor) -> None:
     """
     Executes the CLI operations for managing users and passwords.
 
@@ -39,8 +38,7 @@ async def run_cli(connection: sqlite3.Connection,
     pws = retrieve_password_information(cursor, user)
     print(len(pws))
     pws = list(
-        filter(PasswordInformation.create_password_filter("www.github.com"),
-               pws)
+        filter(PasswordInformation.create_password_filter("www.github.com"), pws)
     )
     print(len(pws))
 

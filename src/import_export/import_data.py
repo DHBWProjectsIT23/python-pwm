@@ -83,11 +83,11 @@ def check_invalid_keys(data_list: list[PasswordInformationDict]) -> None:
         are invalid.
     """
     allowed_keys = (
-            PasswordInformationDict.__required_keys__
-            | PasswordInformationDict.__optional_keys__
+        PasswordInformationDict.__required_keys__
+        | PasswordInformationDict.__optional_keys__
     )
     allowed_password_keys = (
-            PasswordDict.__required_keys__ | PasswordDict.__optional_keys__
+        PasswordDict.__required_keys__ | PasswordDict.__optional_keys__
     )
 
     for i, item in enumerate(data_list):

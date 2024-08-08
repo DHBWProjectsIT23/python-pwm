@@ -1,9 +1,12 @@
 import os
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
 from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher
+from cryptography.hazmat.primitives.ciphers import algorithms
+from cryptography.hazmat.primitives.ciphers import modes
 
 
-def encrypt_aes(data: str, key: bytes) -> bytes:
+def encrypt_aes(data: bytes, key: bytes) -> bytes:
     """
     Encrypts the data using the provided key.
 
@@ -13,7 +16,7 @@ def encrypt_aes(data: str, key: bytes) -> bytes:
     """
     iv = os.urandom(16)
     padder: padding.PaddingContext = padding.PKCS7(128).padder()
-    padded_message: bytes = padder.update(data.encode()) + padder.finalize()
+    padded_message: bytes = padder.update(data) + padder.finalize()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(padded_message) + encryptor.finalize()
