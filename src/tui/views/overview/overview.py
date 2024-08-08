@@ -1,8 +1,9 @@
-import _curses
 import curses
 import sqlite3
 import sys
 from typing import Optional
+
+import _curses
 
 from src.model.user import User
 from src.tui.keys import Keys

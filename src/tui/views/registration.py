@@ -4,10 +4,10 @@ from curses.textpad import Textbox
 
 from src.controller.user import insert_user
 from src.controller.user import validate_unique_user
+from src.crypto.password_util import validate_password_safety
 from src.model.user import User
 from src.tui.input_validator import InputValidator
 from src.tui.popup import create_centered_popup
-from src.crypto.password_util import validate_password_safety
 from src.tui.util import print_centered_logo
 from src.tui.window import Window
 

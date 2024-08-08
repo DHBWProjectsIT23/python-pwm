@@ -42,7 +42,11 @@ def validate_password_safety(pw: str) -> int:
              where 1 is unsafe and 5 is very safe.
     """
     safetypoints = 0
-    special_chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    special_chars = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
+
+    if len(pw) < 6:
+        return 0
+
     if len(pw) > 16:
         safetypoints += 1
 

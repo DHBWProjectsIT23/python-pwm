@@ -2,6 +2,7 @@ import os
 from typing import Optional
 
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+from cryptography.exceptions import InvalidKey
 
 
 def scrypt_derive(pw: bytes, salt: Optional[bytes] = None) -> tuple[bytes, bytes]:
@@ -30,5 +31,5 @@ def scrypt_verify(pw: bytes, derived_key: bytes, salt: bytes) -> bool:
     try:
         kdf.verify(pw, derived_key)
         return True
-    except:
+    except InvalidKey:
         return False

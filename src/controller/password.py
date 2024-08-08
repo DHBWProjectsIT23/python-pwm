@@ -1,9 +1,9 @@
-# TODO: Docstring
 import pickle
 import sqlite3
 from typing import Optional
 
-from src.crypto.placeholder import dummy_decrypt_fernet
+from src.crypto.fernet import decrypt_fernet
+from src.crypto.key_derivation import scrypt_derive
 from src.model.metadata import EncryptedMetadata
 from src.model.password import Password
 from src.model.password_information import PasswordInformation
@@ -120,19 +120,20 @@ def validate_unique_password(
     Returns:
         bool: True if the password is unique, False otherwise.
     """
-    # TODO: Encrypt/Decrypt same as in PWInfo
     cursor.execute(
         """
-        SELECT description, username FROM passwords
+        SELECT description, username, salt FROM passwords
         WHERE user = ?
         """,
         (user.username,),
     )
-    results: list[tuple[bytes, bytes]] = cursor.fetchall()
+    results: list[tuple[bytes, bytes, bytes]] = cursor.fetchall()
     for result in results:
-        desc: bytes = dummy_decrypt_fernet(result[0])
+        salt: bytes = pickle.loads(result[0])
+        key, _ = scrypt_derive(user.get_clear_password().encode(), salt)
+        desc: bytes = decrypt_fernet(result[0], key)
         uname: Optional[bytes] = pickle.loads(result[1])
-        uname = dummy_decrypt_fernet(uname) if uname else None
+        uname = decrypt_fernet(uname, key) if uname else None
 
         username_bytes = username.encode() if username is not None else None
 
