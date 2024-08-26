@@ -1,3 +1,7 @@
+"""
+Module for handling the update password prompt in a terminal user interface.
+
+"""
 import curses
 from curses.textpad import Textbox
 from typing import Optional
@@ -15,6 +19,35 @@ CONTROL_STR = " - ↩ Continue - "
 
 
 def show_update_password_prompt(parent: Panel, user: User) -> Optional[str]:
+    """
+    Displays a prompt for updating the user's password.
+
+    This function presents a terminal-based interface where the user can 
+    enter and confirm a new password. 
+    It performs validations to ensure that the new password is not 
+    empty, matches the confirmation password, 
+    is different from the old password, and meets safety standards.
+
+    Args:
+        parent (Panel): The parent panel for the prompt, 
+        which provides the context and display area.
+        user (User): The current user object, used to access the existing password for validation.
+
+    Returns:
+        Optional[str]: The updated password if successful, 
+        or None if the operation is cancelled or fails 
+        due to validation errors.
+
+    Exceptions:
+        ExitFromTextBoxException: Raised if the user exits the text box input.
+
+    Process:
+        1. Display prompt for the new and confirmed passwords.
+        2. Validate that neither field is empty.
+        3. Ensure that the passwords match.
+        4. Confirm that the new password is different from the current password.
+        5. Check that the new password meets safety requirements.
+    """
     prompt = Prompt.create_prompt_with_padding(parent)
     title = "Update Password"
     prompt().clear()

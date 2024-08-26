@@ -1,3 +1,6 @@
+"""
+Module for handling the user tab in a terminal user interface.
+"""
 import curses
 import sqlite3
 import sys
@@ -27,6 +30,21 @@ CONTROLS: dict["str", "str"] = {
 
 
 class UserTab(TabInterface):
+    """
+    Class representing the user tab interface in a terminal user interface.
+
+    This class manages user-specific actions including updating the 
+    username and password, deleting the 
+    user, and displaying user information. 
+    It extends the `TabInterface` class to provide a user-focused 
+    tab in the interface.
+
+    Attributes:
+        user (User): The current user.
+        connection (sqlite3.Connection): The database connection.
+        cursor (sqlite3.Cursor): The database cursor.
+        controls (dict[str, str]): A dictionary of control options for the user tab.
+    """
     def __init__(
         self,
         window_size: tuple[int, int],
@@ -34,6 +52,16 @@ class UserTab(TabInterface):
         user: User,
         connection: sqlite3.Connection,
     ):
+        """
+        Initializes the UserTab with the provided window size, 
+        starting y-coordinate, user, and database connection.
+
+        Args:
+            window_size (tuple[int, int]): The size of the window for the tab.
+            y_start (int): The starting y-coordinate for the tab.
+            user (User): The current user.
+            connection (sqlite3.Connection): The database connection.
+        """
         super().__init__(window_size, y_start, CONTROLS)
         self.tab().box()
 
@@ -45,6 +73,12 @@ class UserTab(TabInterface):
         self.refresh()
 
     async def process_input(self, input_key: int) -> None:
+        """
+        Processes user input for handling different actions in the user tab.
+
+        Args:
+            input_key (int): The key input from the user.
+        """
         match input_key:
             case Keys.D | Keys.D_LOWER:
                 self._handle_delete_user_input()
@@ -57,6 +91,15 @@ class UserTab(TabInterface):
                 self.refresh()
 
     def _handle_update_uname_input(self) -> None:
+        """
+        Handles the process of updating the user's username.
+
+        Prompts the user to enter a new username, validates it, 
+        updates the username in the database, 
+        and refreshes the tab. If the new username is valid, 
+        it updates all related password information 
+        to reflect the new username.
+        """
         new_username = UpdateUsernamePrompt(self.tab, self.cursor, self.user).run()
         if new_username is None:
             return
@@ -80,6 +123,13 @@ class UserTab(TabInterface):
         self.refresh()
 
     def _handle_update_pw_input(self) -> None:
+        """
+        Handles the process of updating the user's password.
+
+        Prompts the user to enter and confirm a new password, validates it, updates the password in 
+        the database, and refreshes the tab. If the new password is valid, it updates all related 
+        password information to reflect the new password.
+        """
         new_password_str = show_update_password_prompt(self.tab, self.user)
         if new_password_str is None:
             return
@@ -103,6 +153,12 @@ class UserTab(TabInterface):
         self.connection.commit()
 
     def _handle_delete_user_input(self) -> None:
+        """
+        Handles the process of deleting the user.
+
+        Prompts the user for confirmation and, if confirmed, 
+        deletes the user and exits the application.
+        """
         deleted = DeleteUserPrompt(self.tab, self.user, self.cursor).run()
         if deleted:
             self.connection.commit()
@@ -110,6 +166,12 @@ class UserTab(TabInterface):
         self.refresh()
 
     def _display_user_info(self) -> None:
+        """
+        Displays the current user's information in a centered popup window.
+
+        This includes the username and the number of stored passwords. 
+        Handles errors if username retrieval fails.
+        """
         height = percentage_of(70, self.tab.get_size()[0])
         width = percentage_of(70, self.tab.get_size()[1])
 
@@ -140,6 +202,12 @@ class UserTab(TabInterface):
         info_display().refresh()
 
     def refresh(self) -> None:
+        """
+        Refreshes the user tab display.
+
+        Updates the user information and control options, 
+        and refreshes the tab to reflect the current state.
+        """
         self._display_user_info()
         self._display_controls()
         self.tab().refresh()

@@ -1,3 +1,7 @@
+"""
+Provides utility functions and initialization routines for the terminal user interface (TUI),
+including TUI setup, color initialization, text formatting, and window size validation.
+"""
 import curses
 import time
 from typing import TYPE_CHECKING

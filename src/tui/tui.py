@@ -1,3 +1,8 @@
+"""
+Sets up and runs the Text User Interface (TUI) for the application, managing 
+database connections and asynchronous TUI operations to handle user interactions 
+such as start, login, and registration screens.
+"""
 import asyncio
 import sqlite3
 from typing import TYPE_CHECKING

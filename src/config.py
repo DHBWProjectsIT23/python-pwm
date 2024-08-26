@@ -1,3 +1,14 @@
+"""
+Provides utility functions for managing database paths and other constants.
+
+Main Functions:
+    db_path() -> str: 
+        Retrieves the database path from an environment variable or generates a default.
+
+Constants:
+    MIN_SIZE: tuple[int, int] = (35, 80)
+        Minimum size configuration used elsewhere in the application.
+"""
 import os
 
 from src.crypto.hashing import hash_sha256

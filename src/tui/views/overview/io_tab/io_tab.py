@@ -1,3 +1,7 @@
+"""
+Module for handling the I/O tab functionality in a terminal user interface.
+Includes the IoTab class for managing import/export operations and menu controls.
+"""
 import sqlite3
 
 from src.model.user import User
@@ -15,6 +19,17 @@ CONTROLS: dict["str", "str"] = {
 
 
 class IoTab(TabInterface):
+    """
+    Manages the import/export tab functionality in the terminal user interface.
+    Handles user interactions related to importing and exporting passwords,
+    and displays control instructions.
+
+    Args:
+        window_size (tuple[int, int]): Size of the window (height, width).
+        y_start (int): Vertical start position of the tab.
+        user (User): The current User object.
+        connection (sqlite3.Connection): SQLite database connection.
+    """
     def __init__(
         self,
         window_size: tuple[int, int],
@@ -22,6 +37,15 @@ class IoTab(TabInterface):
         user: User,
         connection: sqlite3.Connection,
     ) -> None:
+        """
+        Initializes the IoTab with the given parameters and sets up the menu.
+
+        Args:
+            window_size (tuple[int, int]): Size of the window (height, width).
+            y_start (int): Vertical start position of the tab.
+            user (User): The current User object.
+            connection (sqlite3.Connection): SQLite database connection.
+        """
         super().__init__(window_size, y_start, CONTROLS)
         self.tab().box()
         self.menu = ImportExportMenu(self.tab)
@@ -31,6 +55,13 @@ class IoTab(TabInterface):
         self.controls = CONTROLS
 
     async def process_input(self, input_key: int) -> None:
+        """
+        Processes user input for the IoTab. Handles navigation and selection
+        based on the key pressed.
+
+        Args:
+            input_key (int): The key code of the user input.
+        """
         match input_key:
             case Keys.UP:
                 self.menu.up_action()
@@ -43,6 +74,10 @@ class IoTab(TabInterface):
                 self.refresh()
 
     def _handle_enter_input(self) -> None:
+        """
+        Handles the Enter key input based on the user's menu choice.
+        Triggers import or export operations or raises an error for invalid choices.
+        """
         if self.menu.get_choice() == 1:
             imported_passwords = ImportPrompt(self.tab, self.user, self.cursor).run()
             if len(imported_passwords) > 0:
@@ -57,6 +92,10 @@ class IoTab(TabInterface):
         self.refresh()
 
     def refresh(self) -> None:
+        """
+        Refreshes the IoTab by updating the menu and control instructions,
+        and then refreshing the tab display.
+        """
         self.menu.refresh()
         self._display_controls()
         self.tab().refresh()

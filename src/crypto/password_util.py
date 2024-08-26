@@ -1,3 +1,6 @@
+"""
+Provides functions for generating secure passwords and evaluating password safety.
+"""
 import secrets
 import string
 

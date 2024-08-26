@@ -1,3 +1,7 @@
+"""
+Provides functions to export `PasswordInformation` objects to a JSON file, 
+including conversion to dictionaries and file writing with optional timestamp-based filenames.
+"""
 import json
 from datetime import datetime
 from typing import Optional

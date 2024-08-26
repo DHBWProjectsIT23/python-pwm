@@ -1,6 +1,8 @@
+"""
+Provides database operations for managing user authentication and account data.
+"""
 import sqlite3
 from typing import Optional
-
 from src.crypto.hashing import hash_sha256
 from src.model.password import Password
 from src.model.user import User
@@ -136,7 +138,8 @@ def update_user(
     Args:
         cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL commands.
         user (User): The `User` object with updated information.
-        old_username (Optional[bytes]): The previous username of the user, if it needs to be updated.
+        old_username (Optional[bytes]): 
+        The previous username of the user, if it needs to be updated.
     """
     if old_username is None:
         old_username = user.username

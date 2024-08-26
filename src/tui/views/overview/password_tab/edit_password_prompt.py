@@ -1,3 +1,9 @@
+"""
+Module for editing existing passwords in the terminal user interface.
+
+This module provides functionality for prompting the user to edit an existing password, including
+its description, username, categories, and note.
+"""
 import sqlite3
 from typing import Optional
 
@@ -16,6 +22,12 @@ SINGLELINE_CTR_STR = "- ↩ Continue -"
 
 
 class PasswordEditPrompt(PasswordCreationPrompt):
+    """
+    Class for the user prompt to edit an existing password.
+
+    This class allows the user to edit details of an existing password, such as its description,
+    username, categories, and note. It ensures that any updates are validated and saved correctly.
+    """
     def __init__(
         self,
         parent: Panel,
@@ -23,10 +35,31 @@ class PasswordEditPrompt(PasswordCreationPrompt):
         password_information: PasswordInformation,
         cursor: sqlite3.Cursor,
     ):
+        """
+        Initializes the PasswordEditPrompt class.
+
+        Args:
+            parent (Panel): The parent panel for the prompt.
+            user (User): The current user.
+            password_information (PasswordInformation): 
+            The existing password information to be edited.
+            cursor (sqlite3.Cursor): The database cursor for database operations.
+        """
         super().__init__(parent, user, cursor)
         self.password_information = password_information
 
     def run(self) -> Optional[PasswordInformation]:
+        """
+        Executes the prompt to edit an existing password.
+
+        This method displays prompts to the user for editing the password's description, username,
+        categories, and note. It ensures that the new details are valid and unique before updating
+        the password information.
+
+        Returns:
+            Optional[PasswordInformation]: The updated password information if the operation was
+            successful, otherwise None.
+        """
 
         self.prompt = self.create_prompt_with_padding(self.parent)
         title = "Edit Password"

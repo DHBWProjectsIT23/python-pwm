@@ -1,3 +1,9 @@
+"""
+A module for managing curses panels in a curses-based application.
+
+This module defines the Panel class, which extends Window to provide functionality
+for displaying and hiding curses panels.
+"""
 from typing import TYPE_CHECKING
 
 from src.tui.window import Window

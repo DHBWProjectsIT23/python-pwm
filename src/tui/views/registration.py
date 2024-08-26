@@ -1,3 +1,7 @@
+"""
+This module handles user registration for a terminal-based application, 
+including user input validation and database insertion.
+"""
 import curses
 import sqlite3
 from curses.textpad import Textbox

@@ -1,3 +1,6 @@
+"""
+Provides functions for generating SHA-256 and SHA-1 hashes of the given data.
+"""
 import hashlib
 
 

@@ -1,3 +1,9 @@
+"""
+Provides a high-level abstraction for interacting with a curses window in a terminal user interface.
+The Window class offers methods for querying window size, 
+writing centered text, and handling various
+text display requirements.
+"""
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

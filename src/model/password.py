@@ -1,3 +1,8 @@
+"""
+Handles password encryption, decryption, and hashing using AES-256 
+and SHA-256, with functionality to mark a password as a master 
+password and serialize/deserialize password instances.
+"""
 import pickle
 from typing import Optional
 

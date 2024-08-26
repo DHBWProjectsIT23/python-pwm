@@ -1,3 +1,7 @@
+"""
+Module for handling password import functionality in a terminal user interface.
+Includes the ImportPrompt class for prompting the user to import passwords from a file.
+"""
 import curses
 import os
 import sqlite3
@@ -15,10 +19,36 @@ from src.tui.views.overview.io_tab.io_prompt import IoPrompt
 
 
 class ImportPrompt(IoPrompt):
+    """
+    A prompt for importing passwords from a file. Provides functionality to
+    enter a file path, validate and import passwords, and handle any errors that
+    occur during the import process.
+
+    Args:
+        parent (Panel): The parent Panel object where the prompt will be displayed.
+        user (User): The User object representing the current user.
+        cursor (sqlite3.Cursor): The SQLite cursor for database operations.
+    """
+
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
+        """
+        Initializes the ImportPrompt with the given parent panel, user, and database cursor.
+
+        Args:
+            parent (Panel): The parent Panel object where the prompt will be displayed.
+            user (User): The User object representing the current user.
+            cursor (sqlite3.Cursor): The SQLite cursor for database operations.
+        """
         super().__init__(parent, user, cursor, "Import Passwords")
 
     def run(self) -> list[PasswordInformation]:
+        """
+        Runs the import prompt, allowing the user to import passwords from a file.
+
+        Returns:
+            list[PasswordInformation]: A list of PasswordInformation objects representing 
+            the imported passwords. If an error occurs or the user cancels, returns an empty list.
+        """
         self.initialize()
 
         if not self._confirm():
@@ -84,6 +114,15 @@ class ImportPrompt(IoPrompt):
         return passwords
 
     def _enter_target_file(self) -> str:
+        """
+        Prompts the user to enter the file path for the passwords to import.
+
+        Returns:
+            str: The file path entered by the user.
+
+        Raises:
+            ExitFromTextBoxException: If the user exits from the textbox input.
+        """
         self._reset_prompt(self.title)
         self.prompt_window().addstr(2, 2, "Enter Filepath:", curses.A_UNDERLINE)
         self.prompt_window().addstr(
