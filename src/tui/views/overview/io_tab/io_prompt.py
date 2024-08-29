@@ -71,7 +71,6 @@ class IoPrompt(Prompt):
         Runs the prompt. This is an abstract method intended to be implemented by subclasses
         to define the specific behavior of the prompt. In this base class, it does nothing.
         """
-        pass
 
     def _confirm(self) -> bool:
         """
