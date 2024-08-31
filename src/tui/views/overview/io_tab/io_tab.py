@@ -2,7 +2,9 @@
 Module for handling the I/O tab functionality in a terminal user interface.
 Includes the IoTab class for managing import/export operations and menu controls.
 """
+
 import sqlite3
+import sys
 
 from src.model.user import User
 from src.tui.keys import Keys
@@ -30,6 +32,7 @@ class IoTab(TabInterface):
         user (User): The current User object.
         connection (sqlite3.Connection): SQLite database connection.
     """
+
     def __init__(
         self,
         window_size: tuple[int, int],
@@ -68,20 +71,23 @@ class IoTab(TabInterface):
             case Keys.DOWN:
                 self.menu.down_action()
             case Keys.ENTER:
-                self._handle_enter_input()
+                await self._handle_enter_input()
             case Keys.QUESTION_MARK:
                 ControlsPrompt(self.tab, self.controls).run()
                 self.refresh()
 
-    def _handle_enter_input(self) -> None:
+    async def _handle_enter_input(self) -> None:
         """
         Handles the Enter key input based on the user's menu choice.
         Triggers import or export operations or raises an error for invalid choices.
         """
         if self.menu.get_choice() == 1:
-            imported_passwords = ImportPrompt(self.tab, self.user, self.cursor).run()
+            imported_passwords = await ImportPrompt(
+                self.tab, self.user, self.cursor
+            ).run()
             if len(imported_passwords) > 0:
                 self.connection.commit()
+                sys.exit(0)
             else:
                 self.connection.rollback()
         elif self.menu.get_choice() == 2:

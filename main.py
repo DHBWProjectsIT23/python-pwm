@@ -5,6 +5,7 @@ This script initializes the application by setting up the necessary environment,
 registering SQLite converters and adapters, and then launching either the CLI or
 TUI (Text User Interface) based on the presence of command-line arguments.
 """
+
 import os
 import sqlite3
 import sys
@@ -25,13 +26,9 @@ from src.model.password import (
 )
 
 from src.tui import tui
-from src.cli import cli
 
 if __name__ == "__main__":
     sqlite3.register_converter("password", convert_password)
     sqlite3.register_adapter(Password, adapt_password)
     load_dotenv()
-    if len(sys.argv) > 1:
-        cli.main()
-    else:
-        wrapper(tui.main)
+    wrapper(tui.main)

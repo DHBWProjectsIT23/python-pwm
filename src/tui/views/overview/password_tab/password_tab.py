@@ -131,8 +131,6 @@ class PasswordTab(TabInterface):
         Args:
             input_key (int): The key pressed by the user.
         """
-        self.reload_passwords()
-        self.refresh()
         match input_key:
             case Keys.ENTER:
                 await show_details(self.tab, self.password_list.get_selected())
