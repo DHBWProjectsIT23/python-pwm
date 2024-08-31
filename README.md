@@ -15,3 +15,8 @@ example data.
 The Makefile contains commands for creating a venv and installing
 all necessary dependencies.
 Additionally it also contains commands for running pylint and mypy.
+
+## Resizing and Terminal Size
+The password manager resizes dynamically.
+If the window is to small, a warning will be shown. The resizing can
+feel sluggish if a lot of passwords are imported.

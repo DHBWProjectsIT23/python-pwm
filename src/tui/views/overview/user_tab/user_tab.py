@@ -6,7 +6,10 @@ import curses
 import sqlite3
 import sys
 
-from src.controller.password import retrieve_password_information
+from src.controller.password import (
+    count_password_information,
+    retrieve_password_information,
+)
 from src.controller.password import update_password_information
 from src.controller.user import update_user
 from src.crypto.hashing import hash_sha256
@@ -199,7 +202,7 @@ class UserTab(TabInterface):
         addstr(
             4,
             data_inset,
-            f"{len(retrieve_password_information(self.cursor, self.user))}",
+            f"{count_password_information(self.cursor, self.user)}",
         )
         info_display().refresh()
 

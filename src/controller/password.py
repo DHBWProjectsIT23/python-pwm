@@ -63,6 +63,27 @@ def retrieve_password_information(
     return password_informations
 
 
+def count_password_information(cursor: sqlite3.Cursor, user: User) -> int:
+    """
+    Retrieves the amount of passwords for a given user.
+
+    Args:
+        cursor (sqlite3.Cursor): The SQLite cursor object used to execute SQL queries.
+        user (User): The user whose password information is to be retrieved.
+
+    Returns:
+        int: The amount of passwords
+    """
+    cursor.execute(
+        """
+    SELECT COUNT(user) FROM passwords WHERE user = ?
+    """,
+        (user.username,),
+    )
+    result: list[tuple[int]] = cursor.fetchall()
+    return result[0][0]
+
+
 def update_password_information(
     cursor: sqlite3.Cursor, password_information: PasswordInformation
 ) -> None:
