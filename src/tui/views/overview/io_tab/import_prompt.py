@@ -32,25 +32,33 @@ class ImportPrompt(IoPrompt):
             return []
 
         self._reset_prompt(self.title)
-        self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
         passwords: list[PasswordInformation] = []
         try:
             passwords = import_json(file, self.user)
             self.prompt_window.write_centered_text(
                 "Importing passwords...", (-1, 0), curses.A_BOLD
             )
+            self.prompt_window.write_centered_text(
+                "This might take a while!",
+                attr=curses.A_ITALIC,
+            )
+            self.prompt_window().refresh()
         except ImportException as e:
             self.prompt_window.write_centered_text(
                 f"Error while importing file: {e.message}",
                 (-1, 0),
                 curses.A_BOLD | curses.color_pair(2),
             )
+            self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
+            self.prompt_window().refresh()
         except UnicodeDecodeError:
             self.prompt_window.write_centered_text(
                 "Error while reading file",
                 (-1, 0),
                 curses.A_BOLD | curses.color_pair(2),
             )
+            self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
+            self.prompt_window().refresh()
 
         for password in passwords:
             username = (
@@ -79,6 +87,8 @@ class ImportPrompt(IoPrompt):
                 (-1, 0),
                 curses.A_BOLD,
             )
+
+        self.prompt_window().refresh()
 
         self._enter_dismiss_loop()
         return passwords

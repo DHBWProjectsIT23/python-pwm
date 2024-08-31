@@ -90,6 +90,8 @@ class PasswordTab(TabInterface):
         self.list_window().refresh()
 
     async def process_input(self, input_key: int) -> None:
+        self.reload_passwords()
+        self.refresh()
         match input_key:
             case Keys.ENTER:
                 await show_details(self.tab, self.password_list.get_selected())
@@ -192,6 +194,7 @@ class PasswordTab(TabInterface):
         if deleted:
             self.connection.commit()
             self.reload_passwords()
+            self.refresh()
         else:
             self.refresh()
 

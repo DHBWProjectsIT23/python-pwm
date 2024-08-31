@@ -81,8 +81,6 @@ def show_registration(
         confirm_textbox.edit(password_validator.password)
         confirm_str = password_validator.get_password_string().strip()
 
-        window().addstr(5, 5, f"pw: {password_str} - cf: {confirm_str}")
-        window().refresh()
         if password_str != confirm_str:
             show_failed_registration(input_window, " Passwords don't match ")
             password_window().clear()
@@ -101,7 +99,7 @@ def _finalize_user(
 ) -> User:
     """
     Finalizes the user registration by inserting the new user into the database
-    and returning the User object. 
+    and returning the User object.
 
     Args:
         connection (sqlite3.Connection): The database connection used for inserting the new user.
