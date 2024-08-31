@@ -6,7 +6,6 @@ Includes the ImportPrompt class for prompting the user to import passwords from 
 import curses
 import os
 import sqlite3
-import asyncio
 
 from src.controller.password import insert_password_information
 from src.controller.password import validate_unique_password
@@ -43,7 +42,7 @@ class ImportPrompt(IoPrompt):
         """
         super().__init__(parent, user, cursor, "Import Passwords")
 
-    async def run(self) -> list[PasswordInformation]:
+    def run(self) -> list[PasswordInformation]:
         """
         Runs the import prompt, allowing the user to import passwords from a file.
 
@@ -92,17 +91,24 @@ class ImportPrompt(IoPrompt):
             self.prompt_window.write_bottom_center_text("- ↩ Continue -", (-1, 0))
             self.prompt_window().refresh()
 
-        try:
-            async with asyncio.TaskGroup() as tg:
-                for password in passwords:
-                    tg.create_task(self._safe_password(password))
-        except ValueError:
-            self.prompt_window.write_centered_text(
-                "File contains passwords that are/would be duplicate",
-                (-1, 0),
-                curses.A_BOLD | curses.color_pair(2),
+        for password in passwords:
+            username = (
+                password.details.username.decode()
+                if password.details.username
+                else None
             )
-            passwords = []
+            if not validate_unique_password(
+                self.cursor, password.details.description.decode(), username, self.user
+            ):
+                self.prompt_window.write_centered_text(
+                    "File contains passwords that are/would be duplicate",
+                    (-1, 0),
+                    curses.A_BOLD | curses.color_pair(2),
+                )
+                passwords = []
+                break
+
+            insert_password_information(self.cursor, password)
 
         if len(passwords) > 0:
             self._reset_prompt(self.title)
@@ -127,17 +133,6 @@ class ImportPrompt(IoPrompt):
 
         self._enter_dismiss_loop()
         return passwords
-
-    async def _safe_password(self, password: PasswordInformation) -> None:
-        username = (
-            password.details.username.decode() if password.details.username else None
-        )
-        if not validate_unique_password(
-            self.cursor, password.details.description.decode(), username, self.user
-        ):
-            raise ValueError("Password exists")
-
-        insert_password_information(self.cursor, password)
 
     def _enter_target_file(self) -> str:
         """

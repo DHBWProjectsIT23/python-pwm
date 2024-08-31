@@ -71,20 +71,18 @@ class IoTab(TabInterface):
             case Keys.DOWN:
                 self.menu.down_action()
             case Keys.ENTER:
-                await self._handle_enter_input()
+                self._handle_enter_input()
             case Keys.QUESTION_MARK:
                 ControlsPrompt(self.tab, self.controls).run()
                 self.refresh()
 
-    async def _handle_enter_input(self) -> None:
+    def _handle_enter_input(self) -> None:
         """
         Handles the Enter key input based on the user's menu choice.
         Triggers import or export operations or raises an error for invalid choices.
         """
         if self.menu.get_choice() == 1:
-            imported_passwords = await ImportPrompt(
-                self.tab, self.user, self.cursor
-            ).run()
+            imported_passwords = ImportPrompt(self.tab, self.user, self.cursor).run()
             if len(imported_passwords) > 0:
                 self.connection.commit()
                 sys.exit(0)
