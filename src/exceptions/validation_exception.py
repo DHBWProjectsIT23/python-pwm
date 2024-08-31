@@ -1,3 +1,6 @@
+"""
+Exception raised for validation errors, such as invalid input data or failed checks.
+"""
 class ValidationException(Exception):
     """
     Exception raised for errors related to validation operations.

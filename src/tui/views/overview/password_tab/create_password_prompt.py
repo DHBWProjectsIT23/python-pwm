@@ -1,3 +1,7 @@
+"""
+Class for handling the password creation prompt in a terminal user interface.
+Includes steps for entering a description, username, password, categories, and notes.
+"""
 import curses
 import sqlite3
 from typing import Optional
@@ -22,12 +26,43 @@ SINGLELINE_CTR_STR = "- ↩ Continue - ^E Cancel -"
 
 
 class PasswordCreationPrompt(Prompt):
+    """
+    A class to handle the creation of a new password through a terminal user interface.
+    This class provides a step-by-step prompt for users to enter details such as a description, 
+    username, password, categories, and notes.
+
+    Inherits from:
+        Prompt: The base class for all prompts in the terminal user interface.
+
+    Attributes:
+        parent (Panel): The parent panel for the prompt, which handles the user interface layout.
+        user (User): The user for whom the password is being created.
+        cursor (sqlite3.Cursor): The database cursor for performing database operations.
+        prompt (Prompt): The prompt object used to interact with the user.
+        title (str): The title of the prompt window.
+    """
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
+        """
+        Initializes the PasswordCreationPrompt with a parent panel, user, and database cursor.
+
+        Args:
+            parent (Panel): The parent panel for the prompt.
+            user (User): The current user.
+            cursor (sqlite3.Cursor): The database cursor for database operations.
+        """
         super().__init__(parent, user, cursor)
         self.prompt = Prompt.create_prompt_with_padding(parent)
         self.tile = "New Password"
 
     def run(self) -> Optional[PasswordInformation]:
+        """
+        Runs the password creation prompt, guiding the user through entering various details such as 
+        description, username, password, categories, and notes. Returns a PasswordInformation object
+        if successful, or None if the user cancels or an error occurs.
+
+        Returns:
+            Optional[PasswordInformation]: The created PasswordInformation object or None.
+        """
         choice, self.prompt = show_select_generated_prompt(
             self.parent, self.title + " 1/6"
         )
@@ -77,6 +112,20 @@ class PasswordCreationPrompt(Prompt):
     def _enter_description(
         self, initial_error: str = "", initial_description: str = "", *, title: str
     ) -> str:
+        """
+        Prompts the user to enter a description for the new password. Validates that the description 
+        is not empty and that the description/username combination is unique.
+
+        Args:
+            initial_error (str, optional): 
+            An initial error message to display. Defaults to an empty string.
+            initial_description (str, optional): 
+            An initial description to display. Defaults to an empty string.
+            title (str): The title for the prompt window.
+
+        Returns:
+            str: The entered description.
+        """
         self._reset_prompt(title)
         if len(initial_error) > 0:
             self._write_error(initial_error, title)
@@ -101,6 +150,17 @@ class PasswordCreationPrompt(Prompt):
     def _enter_username(
         self, initial_username: str = "", *, title: str = ""
     ) -> Optional[str]:
+        """
+        Prompts the user to enter a username for the new password. The username is optional.
+
+        Args:
+            initial_username (str, optional): 
+            An initial username to display. Defaults to an empty string.
+            title (str): The title for the prompt window.
+
+        Returns:
+            Optional[str]: The entered username or None if not provided.
+        """
         self._reset_prompt(title)
 
         # ! Set Username
@@ -119,6 +179,16 @@ class PasswordCreationPrompt(Prompt):
         return username if len(username) > 0 else None
 
     def _enter_password(self, password: str, *, title: str) -> Optional[Password]:
+        """
+        Prompts the user to enter and confirm a password. The password is validated and stored.
+
+        Args:
+            password (str): An initial password to display. This can be an auto-generated password.
+            title (str): The title for the prompt window.
+
+        Returns:
+            Optional[Password]: The created Password object or None if the user cancels.
+        """
         password_str = add_password_prompt.show_password_input(
             self.prompt, None, password, title
         )
@@ -130,6 +200,18 @@ class PasswordCreationPrompt(Prompt):
     def _enter_categories(
         self, initial_categories: Optional[list[str]] = None, *, title: str = ""
     ) -> list[str]:
+        """
+        Prompts the user to enter categories for the password. Categories are optional and should be 
+        separated by commas.
+
+        Args:
+            initial_categories (Optional[list[str]], optional): 
+            An initial list of categories to display. Defaults to None.
+            title (str): The title for the prompt window.
+
+        Returns:
+            list[str]: The entered categories as a list of strings.
+        """
         if initial_categories is None:
             initial_categories = []
         self._reset_prompt(title)
@@ -166,6 +248,16 @@ class PasswordCreationPrompt(Prompt):
     def _enter_note(
         self, initial_note: Optional[str] = None, *, title: str
     ) -> Optional[str]:
+        """
+        Prompts the user to enter an optional note for the password.
+
+        Args:
+            initial_note (Optional[str], optional): An initial note to display. Defaults to None.
+            title (str): The title for the prompt window.
+
+        Returns:
+            Optional[str]: The entered note or None if not provided.
+        """
         self._reset_prompt(title)
         self.prompt().addstr(
             2, 2, "Optional - Add a Note to your Password:", curses.A_UNDERLINE
@@ -182,6 +274,16 @@ class PasswordCreationPrompt(Prompt):
         return note if len(note) > 0 else None
 
     def break_out(self) -> None:
+        """
+        Exits the current prompt and restores the terminal to its default state.
+
+        This method is used to clean up and exit the prompt gracefully. 
+        It performs the following actions:
+        - Hides the cursor to ensure a clean exit.
+        - Clears the contents of the prompt window.
+        - Refreshes the prompt window to apply changes and ensure no residual content remains.
+
+        """
         curses.curs_set(False)
         self.prompt().clear()
         self.prompt().refresh()

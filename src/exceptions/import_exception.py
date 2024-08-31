@@ -1,3 +1,9 @@
+"""
+This module defines the `ImportException` class used to handle errors related to import operations.
+
+The `ImportException` class provides a custom exception for signaling issues 
+that occur during import operations, such as failures in loading or processing imported data.
+"""
 class ImportException(Exception):
     """
     Exception raised for errors related to import operations.

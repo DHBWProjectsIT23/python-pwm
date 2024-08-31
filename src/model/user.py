@@ -1,3 +1,8 @@
+"""
+Represents a user with hashed username and password, 
+supporting plaintext password retrieval, setting, and checking, 
+while ensuring the password is a master password.
+"""
 from __future__ import annotations
 
 import os

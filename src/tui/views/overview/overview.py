@@ -1,3 +1,7 @@
+"""
+Module for managing and displaying the overview screen with tabbed interface
+in a terminal-based user interface for a password manager application.
+"""
 import curses
 import sqlite3
 import sys
@@ -23,6 +27,23 @@ CONTROLS: dict[str, str] = {"⇆": "Change Tab", "q": "Quit"}
 async def show_overview(
     window: Window, connection: sqlite3.Connection, user: User, current_tab: int
 ) -> int:
+    """
+    Displays the overview screen with multiple tabs. Handles user input to navigate
+    between tabs and process tab-specific actions.
+
+    Args:
+        window (Window): The Window object used for displaying the overview screen.
+        connection (sqlite3.Connection): The database connection for interacting with the database.
+        user (User): The current user for whom the overview is displayed.
+        current_tab (int): The index of the currently selected tab.
+
+    Returns:
+        int: An integer representing the result of the operation, 
+        typically the index of the selected tab or 0 if an error occurs.
+
+    Exits:
+        sys.exit(0) if the user presses 'q' or 'Q'.
+    """
     curses.curs_set(False)
     screen_size = window.get_size()
     y_start = max(percentage_of(15, screen_size[0]), 5)
@@ -81,6 +102,17 @@ async def show_overview(
 def check_size(
     window: Window, tabbar: Optional[Tabbar], screen_size: tuple[int, int]
 ) -> Optional[int]:
+    """
+    Checks if the window size has changed and validates the size if needed.
+
+    Args:
+        window (Window): The Window object to check the size of.
+        tabbar (Optional[Tabbar]): The Tabbar object to return the selected tab index if needed.
+        screen_size (tuple[int, int]): The current size of the screen.
+
+    Returns:
+        Optional[int]: The index of the selected tab if the size has changed, otherwise None.
+    """
     if screen_size != window.get_size():
         validate_size(window)
         return tabbar.selected if tabbar else 0
@@ -93,6 +125,19 @@ def init_top_window(
     tabs: dict[str, TabInterface],
     current_tab: int,
 ) -> tuple[Window, Tabbar]:
+    """
+    Initializes the top window and the tab bar for the overview screen.
+
+    Args:
+        parent (Window): The parent Window object to derive the top window from.
+        screen_size (tuple[int, int]): The size of the screen.
+        tabs (dict[str, TabInterface]): 
+        A dictionary of tabs and their corresponding TabInterface objects.
+        current_tab (int): The index of the currently selected tab.
+
+    Returns:
+        tuple[Window, Tabbar]: A tuple containing the top Window object and the Tabbar object.
+    """
     top_window_height = max(percentage_of(15, screen_size[0]) - 1, 4)
     top_window = Window(
         parent().derwin(

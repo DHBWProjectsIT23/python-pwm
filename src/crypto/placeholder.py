@@ -1,3 +1,6 @@
+"""
+Provides Fernet-based encryption/decryption and placeholder AES encryption/decryption functions.
+"""
 from cryptography.fernet import Fernet
 
 KEY = b"NsnezLc_TNwg9XFD3roUsS-Wd9jbGKRln7-kGtCw2nM="

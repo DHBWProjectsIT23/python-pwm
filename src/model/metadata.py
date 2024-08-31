@@ -1,3 +1,7 @@
+"""
+Provides classes for managing metadata with encryption and decryption 
+functionalities.
+"""
 from __future__ import annotations
 
 import datetime
@@ -70,7 +74,8 @@ class EncryptedMetadata:
         Prevents access to the encrypted metadata.
 
         Raises:
-            TypeError: Always raises an exception since encrypted metadata should not be accessed directly.
+            TypeError: Always raises an exception since encrypted 
+            metadata should not be accessed directly.
         """
         raise TypeError("Can't access encrypted Metadata")
 
@@ -79,7 +84,8 @@ class EncryptedMetadata:
         Prevents modification of the encrypted metadata.
 
         Raises:
-            TypeError: Always raises an exception since encrypted metadata should not be modified directly.
+            TypeError: Always raises an exception since encrypted 
+            metadata should not be modified directly.
         """
         raise TypeError("Can't modify encrypted Metadata")
 

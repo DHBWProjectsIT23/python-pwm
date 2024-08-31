@@ -1,3 +1,6 @@
+"""
+Handles database connections and schema initialization.
+"""
 import sqlite3
 
 from src.config import db_path

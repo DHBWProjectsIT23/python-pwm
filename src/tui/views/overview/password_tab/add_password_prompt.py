@@ -1,3 +1,7 @@
+"""
+Module for displaying prompts for adding passwords in a terminal user interface.
+Includes functions for showing password input fields and validating passwords.
+"""
 import curses
 from curses.textpad import Textbox
 from typing import Optional
@@ -21,6 +25,18 @@ CONTROL_STR = " - ↩ Continue - "
 def show_add_password_prompt(
     parent: Panel, password_information: PasswordInformation
 ) -> Optional[str]:
+    """
+    Displays a prompt to the user to add a new password. 
+    Offers options to generate a secure password
+    or enter a password manually. Handles user choice and returns the password.
+
+    Args:
+        parent (Panel): The parent panel for the prompt.
+        password_information (PasswordInformation): An object to store the new password information.
+
+    Returns:
+        Optional[str]: The entered or generated password, or None if the operation is cancelled.
+    """
     choice, prompt = show_select_generated_prompt(parent, TITLE)
     if choice == 1:
         return show_with_generated(prompt, password_information, TITLE)
@@ -36,6 +52,18 @@ def show_with_generated(
     password_information: PasswordInformation,
     title: str = "",
 ) -> Optional[str]:
+    """
+    Displays a prompt where a secure password is generated and shown to the user. The user is then
+    prompted to confirm or enter the password. 
+
+    Args:
+        prompt (Window): The window used to display the prompt.
+        password_information (PasswordInformation): An object to store the new password information.
+        title (str, optional): The title of the prompt. Defaults to an empty string.
+
+    Returns:
+        Optional[str]: The generated password, or None if the operation is cancelled.
+    """
     return show_password_input(
         prompt, password_information, generate_secure_password(), title
     )
@@ -47,6 +75,22 @@ def show_password_input(
     generated_password: str = "",
     title: str = "",
 ) -> Optional[str]:
+    """
+    Displays a prompt for the user to enter a new password and 
+    confirm it. Validates the entered passwords
+    and checks their strength and uniqueness.
+
+    Args:
+        prompt (Window): The window used to display the prompt.
+        password_information (Optional[PasswordInformation]): 
+        An object to store the new password information.
+        generated_password (str, optional): 
+        A pre-generated password to show as default. Defaults to an empty string.
+        title (str, optional): The title of the prompt. Defaults to an empty string.
+
+    Returns:
+        Optional[str]: The entered password, or None if the operation is cancelled.
+    """
     prompt().clear()
     prompt().box()
     prompt().addstr(0, 0, title, curses.A_BOLD | curses.color_pair(3))
@@ -101,6 +145,19 @@ def show_password_input(
 
 
 def _validate_inputs(confirm: str, password: str, prompt: Window, title: str) -> bool:
+    """
+    Validates the password and confirmation password. 
+    Checks that neither is empty and that they match.
+
+    Args:
+        confirm (str): The confirmation password entered by the user.
+        password (str): The new password entered by the user.
+        prompt (Window): The window used to display the prompt.
+        title (str): The title of the prompt.
+
+    Returns:
+        bool: True if the inputs are valid, otherwise False.
+    """
     if len(confirm) == 0:
         write_error("Field can't be empty", prompt, title)
         return False
@@ -111,6 +168,13 @@ def _validate_inputs(confirm: str, password: str, prompt: Window, title: str) ->
 
 
 def _refresh_all(*args: Window) -> None:
+    """
+    Refreshes all provided windows.
+
+    Args:
+        *args (Window): The windows to refresh.
+    """
+
     for window in args:
         window().refresh()
 
@@ -118,6 +182,17 @@ def _refresh_all(*args: Window) -> None:
 def create_textbox(
     generated_password: str, position: int, prompt: Window
 ) -> tuple[Textbox, Window]:
+    """
+    Creates a textbox for password entry with optional pre-filled text.
+
+    Args:
+        generated_password (str): An optional pre-generated password to fill the textbox.
+        position (int): The vertical position of the textbox in the prompt window.
+        prompt (Window): The window used to display the prompt.
+
+    Returns:
+        tuple[Textbox, Window]: The created Textbox and its associated Window.
+    """
     password_window = Window(prompt().derwin(1, 32, position, 20))
     password_window().addstr(0, 0, generated_password)
     password_textbox = Textbox(password_window())
@@ -125,6 +200,14 @@ def create_textbox(
 
 
 def write_error(msg: str, prompt: Window, title: Optional[str] = None) -> None:
+    """
+    Displays an error message in the prompt window.
+
+    Args:
+        msg (str): The error message to display.
+        prompt (Window): The window used to display the prompt.
+        title (Optional[str], optional): The title of the prompt. Defaults to None.
+    """
     prompt().box()
     if title is not None:
         prompt().addstr(0, 0, title, curses.color_pair(3) | curses.A_BOLD)

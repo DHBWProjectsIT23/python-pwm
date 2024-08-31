@@ -1,3 +1,6 @@
+"""
+Provides AES encryption and decryption functionality.
+"""
 import os
 
 from cryptography.hazmat.primitives import padding

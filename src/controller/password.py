@@ -1,3 +1,7 @@
+"""
+Handles database operations for password management.
+"""
+
 import pickle
 import sqlite3
 from typing import Optional

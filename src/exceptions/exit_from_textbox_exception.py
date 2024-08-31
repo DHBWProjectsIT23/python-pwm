@@ -1,3 +1,10 @@
+"""
+This module defines the `ExitFromTextBoxException` class used to handle 
+errors related to exiting or handling a text box component.
+
+The `ExitFromTextBoxException` class provides a custom exception for signaling 
+issues that occur when interacting with or exiting from a text box.
+"""
 class ExitFromTextBoxException(Exception):
     """
     Exception raised when an error occurs related to exiting or handling a

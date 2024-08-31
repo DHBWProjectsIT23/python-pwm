@@ -1,3 +1,6 @@
+"""
+Defines key codes used in the application as an enumeration.
+"""
 import enum
 
 

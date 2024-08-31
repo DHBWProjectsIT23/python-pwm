@@ -1,3 +1,10 @@
+"""
+Main entry point for the application.
+
+This script initializes the application by setting up the necessary environment,
+registering SQLite converters and adapters, and then launching either the CLI or
+TUI (Text User Interface) based on the presence of command-line arguments.
+"""
 import os
 import sqlite3
 import sys

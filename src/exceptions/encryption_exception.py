@@ -1,3 +1,10 @@
+"""
+This module defines the `EncryptionException` class used 
+to handle errors related to encryption operations.
+
+The `EncryptionException` class provides a custom exception for 
+signaling issues that occur during encryption or decryption processes.
+"""
 class EncryptionException(Exception):
     """
     Exception raised for errors related to encryption operations.

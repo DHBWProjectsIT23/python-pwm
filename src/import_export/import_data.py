@@ -6,6 +6,9 @@
 #   Astroid pull request: https://github.com/pylint-dev/astroid/pull/2431
 #   Pylint Documentation:
 #       https://pylint.readthedocs.io/en/latest/user_guide/messages/error/no-member.html
+"""
+Provides functions for importing password information from JSON files and validating the data.
+"""
 import json
 
 from src.exceptions.import_exception import ImportException

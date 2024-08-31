@@ -1,3 +1,6 @@
+"""
+Provides functions for encryption and decryption using the Fernet symmetric encryption scheme.
+"""
 import base64
 
 from cryptography.fernet import Fernet
