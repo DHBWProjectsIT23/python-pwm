@@ -2,6 +2,7 @@
 Module for handling the update username prompt in a terminal user interface.
 
 """
+
 import curses
 import sqlite3
 from typing import Optional
@@ -21,16 +22,17 @@ class UpdateUsernamePrompt(Prompt):
     """
     Class for handling the prompt to update a user's username in a terminal user interface.
 
-    This class presents the user with options to confirm their password, enter a new username, 
+    This class presents the user with options to confirm their password, enter a new username,
     and validates the new username to ensure it meets all requirements.
 
     Attributes:
         title (str): The title of the prompt.
         prompt (curses.window): The window object used for displaying the prompt.
     """
+
     def __init__(self, parent: Panel, cursor: sqlite3.Cursor, user: User) -> None:
         """
-        Initializes the UpdateUsernamePrompt with the provided parent 
+        Initializes the UpdateUsernamePrompt with the provided parent
         panel, database cursor, and user.
 
         Args:
@@ -44,15 +46,15 @@ class UpdateUsernamePrompt(Prompt):
 
     def run(self) -> Optional[str]:
         """
-        Runs the prompt for updating the username. It guides the user 
-        through confirming their password 
-        and entering a new username. Validates that the new username 
-        is unique and different from the current 
+        Runs the prompt for updating the username. It guides the user
+        through confirming their password
+        and entering a new username. Validates that the new username
+        is unique and different from the current
         one.
 
         Returns:
-            Optional[str]: The new username if successfully updated, 
-            or None if the operation is cancelled 
+            Optional[str]: The new username if successfully updated,
+            or None if the operation is cancelled
             or fails.
         """
         self.break_out()
@@ -84,8 +86,8 @@ class UpdateUsernamePrompt(Prompt):
         """
         Clears the prompt and refreshes the display.
 
-        This method is called to reset the prompt and exit from the 
-        current operation, clearing any text 
+        This method is called to reset the prompt and exit from the
+        current operation, clearing any text
         and restoring the display to its previous state.
         """
         self.prompt().clear()
@@ -93,8 +95,8 @@ class UpdateUsernamePrompt(Prompt):
 
     def _enter_new_username(self) -> str:
         """
-        Prompts the user to enter a new username. 
-        Validates that the new username is different from the 
+        Prompts the user to enter a new username.
+        Validates that the new username is different from the
         current username, meets the minimum length requirement, and is unique.
 
         Returns:

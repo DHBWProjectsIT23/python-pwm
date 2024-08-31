@@ -2,6 +2,7 @@
 Module for managing and displaying the overview screen with tabbed interface
 in a terminal-based user interface for a password manager application.
 """
+
 import curses
 import sqlite3
 import sys
@@ -38,7 +39,7 @@ async def show_overview(
         current_tab (int): The index of the currently selected tab.
 
     Returns:
-        int: An integer representing the result of the operation, 
+        int: An integer representing the result of the operation,
         typically the index of the selected tab or 0 if an error occurs.
 
     Exits:
@@ -131,7 +132,7 @@ def init_top_window(
     Args:
         parent (Window): The parent Window object to derive the top window from.
         screen_size (tuple[int, int]): The size of the screen.
-        tabs (dict[str, TabInterface]): 
+        tabs (dict[str, TabInterface]):
         A dictionary of tabs and their corresponding TabInterface objects.
         current_tab (int): The index of the currently selected tab.
 

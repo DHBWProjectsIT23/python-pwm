@@ -2,6 +2,7 @@
 Handles the login screen of the terminal user interface, including user input for credentials,
 validation of login information, and display of success or error messages.
 """
+
 import curses
 import sqlite3
 from curses.textpad import Textbox

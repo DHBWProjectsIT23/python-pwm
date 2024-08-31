@@ -2,6 +2,7 @@
 Module for handling the export of passwords to a JSON file. Includes the ExportPrompt
 class which extends IoPrompt to manage the export process and user interactions.
 """
+
 import curses
 import sqlite3
 
@@ -22,6 +23,7 @@ class ExportPrompt(IoPrompt):
         user (User): The User object for the current user.
         cursor (sqlite3.Cursor): The database cursor for accessing password data.
     """
+
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
         """
         Initializes the ExportPrompt with the given parameters and sets up the prompt title.

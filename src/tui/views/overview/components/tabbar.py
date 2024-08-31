@@ -2,6 +2,7 @@
 Module for managing tab bars and individual tabs in a terminal-based application.
 Includes the Tabbar class for handling tab navigation and the Tab class for individual tabs.
 """
+
 import curses
 from curses import panel
 
@@ -16,10 +17,11 @@ class Tabbar:
 
     Args:
         parent (Window): The parent Window object where the tab bar will be displayed.
-        tabs (dict[str, TabInterface]): A dictionary mapping tab titles 
+        tabs (dict[str, TabInterface]): A dictionary mapping tab titles
         to their corresponding TabInterface objects.
         position (tuple[int, int]): The (y, x) position where the tab bar should be placed.
     """
+
     def __init__(
         self, parent: Window, tabs: dict[str, TabInterface], position: tuple[int, int]
     ) -> None:
@@ -28,7 +30,7 @@ class Tabbar:
 
         Args:
             parent (Window): The parent Window object where the tab bar will be displayed.
-            tabs (dict[str, TabInterface]): A dictionary mapping tab 
+            tabs (dict[str, TabInterface]): A dictionary mapping tab
             titles to their corresponding TabInterface objects.
             position (tuple[int, int]): The (y, x) position where the tab bar should be placed.
         """
@@ -57,7 +59,7 @@ class Tabbar:
 
     def next_tab(self) -> None:
         """
-        Switches to the next tab in the tab bar. 
+        Switches to the next tab in the tab bar.
         Wraps around to the first tab if currently on the last tab.
         """
         self.tabs[self.selected].deselect()
@@ -90,6 +92,7 @@ class Tab:
         tab_content (TabInterface): The TabInterface object associated with the tab content.
         position (int): The x-position where the tab should be placed in the tab bar.
     """
+
     def __init__(
         self, parent: Window, title: str, tab_content: TabInterface, position: int
     ) -> None:

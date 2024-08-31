@@ -4,6 +4,7 @@ Module for editing existing passwords in the terminal user interface.
 This module provides functionality for prompting the user to edit an existing password, including
 its description, username, categories, and note.
 """
+
 import sqlite3
 from typing import Optional
 
@@ -28,6 +29,7 @@ class PasswordEditPrompt(PasswordCreationPrompt):
     This class allows the user to edit details of an existing password, such as its description,
     username, categories, and note. It ensures that any updates are validated and saved correctly.
     """
+
     def __init__(
         self,
         parent: Panel,
@@ -41,7 +43,7 @@ class PasswordEditPrompt(PasswordCreationPrompt):
         Args:
             parent (Panel): The parent panel for the prompt.
             user (User): The current user.
-            password_information (PasswordInformation): 
+            password_information (PasswordInformation):
             The existing password information to be edited.
             cursor (sqlite3.Cursor): The database cursor for database operations.
         """

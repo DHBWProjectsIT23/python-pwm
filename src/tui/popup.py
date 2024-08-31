@@ -2,6 +2,7 @@
 Provides functions to create popup windows centered on or at specific locations 
 within a parent window or panel.
 """
+
 from .panel import Panel
 from .window import Window
 
@@ -16,7 +17,7 @@ def create_centered_popup(
         parent (Window | Panel): The parent window or panel to center the popup on.
         height (int): The height of the popup window.
         width (int): The width of the popup window.
-        offset (tuple[int, int], optional): Offset to apply to the 
+        offset (tuple[int, int], optional): Offset to apply to the
         centered position (y_offset, x_offset). Defaults to (0, 0).
 
     Returns:

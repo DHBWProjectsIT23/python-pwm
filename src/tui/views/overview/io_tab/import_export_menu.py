@@ -2,6 +2,7 @@
 Module for handling the import and export menu in a terminal user interface.
 Includes the ImportExportMenu class for managing menu options and user interactions.
 """
+
 import curses
 
 from src.tui.panel import Panel
@@ -11,12 +12,13 @@ from src.tui.window import Window
 
 class ImportExportMenu:
     """
-    A menu for selecting between import and export options. Displays buttons for 
+    A menu for selecting between import and export options. Displays buttons for
     importing and exporting passwords, and allows navigation between these options.
 
     Args:
         parent (Panel): The parent Panel object where the menu will be displayed.
     """
+
     def __init__(self, parent: Panel) -> None:
         """
         Initializes the ImportExportMenu with buttons for import and export options.
@@ -69,9 +71,9 @@ class ImportExportMenu:
 
     def refresh(self) -> None:
         """
-        Refreshes the menu display based on the current choice. Updates the button 
+        Refreshes the menu display based on the current choice. Updates the button
         highlights according to the selected option.
-        
+
         Raises:
             ValueError: If the choice is invalid (not 1 or 2).
         """

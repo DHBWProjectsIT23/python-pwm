@@ -1,6 +1,7 @@
 """
 Module for displaying detailed information about a password.
 """
+
 import curses
 
 from src.exceptions.encryption_exception import EncryptionException
@@ -84,11 +85,11 @@ def display_metadata(
     to the popup window. It ensures that metadata is decrypted before displaying it.
 
     Args:
-        line_amount (int): The number of lines used by the note section 
+        line_amount (int): The number of lines used by the note section
         to correctly position the metadata.
         password (PasswordInformation): The password object containing the metadata to be displayed.
         popup (Window): The popup window where the metadata will be displayed.
-    
+
     Raises:
         EncryptionException: If the password metadata is still encrypted.
     """
@@ -161,9 +162,9 @@ def display_basic_infos(
     formats and styles the information for better readability.
 
     Args:
-        password (PasswordInformation): The password object containing 
+        password (PasswordInformation): The password object containing
         the basic details to be displayed.
-        popup (Window): The popup window where the basic information 
+        popup (Window): The popup window where the basic information
         will be displayed.
         title (str): The title to be displayed at the top of the popup window.
     """

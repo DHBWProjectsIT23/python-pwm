@@ -5,6 +5,7 @@ This module includes classes to create and manage a scrollable list of passwords
 in the list represents a password and its associated details. The list supports selection,
 scrolling, and password visibility toggling.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -44,13 +45,14 @@ class PasswordList:
         selected (int): The index of the currently selected item in the list.
         items (list[ListItem]): The list of ListItem objects representing each password item.
     """
+
     def __init__(self, parent: Window, passwords: list[PasswordInformation]) -> None:
         """
         Initializes the PasswordList with a given parent window and list of passwords.
 
         Args:
             parent (Window): The parent window where the password list will be displayed.
-            passwords (list[PasswordInformation]): 
+            passwords (list[PasswordInformation]):
             The list of PasswordInformation objects to display.
         """
         parent_beg = parent().getbegyx()
@@ -226,7 +228,7 @@ class PasswordList:
             parent_max_x (int): The maximum width of the parent window.
 
         Returns:
-            tuple[int, int, int, int]: 
+            tuple[int, int, int, int]:
             The widths of the columns for description, username, password, and status.
         """
         col_1 = percentage_of(35, parent_max_x - 2)
@@ -251,6 +253,7 @@ class ListItem:
         pass_list (PasswordList): The parent PasswordList object managing this item.
         showing_pass (bool): Indicates whether the password is currently visible or masked.
     """
+
     def __init__(
         self,
         password: PasswordInformation,
@@ -264,7 +267,7 @@ class ListItem:
         Args:
             password (PasswordInformation): The password information for this item.
             position (int): The position of this item in the pad.
-            column_width (tuple[int, int, int, int]): 
+            column_width (tuple[int, int, int, int]):
             The widths of the columns for displaying details.
             parent_list (PasswordList): The parent PasswordList object managing this item.
         """

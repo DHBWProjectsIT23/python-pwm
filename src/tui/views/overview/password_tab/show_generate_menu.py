@@ -7,6 +7,7 @@ the user to choose between generating a secure password or
 entering their own. The prompt handles user
 input and updates the display based on the user's selection.
 """
+
 import curses
 
 from src.tui.keys import Keys
@@ -21,7 +22,7 @@ SELECT_CONTROL_STR = """
 
 def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window]:
     """
-    Displays a prompt allowing the user to select between generating a 
+    Displays a prompt allowing the user to select between generating a
     secure password or entering their own.
 
     The prompt is presented with two options: "Generate Secure Password" and "Enter Own Password".
@@ -34,7 +35,7 @@ def show_select_generated_prompt(parent: Panel, title: str) -> tuple[int, Window
 
     Returns:
         tuple[int, Window]: A tuple containing:
-            - An integer representing the user's choice 
+            - An integer representing the user's choice
             (1 for generating a secure password, 2 for entering own).
             - The Window object of the prompt.
 

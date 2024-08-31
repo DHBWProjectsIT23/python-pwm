@@ -1,6 +1,8 @@
 """
 Exception raised for validation errors, such as invalid input data or failed checks.
 """
+
+
 class ValidationException(Exception):
     """
     Exception raised for errors related to validation operations.
@@ -15,6 +17,7 @@ class ValidationException(Exception):
     Attributes:
         message (str): The error message associated with the exception.
     """
+
     def __init__(self, message: str = "Validation Exception") -> None:
         """
         Initializes the ValidationException with an optional error message.

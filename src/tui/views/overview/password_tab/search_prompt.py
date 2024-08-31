@@ -1,6 +1,7 @@
 """
 Module for handling search prompts in the user interface.
 """
+
 import curses
 import sqlite3
 from typing import Optional
@@ -22,6 +23,7 @@ class SearchPrompt(Prompt):
     Attributes:
         title (str): The title of the search prompt.
     """
+
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor) -> None:
         """
         Initializes the SearchPrompt with the given parent panel, user, and database cursor.
@@ -43,7 +45,7 @@ class SearchPrompt(Prompt):
         or `None` if the user cancels the prompt.
 
         Returns:
-            Optional[str]: 
+            Optional[str]:
             The search term entered by the user, or `None` if the prompt is cancelled.
         """
         self._reset_prompt(self.title)

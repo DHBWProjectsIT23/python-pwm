@@ -4,6 +4,7 @@ Module for displaying a popup that shows the history of recent passwords.
 This module provides functionality to display a popup window showing the last 10 passwords
 for a given password information object.
 """
+
 import curses
 
 from src.model.password_information import PasswordInformation
@@ -20,16 +21,17 @@ class HistoryPopup(SimplePrompt):
     to display these passwords and handle user dismissal of the popup.
 
     Attributes:
-        password (PasswordInformation): 
+        password (PasswordInformation):
         The password information object whose history is to be displayed.
     """
+
     def __init__(self, parent: Panel, password: PasswordInformation):
         """
         Initializes the HistoryPopup class.
 
         Args:
             parent (Panel): The parent panel where the popup will be displayed.
-            password (PasswordInformation): 
+            password (PasswordInformation):
             The password information object containing the password history.
         """
         self.password = password

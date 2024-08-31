@@ -3,6 +3,7 @@ Module for displaying a prompt with control instructions in a terminal-based
 user interface. The `ControlsPrompt` class inherits from `SimplePrompt` and
 is used to display key-value pairs representing control instructions.
 """
+
 import curses
 
 from src.tui.panel import Panel
@@ -22,6 +23,7 @@ class ControlsPrompt(SimplePrompt):
         controls (dict[str, str]): A dictionary where keys are control keys and values
                                    are descriptions of those controls.
     """
+
     def __init__(self, parent: Panel, controls: dict[str, str]):
         """
         Initializes the ControlsPrompt with the parent panel and control instructions.

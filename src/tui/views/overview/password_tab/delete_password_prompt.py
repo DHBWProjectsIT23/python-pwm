@@ -2,6 +2,7 @@
 Class for handling the password deletion prompt in a terminal user interface.
 Prompts the user to confirm and delete a specific password.
 """
+
 import curses
 import sqlite3
 
@@ -20,6 +21,7 @@ class DeletePasswordPrompt(Prompt):
     This class displays a prompt where the user is asked to confirm the deletion of a password.
     Once confirmed, the password is removed from the database.
     """
+
     def __init__(
         self,
         parent: Panel,

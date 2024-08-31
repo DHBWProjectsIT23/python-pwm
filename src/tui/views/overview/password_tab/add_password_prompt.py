@@ -2,6 +2,7 @@
 Module for displaying prompts for adding passwords in a terminal user interface.
 Includes functions for showing password input fields and validating passwords.
 """
+
 import curses
 from curses.textpad import Textbox
 from typing import Optional
@@ -26,7 +27,7 @@ def show_add_password_prompt(
     parent: Panel, password_information: PasswordInformation
 ) -> Optional[str]:
     """
-    Displays a prompt to the user to add a new password. 
+    Displays a prompt to the user to add a new password.
     Offers options to generate a secure password
     or enter a password manually. Handles user choice and returns the password.
 
@@ -54,7 +55,7 @@ def show_with_generated(
 ) -> Optional[str]:
     """
     Displays a prompt where a secure password is generated and shown to the user. The user is then
-    prompted to confirm or enter the password. 
+    prompted to confirm or enter the password.
 
     Args:
         prompt (Window): The window used to display the prompt.
@@ -76,15 +77,15 @@ def show_password_input(
     title: str = "",
 ) -> Optional[str]:
     """
-    Displays a prompt for the user to enter a new password and 
+    Displays a prompt for the user to enter a new password and
     confirm it. Validates the entered passwords
     and checks their strength and uniqueness.
 
     Args:
         prompt (Window): The window used to display the prompt.
-        password_information (Optional[PasswordInformation]): 
+        password_information (Optional[PasswordInformation]):
         An object to store the new password information.
-        generated_password (str, optional): 
+        generated_password (str, optional):
         A pre-generated password to show as default. Defaults to an empty string.
         title (str, optional): The title of the prompt. Defaults to an empty string.
 
@@ -146,7 +147,7 @@ def show_password_input(
 
 def _validate_inputs(confirm: str, password: str, prompt: Window, title: str) -> bool:
     """
-    Validates the password and confirmation password. 
+    Validates the password and confirmation password.
     Checks that neither is empty and that they match.
 
     Args:

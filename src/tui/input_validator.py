@@ -4,6 +4,7 @@ A module for validating and processing user input, particularly in the context o
 This module defines the InputValidator class, which includes methods for handling password input,
 processing special keys, and managing text input with options for exiting and ignoring spaces.
 """
+
 import curses
 import sys
 
@@ -37,7 +38,7 @@ class InputValidator:
 
         Handles:
             - Enter: Returns the bell code.
-            - Backspace: Removes the last character 
+            - Backspace: Removes the last character
             from the password and returns the backspace code.
             - Space: Returns null.
             - Printable characters: Adds the character to the password and returns the star code.
@@ -73,7 +74,7 @@ class InputValidator:
         Handles:
             - Ctrl+E: Raises an ExitFromTextBoxException.
             - Enter: Returns the bell code.
-            - Backspace: Removes the last character from the 
+            - Backspace: Removes the last character from the
             password and returns the backspace code.
             - Space: Returns null.
             - Printable characters: Adds the character to the password and returns the star code.
@@ -116,7 +117,7 @@ class InputValidator:
 
     @staticmethod
     def no_spaces(ch: int) -> int:
-        """"
+        """ "
         Processes input to ignore spaces and handle specific key codes.
 
         Args:

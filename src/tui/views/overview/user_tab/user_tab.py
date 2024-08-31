@@ -1,6 +1,7 @@
 """
 Module for handling the user tab in a terminal user interface.
 """
+
 import curses
 import sqlite3
 import sys
@@ -33,10 +34,10 @@ class UserTab(TabInterface):
     """
     Class representing the user tab interface in a terminal user interface.
 
-    This class manages user-specific actions including updating the 
-    username and password, deleting the 
-    user, and displaying user information. 
-    It extends the `TabInterface` class to provide a user-focused 
+    This class manages user-specific actions including updating the
+    username and password, deleting the
+    user, and displaying user information.
+    It extends the `TabInterface` class to provide a user-focused
     tab in the interface.
 
     Attributes:
@@ -45,6 +46,7 @@ class UserTab(TabInterface):
         cursor (sqlite3.Cursor): The database cursor.
         controls (dict[str, str]): A dictionary of control options for the user tab.
     """
+
     def __init__(
         self,
         window_size: tuple[int, int],
@@ -53,7 +55,7 @@ class UserTab(TabInterface):
         connection: sqlite3.Connection,
     ):
         """
-        Initializes the UserTab with the provided window size, 
+        Initializes the UserTab with the provided window size,
         starting y-coordinate, user, and database connection.
 
         Args:
@@ -94,10 +96,10 @@ class UserTab(TabInterface):
         """
         Handles the process of updating the user's username.
 
-        Prompts the user to enter a new username, validates it, 
-        updates the username in the database, 
-        and refreshes the tab. If the new username is valid, 
-        it updates all related password information 
+        Prompts the user to enter a new username, validates it,
+        updates the username in the database,
+        and refreshes the tab. If the new username is valid,
+        it updates all related password information
         to reflect the new username.
         """
         new_username = UpdateUsernamePrompt(self.tab, self.cursor, self.user).run()
@@ -126,8 +128,8 @@ class UserTab(TabInterface):
         """
         Handles the process of updating the user's password.
 
-        Prompts the user to enter and confirm a new password, validates it, updates the password in 
-        the database, and refreshes the tab. If the new password is valid, it updates all related 
+        Prompts the user to enter and confirm a new password, validates it, updates the password in
+        the database, and refreshes the tab. If the new password is valid, it updates all related
         password information to reflect the new password.
         """
         new_password_str = show_update_password_prompt(self.tab, self.user)
@@ -156,7 +158,7 @@ class UserTab(TabInterface):
         """
         Handles the process of deleting the user.
 
-        Prompts the user for confirmation and, if confirmed, 
+        Prompts the user for confirmation and, if confirmed,
         deletes the user and exits the application.
         """
         deleted = DeleteUserPrompt(self.tab, self.user, self.cursor).run()
@@ -169,7 +171,7 @@ class UserTab(TabInterface):
         """
         Displays the current user's information in a centered popup window.
 
-        This includes the username and the number of stored passwords. 
+        This includes the username and the number of stored passwords.
         Handles errors if username retrieval fails.
         """
         height = percentage_of(70, self.tab.get_size()[0])
@@ -205,7 +207,7 @@ class UserTab(TabInterface):
         """
         Refreshes the user tab display.
 
-        Updates the user information and control options, 
+        Updates the user information and control options,
         and refreshes the tab to reflect the current state.
         """
         self._display_user_info()

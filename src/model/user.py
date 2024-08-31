@@ -3,6 +3,7 @@ Represents a user with hashed username and password,
 supporting plaintext password retrieval, setting, and checking, 
 while ensuring the password is a master password.
 """
+
 from __future__ import annotations
 
 import os
@@ -23,6 +24,7 @@ class User:
         _clear_password (Optional[str]): The plaintext password of the user, if set.
         _clear_username (Optional[str]): The plaintext username of the user, if set.
     """
+
     def __init__(
         self,
         hashed_username: bytes,

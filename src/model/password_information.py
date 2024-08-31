@@ -3,6 +3,7 @@ Manages password-related information, including encryption and
 decryption of password details, handling multiple passwords, 
 and supporting metadata encryption.
 """
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -102,7 +103,7 @@ class PasswordInformation:
 
         Raises:
             EncryptionException: If data is encrypted, adding a category is not allowed.
-            ValueError: If the maximum number of categories is 
+            ValueError: If the maximum number of categories is
             reached or if the category already exists.
         """
         if self.data_is_encrypted:
@@ -123,7 +124,7 @@ class PasswordInformation:
 
         Raises:
             EncryptionException: If data is encrypted, adding categories is not allowed.
-            ValueError: If the total number of categories exceeds 
+            ValueError: If the total number of categories exceeds
             the limit or if any category already exists.
         """
         if self.data_is_encrypted:
@@ -172,7 +173,7 @@ class PasswordInformation:
         Decrypts the data using the provided key.
 
         Args:
-            user_password (Optional[str]): The decryption key. 
+            user_password (Optional[str]): The decryption key.
             If not provided, the user's clear password is used.
 
         Raises:
@@ -197,7 +198,7 @@ class PasswordInformation:
         Encrypts the passwords using the provided key.
 
         Args:
-            user_password (Optional[str]): The encryption key. 
+            user_password (Optional[str]): The encryption key.
             If not provided, the user's clear password is used.
         """
         if user_password is None:
@@ -211,7 +212,7 @@ class PasswordInformation:
         Decrypts the passwords using the provided key.
 
         Args:
-            user_password (Optional[str]): The decryption key. 
+            user_password (Optional[str]): The decryption key.
             If not provided, the user's clear password is used.
         """
         if user_password is None:
@@ -239,7 +240,7 @@ class PasswordInformation:
         Checks if the latest password has been compromised in a known data breach.
 
         Args:
-            user_password (Optional[str]): The decryption key. 
+            user_password (Optional[str]): The decryption key.
             If not provided, the user's clear password is used.
 
         Returns:
@@ -258,7 +259,7 @@ class PasswordInformation:
         Converts the PasswordInformation instance to a dictionary.
 
         Returns:
-            PasswordInformationDict: A dictionary representation of 
+            PasswordInformationDict: A dictionary representation of
             the PasswordInformation instance.
 
         Raises:
@@ -298,7 +299,7 @@ class PasswordInformation:
             user (User): The user associated with this password information.
 
         Returns:
-            PasswordInformation: An instance of PasswordInformation 
+            PasswordInformation: An instance of PasswordInformation
             initialized with the data from the dictionary.
         """
         # Required Data
@@ -347,13 +348,13 @@ class PasswordInformation:
 
         Args:
             salt (bytes): The salt used for encryption.
-            details (tuple[bytes, Optional[bytes], 
+            details (tuple[bytes, Optional[bytes],
             list[bytes], Optional[bytes]]): The details about the password information.
             passwords (list[Password]): The list of passwords.
             user (User): The user associated with this password information.
 
         Returns:
-            PasswordInformation: An instance of PasswordInformation 
+            PasswordInformation: An instance of PasswordInformation
             initialized with the database values.
         """
         password_information = cls(user, passwords[0], "")
@@ -371,17 +372,18 @@ class PasswordInformation:
         search_string: str,
     ) -> Callable[[PasswordInformation], bool]:
         """
-        Creates a filter function to check if a PasswordInformation 
+        Creates a filter function to check if a PasswordInformation
         instance matches the search criteria.
 
         Args:
             search_string (str): The search string to filter by.
 
         Returns:
-            Callable[[PasswordInformation], bool]: 
+            Callable[[PasswordInformation], bool]:
             A function that takes a PasswordInformation instance and returns
             True if it matches the search criteria, otherwise False.
         """
+
         def filter_passwords(password: PasswordInformation) -> bool:
             if password.data_is_encrypted:
                 raise EncryptionException("Data needs to be decrypted for searching")
@@ -405,6 +407,7 @@ class PasswordDetails:
         categories (list[bytes]): A list of categories for the password.
         note (Optional[bytes]): An optional note associated with the password.
     """
+
     def __init__(
         self,
         description: bytes,

@@ -2,6 +2,7 @@
 Module for handling input-output prompts in a terminal user interface.
 Includes the IoPrompt class for managing prompts that require user input.
 """
+
 import curses
 import sqlite3
 from typing import Any
@@ -25,6 +26,7 @@ class IoPrompt(Prompt):
         cursor (sqlite3.Cursor): The SQLite cursor for database operations.
         title (str): The title of the prompt.
     """
+
     def __init__(
         self, parent: Panel, user: User, cursor: sqlite3.Cursor, title: str
     ) -> None:

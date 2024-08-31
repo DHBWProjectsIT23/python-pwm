@@ -1,6 +1,7 @@
 """
 Provides AES encryption and decryption functionality.
 """
+
 import os
 
 from cryptography.hazmat.primitives import padding
@@ -18,7 +19,7 @@ def encrypt_aes(data: bytes, key: bytes) -> bytes:
         key (bytes): The 16, 24, or 32-byte encryption key for AES.
 
     Returns:
-        bytes: The encrypted data, including the initialization vector (IV) 
+        bytes: The encrypted data, including the initialization vector (IV)
                prepended to the ciphertext.
     """
     iv = os.urandom(16)

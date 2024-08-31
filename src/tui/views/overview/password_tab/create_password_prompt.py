@@ -2,6 +2,7 @@
 Class for handling the password creation prompt in a terminal user interface.
 Includes steps for entering a description, username, password, categories, and notes.
 """
+
 import curses
 import sqlite3
 from typing import Optional
@@ -28,7 +29,7 @@ SINGLELINE_CTR_STR = "- ↩ Continue - ^E Cancel -"
 class PasswordCreationPrompt(Prompt):
     """
     A class to handle the creation of a new password through a terminal user interface.
-    This class provides a step-by-step prompt for users to enter details such as a description, 
+    This class provides a step-by-step prompt for users to enter details such as a description,
     username, password, categories, and notes.
 
     Inherits from:
@@ -41,6 +42,7 @@ class PasswordCreationPrompt(Prompt):
         prompt (Prompt): The prompt object used to interact with the user.
         title (str): The title of the prompt window.
     """
+
     def __init__(self, parent: Panel, user: User, cursor: sqlite3.Cursor):
         """
         Initializes the PasswordCreationPrompt with a parent panel, user, and database cursor.
@@ -56,7 +58,7 @@ class PasswordCreationPrompt(Prompt):
 
     def run(self) -> Optional[PasswordInformation]:
         """
-        Runs the password creation prompt, guiding the user through entering various details such as 
+        Runs the password creation prompt, guiding the user through entering various details such as
         description, username, password, categories, and notes. Returns a PasswordInformation object
         if successful, or None if the user cancels or an error occurs.
 
@@ -113,13 +115,13 @@ class PasswordCreationPrompt(Prompt):
         self, initial_error: str = "", initial_description: str = "", *, title: str
     ) -> str:
         """
-        Prompts the user to enter a description for the new password. Validates that the description 
+        Prompts the user to enter a description for the new password. Validates that the description
         is not empty and that the description/username combination is unique.
 
         Args:
-            initial_error (str, optional): 
+            initial_error (str, optional):
             An initial error message to display. Defaults to an empty string.
-            initial_description (str, optional): 
+            initial_description (str, optional):
             An initial description to display. Defaults to an empty string.
             title (str): The title for the prompt window.
 
@@ -154,7 +156,7 @@ class PasswordCreationPrompt(Prompt):
         Prompts the user to enter a username for the new password. The username is optional.
 
         Args:
-            initial_username (str, optional): 
+            initial_username (str, optional):
             An initial username to display. Defaults to an empty string.
             title (str): The title for the prompt window.
 
@@ -201,11 +203,11 @@ class PasswordCreationPrompt(Prompt):
         self, initial_categories: Optional[list[str]] = None, *, title: str = ""
     ) -> list[str]:
         """
-        Prompts the user to enter categories for the password. Categories are optional and should be 
+        Prompts the user to enter categories for the password. Categories are optional and should be
         separated by commas.
 
         Args:
-            initial_categories (Optional[list[str]], optional): 
+            initial_categories (Optional[list[str]], optional):
             An initial list of categories to display. Defaults to None.
             title (str): The title for the prompt window.
 
@@ -277,7 +279,7 @@ class PasswordCreationPrompt(Prompt):
         """
         Exits the current prompt and restores the terminal to its default state.
 
-        This method is used to clean up and exit the prompt gracefully. 
+        This method is used to clean up and exit the prompt gracefully.
         It performs the following actions:
         - Hides the cursor to ensure a clean exit.
         - Clears the contents of the prompt window.

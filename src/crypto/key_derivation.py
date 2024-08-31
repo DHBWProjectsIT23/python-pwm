@@ -1,6 +1,7 @@
 """
 Provides functions for key derivation and verification using the Scrypt algorithm.
 """
+
 import os
 from typing import Optional
 
@@ -14,7 +15,7 @@ def scrypt_derive(pw: bytes, salt: Optional[bytes] = None) -> tuple[bytes, bytes
 
     Args:
         pw (bytes): The password to be derived.
-        salt (Optional[bytes]): The salt to use for key derivation. 
+        salt (Optional[bytes]): The salt to use for key derivation.
         If not provided, a new salt will be generated.
 
     Returns:

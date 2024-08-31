@@ -3,6 +3,7 @@ This module manages the start menu interface for a terminal application, includi
 displaying menu options, handling user input for navigation and selection, and
 highlighting menu items.
 """
+
 import curses
 import sys
 

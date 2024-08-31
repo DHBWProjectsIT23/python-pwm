@@ -1,6 +1,7 @@
 """
 Provides functions for encryption and decryption using the Fernet symmetric encryption scheme.
 """
+
 import base64
 
 from cryptography.fernet import Fernet
@@ -12,7 +13,7 @@ def encrypt_fernet(data: bytes, key: bytes) -> bytes:
 
     Args:
         data (bytes): The data to be encrypted, in bytes format.
-        key (bytes): The 32-byte key for Fernet encryption. This key will be 
+        key (bytes): The 32-byte key for Fernet encryption. This key will be
                      encoded to base64 format.
 
     Returns:
@@ -29,7 +30,7 @@ def decrypt_fernet(data: bytes, key: bytes) -> bytes:
 
     Args:
         data (bytes): The encrypted data in bytes format.
-        key (bytes): The 32-byte key for Fernet decryption. This key will be 
+        key (bytes): The 32-byte key for Fernet decryption. This key will be
                      encoded to base64 format.
 
     Returns:

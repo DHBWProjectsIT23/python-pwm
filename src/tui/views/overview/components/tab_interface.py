@@ -2,6 +2,7 @@
 Module for defining and managing tab interfaces in a terminal-based application.
 Includes the TabInterface class for handling tab-based views and displaying controls and errors.
 """
+
 import curses
 
 from src.tui.keys import Keys
@@ -23,6 +24,7 @@ class TabInterface:
         y_start (int): The starting y-coordinate for the tab window.
         controls (dict[str, str]): A dictionary mapping control keys to their descriptions.
     """
+
     def __init__(
         self, window_size: tuple[int, int], y_start: int, controls: dict[str, str]
     ) -> None:
@@ -48,7 +50,7 @@ class TabInterface:
 
         Args:
             input_key (int): The key code representing the user input.
-        
+
         Raises:
             NotImplementedError: This method should be implemented by subclasses.
         """

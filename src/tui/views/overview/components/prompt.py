@@ -3,6 +3,7 @@ Module for defining prompt interfaces and handling user interactions in a
 terminal-based application. Includes base classes for prompts and simple prompts,
 and methods for managing user input and validation.
 """
+
 import curses
 import sqlite3
 from curses.textpad import Textbox
@@ -37,6 +38,7 @@ class Prompt:
         cursor (sqlite3.Cursor): The database cursor used for querying.
         size (tuple[int, int]): The size of the prompt window (height, width).
     """
+
     def __init__(
         self,
         parent: Panel,
@@ -116,7 +118,7 @@ class Prompt:
 
     def _confirm_password(self) -> bool:
         """
-        Prompts the user to confirm their password. 
+        Prompts the user to confirm their password.
         Returns True if the password is correct,
         False if the maximum number of attempts is exceeded.
 
@@ -182,6 +184,7 @@ class SimplePrompt:
         parent (Panel): The parent Panel object where the prompt will be displayed.
         size (tuple[int, int]): The size of the prompt window (height, width).
     """
+
     def __init__(self, parent: Panel, size: tuple[int, int]) -> None:
         """
         Initializes the SimplePrompt with the given parameters and creates the prompt window.
