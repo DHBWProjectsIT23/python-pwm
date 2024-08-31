@@ -1,0 +1,27 @@
+[
+  {
+    "description": "eBay",
+    "password": {
+      "current_password": "password123"
+    },
+    "username": "",
+    "created_at": 1693225830.0,
+    "last_modified": 1693225881.0
+  },
+  {
+    "description": "Instagram",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "eveUser",
+    "note": "Instagram"
+  },
+  {
+    "description": "Pinterest",
+    "password": {
+      "current_password": "test_password_1"
+    },
+    "username": "",
+    "categories": []
+  }
+]
