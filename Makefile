@@ -5,8 +5,8 @@ run:
 test:
 	unittest discover -v
 coverage:
-	coverage -m run unittest discover -v
-	coverage -m report --skip-empty
+	coverage run -m unittest discover -v
+	coverage report -m --skip-empty
 mypy:
 	mypy src main.py
 pylint:

@@ -1,4 +1,5 @@
 # Python Password Manager
+- Entwickelt von Simon Blum, Ruth Fröhlich, Max Rodler.
 ## Example Data
 By default there is no data within the database.
 The script "scripts/populate_database.py" can be used to generate:
