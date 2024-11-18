@@ -1,4 +1,4 @@
-coverage==7.5.3
+coverage==7.6.7
 cryptography==43.0.0
 mypy==1.10.0
 mypy-extensions==1.0.0
